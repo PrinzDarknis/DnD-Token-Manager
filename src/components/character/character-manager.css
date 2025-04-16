@@ -1,0 +1,9 @@
+.character-manager {
+  margin: 2rem;
+
+  .character-selector {
+    button {
+      margin: 0.1rem;
+    }
+  }
+}

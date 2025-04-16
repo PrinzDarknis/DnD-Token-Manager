@@ -1,0 +1,73 @@
+.character {
+  --font-size-base: 0.5rem;
+  --width-base: 0.8rem;
+
+  .character-information-item {
+    margin: calc(2 * var(--font-size-base));
+    font-size: calc(2.4 * var(--font-size-base));
+    input,
+    lable {
+      font-size: calc(2.4 * var(--font-size-base));
+      justify-items: center;
+      background: none;
+      border: none;
+    }
+  }
+
+  .character-delete {
+    height: 2rem;
+    width: 2rem;
+    padding: 0;
+    margin-left: 1rem;
+  }
+
+  .character-delete-icon {
+    max-width: 100%;
+    max-height: 100%;
+
+    filter: invert(100%) sepia(2%) saturate(7%) hue-rotate(337deg)
+      brightness(101%) contrast(101%);
+
+    &:hover {
+      filter: invert(14%) sepia(74%) saturate(6873%) hue-rotate(358deg)
+        brightness(101%) contrast(117%);
+    }
+  }
+
+  .name {
+    display: flex;
+
+    input {
+      border-bottom: 3px solid darkred;
+      flex-grow: 1;
+    }
+  }
+
+  .hp {
+    background: red;
+    border: 4px solid darkred;
+    border-radius: 1rem;
+
+    padding: 0 calc(1 * var(--width-base));
+
+    input {
+      width: calc(3.5 * var(--width-base));
+    }
+  }
+
+  .ac {
+    background: blue;
+    border: 4px solid darkblue;
+    border-radius: 1rem;
+
+    padding: 0 0 0 calc(1 * var(--width-base));
+
+    input {
+      width: calc(4 * var(--width-base));
+    }
+  }
+
+  .resource-list {
+    overflow-y: auto;
+  }
+}

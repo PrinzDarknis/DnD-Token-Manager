@@ -1,0 +1,21 @@
+.new-ressource {
+  > * {
+    margin: 0 0.5rem;
+    height: 1.5rem;
+  }
+
+  .new-ressource-name {
+    width: 8rem;
+  }
+
+  .new-ressource-available {
+    width: 2rem;
+  }
+
+  .new-ressource-add {
+    width: 2rem;
+    height: 2rem;
+    vertical-align: middle;
+    padding: 0;
+  }
+}

@@ -1,0 +1,25 @@
+.ressource {
+  display: flex;
+
+  &:hover {
+    color: greenyellow;
+  }
+
+  .ressource-name {
+    display: inline-block;
+    width: 6rem;
+    overflow-wrap: anywhere;
+  }
+
+  .ressource-slots {
+    flex-grow: 1;
+  }
+
+  .new-ressource-mod {
+    height: 1.2rem;
+    width: 1.2rem;
+    padding: 0;
+    vertical-align: middle;
+    font-size: xx-small;
+  }
+}

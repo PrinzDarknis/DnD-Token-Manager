@@ -1,11 +1,13 @@
 {
-  "name": "DnD Token Manager",
   "version": "0.1.0",
+  "name": "Dev",
+  "author": "PrinzDarknis",
+  "description": "Local Dev Build",
   "manifest_version": 1,
   "action": {
     "title": "Character",
     "icon": "/character.svg",
-    "popover": "/index.dev.html",
+    "popover": "/",
     "height": 600,
     "width": 400
   }

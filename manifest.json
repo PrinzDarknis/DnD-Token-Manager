@@ -1,11 +1,13 @@
 {
-  "name": "DnD Token Manager",
   "version": "0.1.0",
+  "name": "DnD Token Manager",
+  "author": "PrinzDarknis",
+  "description": "Allows to manage Spellslots and other limited ressources.",
   "manifest_version": 1,
   "action": {
     "title": "Character",
-    "icon": "./character.svg",
-    "popover": "./",
+    "icon": "/DnD-Token-Manager/character.svg",
+    "popover": "/DnD-Token-Manager/",
     "height": 600,
     "width": 400
   }

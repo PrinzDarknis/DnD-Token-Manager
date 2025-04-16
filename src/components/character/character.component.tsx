@@ -11,11 +11,13 @@ import {
 
 export function CharacterComponent({
   character,
+  gm,
   onUpdate,
   onDelete,
   registerReset,
 }: {
   character: Character;
+  gm: boolean;
   onUpdate?: (character: Character) => void;
   onDelete?: () => void;
   registerReset?: (resetFunction: () => void) => void;
@@ -76,17 +78,19 @@ export function CharacterComponent({
                 pattern=".*\S+.*"
                 maxLength={15}
               />
-              <button
-                type="button"
-                className="character-delete"
-                onClick={() => onDelete?.()}
-              >
-                <img
-                  src={trash}
-                  className="character-delete-icon"
-                  alt="Delete CHaracter"
-                />
-              </button>
+              {gm && (
+                <button
+                  type="button"
+                  className="character-delete"
+                  onClick={() => onDelete?.()}
+                >
+                  <img
+                    src={trash}
+                    className="character-delete-icon"
+                    alt="Delete CHaracter"
+                  />
+                </button>
+              )}
             </h1>
             <span className="hp character-information-item">
               <input
@@ -94,7 +98,6 @@ export function CharacterComponent({
                 defaultValue={character.hp}
                 data-property="hp"
                 min={0}
-                max={character.maxHp}
               />
               <span className="devider">/</span>
               <input
@@ -123,6 +126,7 @@ export function CharacterComponent({
                 <RessourceComponent
                   key={`spellslots-${slotNumber}`}
                   name={`Level ${slotNumber}`}
+                  gm={gm}
                   ressource={ressource}
                   onUpdate={(newRessource) =>
                     updateResource(`spellslots.${slotNumber}`, newRessource)
@@ -137,6 +141,7 @@ export function CharacterComponent({
                 <RessourceComponent
                   key={`spellslots-${name}`}
                   name={name}
+                  gm={gm}
                   ressource={ressource}
                   onUpdate={(newRessource) =>
                     updateResource(`otherResources.${name}`, newRessource)
@@ -147,7 +152,7 @@ export function CharacterComponent({
           </div>
         </form>
         <br />
-        <NewRessourceComponent onCreate={(data) => newResource(data)} />
+        {gm && <NewRessourceComponent onCreate={(data) => newResource(data)} />}
       </div>
     </>
   );

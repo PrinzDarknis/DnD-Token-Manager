@@ -14,4 +14,10 @@ export class Owlbear {
     });
     this.character = new OwlbearCharacter(this.ready);
   }
+
+  async isGM(): Promise<boolean> {
+    await this.ready;
+    const role = await OBR.player.getRole();
+    return role == "GM";
+  }
 }

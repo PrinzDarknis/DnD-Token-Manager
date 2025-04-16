@@ -10,6 +10,7 @@ type Props = object;
 interface State {
   chars: Character[];
   selected: number;
+  gm: boolean;
 }
 
 export class CharacterManager extends Component<Props, State> {
@@ -20,10 +21,12 @@ export class CharacterManager extends Component<Props, State> {
     this.state = {
       chars: [],
       selected: 0,
+      gm: false,
     };
   }
 
   componentDidMount(): void {
+    Owlbear.isGM().then((isGM) => this.setGM(isGM));
     Owlbear.character.load().then((chars) => {
       this.setChars(chars);
       this.reset?.();
@@ -47,6 +50,13 @@ export class CharacterManager extends Component<Props, State> {
   }
   protected setSelected(selected: number): void {
     this.setState({ ...this.state, selected });
+  }
+
+  get gm(): boolean {
+    return this.state.gm;
+  }
+  protected setGM(gm: boolean): void {
+    this.setState({ ...this.state, gm });
   }
 
   // Handler
@@ -98,16 +108,19 @@ export class CharacterManager extends Component<Props, State> {
                 {char.name}
               </button>
             ))}
-            <button
-              className="character-selector-button"
-              type="button"
-              onClick={() => this.addNewChar()}
-            >
-              +
-            </button>
+            {this.gm && (
+              <button
+                className="character-selector-button"
+                type="button"
+                onClick={() => this.addNewChar()}
+              >
+                +
+              </button>
+            )}
           </div>
           {this.chars[this.selected] && (
             <CharacterComponent
+              gm={this.gm}
               character={this.chars[this.selected]}
               onUpdate={(char) => this.updateChar(char)}
               onDelete={() => this.deleteChar()}

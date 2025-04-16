@@ -6,10 +6,12 @@ import { IRessource } from "./model";
 export function RessourceComponent({
   name,
   ressource,
+  gm,
   onUpdate,
 }: {
   name: string;
   ressource: IRessource;
+  gm: boolean;
   onUpdate?: (data: IRessource) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -49,20 +51,24 @@ export function RessourceComponent({
     <div ref={ref} className="ressource">
       <span className="ressource-name">{name}</span>
       <span className="ressource-slots">{checkboxes}</span>
-      <button
-        type="button"
-        className="new-ressource-mod new-ressource-add"
-        onClick={() => modAvailable(-1)}
-      >
-        -
-      </button>
-      <button
-        type="button"
-        className="new-ressource-mod new-ressource-sub"
-        onClick={() => modAvailable(1)}
-      >
-        +
-      </button>
+      {gm && (
+        <button
+          type="button"
+          className="new-ressource-mod new-ressource-add"
+          onClick={() => modAvailable(-1)}
+        >
+          -
+        </button>
+      )}
+      {gm && (
+        <button
+          type="button"
+          className="new-ressource-mod new-ressource-sub"
+          onClick={() => modAvailable(1)}
+        >
+          +
+        </button>
+      )}
     </div>
   );
 }

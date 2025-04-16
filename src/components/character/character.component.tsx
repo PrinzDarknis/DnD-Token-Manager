@@ -49,6 +49,11 @@ export function CharacterComponent({
     onUpdate?.(character);
   }
 
+  function deleteOtherResource(name: string): void {
+    character.deleteOtherResource(name);
+    onUpdate?.(character);
+  }
+
   function newResource(data: INewRessource) {
     updateResource(`otherResources.${data.name}`, data.resource);
   }
@@ -142,10 +147,12 @@ export function CharacterComponent({
                   key={`spellslots-${name}`}
                   name={name}
                   gm={gm}
+                  deleteable
                   ressource={ressource}
                   onUpdate={(newRessource) =>
                     updateResource(`otherResources.${name}`, newRessource)
                   }
+                  onDelete={() => deleteOtherResource(name)}
                 />
               )
             )}

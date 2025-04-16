@@ -115,6 +115,10 @@ export class Character implements ICharacter {
     throw new Error(`Unkown property "${property}"`);
   }
 
+  deleteOtherResource(name: string): void {
+    delete this.otherResources[name];
+  }
+
   toSimpleObject(): ICharacter {
     return JSON.parse(JSON.stringify(this));
   }

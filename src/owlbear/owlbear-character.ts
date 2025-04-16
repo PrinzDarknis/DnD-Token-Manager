@@ -21,7 +21,6 @@ export class OwlbearCharacter {
     await this.ready;
 
     const data = chars.map((char) => char.toSimpleObject());
-    console.log("Save", data);
 
     // save
     await OBR.room.setMetadata({

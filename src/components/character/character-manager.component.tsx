@@ -52,11 +52,13 @@ export class CharacterManager extends Component<Props, State> {
     this.setState({ ...this.state, selected });
   }
 
+  protected gmBackup: boolean = false; // No Clue why state sometime doesn't work
   get gm(): boolean {
-    return this.state.gm;
+    return this.state.gm || this.gmBackup;
   }
   protected setGM(gm: boolean): void {
     this.setState({ ...this.state, gm });
+    this.gmBackup = gm;
   }
 
   // Handler

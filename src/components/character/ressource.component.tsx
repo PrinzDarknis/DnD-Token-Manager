@@ -7,12 +7,16 @@ export function RessourceComponent({
   name,
   ressource,
   gm,
+  deleteable = false,
   onUpdate,
+  onDelete,
 }: {
   name: string;
   ressource: IRessource;
   gm: boolean;
+  deleteable?: boolean;
   onUpdate?: (data: IRessource) => void;
+  onDelete?: () => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -26,7 +30,20 @@ export function RessourceComponent({
   }
 
   function modAvailable(modifier: number): void {
-    ressource.available = ressource.available + modifier;
+    const newValue = ressource.available + modifier;
+
+    // Check
+    if (newValue < 0) {
+      if (deleteable && gm && confirm(`Delete ${name}?`)) {
+        onDelete?.();
+      }
+      return;
+    } else if (newValue > 9) {
+      return;
+    }
+
+    // Update
+    ressource.available = newValue;
     if (ressource.used > ressource.available)
       ressource.used = ressource.available;
     onUpdate?.(ressource);

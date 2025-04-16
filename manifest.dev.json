@@ -4,8 +4,8 @@
   "manifest_version": 1,
   "action": {
     "title": "Character",
-    "icon": "./character.svg",
-    "popover": "./",
+    "icon": "/character.svg",
+    "popover": "/index.dev.html",
     "height": 600,
     "width": 400
   }

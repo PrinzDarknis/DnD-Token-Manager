@@ -24,8 +24,14 @@ export class CharacterManager extends Component<Props, State> {
   }
 
   componentDidMount(): void {
-    Owlbear.character.load().then((chars) => this.setChars(chars));
-    Owlbear.character.registerOnUpdate((chars) => this.setChars(chars));
+    Owlbear.character.load().then((chars) => {
+      this.setChars(chars);
+      this.reset?.();
+    });
+    Owlbear.character.registerOnUpdate((chars) => {
+      this.setChars(chars);
+      this.reset?.();
+    });
   }
 
   // State

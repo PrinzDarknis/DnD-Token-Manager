@@ -33,7 +33,7 @@ export class OwlbearCharacter {
     return debounce(`OwlbearCharacter-save-${char.id}`, () => this._save(char));
   }
 
-  async _save(char: Character): Promise<void> {
+  protected async _save(char: Character): Promise<void> {
     await this.ready;
 
     // save

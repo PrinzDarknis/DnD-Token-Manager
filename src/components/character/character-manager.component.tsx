@@ -8,8 +8,10 @@ import { Character } from "./model";
 
 type Props = object;
 interface State {
-  chars: Character[];
-  selected: number;
+  chars: {
+    [id: string]: Character;
+  };
+  selected: string;
   gm: boolean;
 }
 
@@ -19,59 +21,79 @@ export class CharacterManager extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      chars: [],
-      selected: 0,
+      chars: {},
+      selected: "",
       gm: false,
     };
   }
 
   componentDidMount(): void {
     Owlbear.isGM().then((isGM) => this.setGM(isGM));
-    Owlbear.character.load().then((chars) => {
-      this.setChars(chars);
+    Owlbear.character.loadAll().then(async (chars) => {
+      await this.setChars(chars);
+      await this.setSelected();
       this.reset?.();
     });
-    Owlbear.character.registerOnUpdate((chars) => {
-      this.setChars(chars);
+    Owlbear.character.registerOnUpdate(async (char) => {
+      // check if updated needed
+      const oldChar = this.chars[char.id];
+      if (oldChar && oldChar.lastUpdate >= char.lastUpdate) {
+        console.debug("Skip Character update", char, oldChar);
+        return;
+      }
+
+      // update
+      await this.setChar(char);
       this.reset?.();
     });
   }
 
   // State
-  get chars(): Character[] {
-    return this.state.chars;
-  }
-  setChars(chars: Character[]): void {
-    this.setState({ ...this.state, chars });
+  async setStatePromise(state: State): Promise<void> {
+    return new Promise<void>((resolve) => this.setState(state, resolve));
   }
 
-  get selected(): number {
+  get chars(): {
+    [id: string]: Character;
+  } {
+    return this.state.chars;
+  }
+  async setChars(chars: { [id: string]: Character }): Promise<void> {
+    await this.setStatePromise({ ...this.state, chars });
+  }
+  async setChar(char: Character): Promise<void> {
+    await this.setChars({
+      ...this.chars,
+      [char.id]: char,
+    });
+  }
+
+  get selected(): string {
     return this.state.selected;
   }
-  protected setSelected(selected: number): void {
-    this.setState({ ...this.state, selected });
+  protected async setSelected(selected?: string): Promise<void> {
+    if (!selected) selected = Object.values(this.chars)[0]?.id ?? "";
+    await this.setStatePromise({ ...this.state, selected });
   }
 
   protected gmBackup: boolean = false; // No Clue why state sometime doesn't work
   get gm(): boolean {
     return this.state.gm || this.gmBackup;
   }
-  protected setGM(gm: boolean): void {
-    this.setState({ ...this.state, gm });
+  protected async setGM(gm: boolean): Promise<void> {
+    await this.setStatePromise({ ...this.state, gm });
     this.gmBackup = gm;
   }
 
   // Handler
-  protected changeSelection(idx: number): void {
-    this.setSelected(idx);
+  protected changeSelection(id: string): void {
+    this.setSelected(id);
     this.reset?.();
   }
 
   protected updateChar(char: Character): void {
-    this.chars[this.selected] = char;
-    const newChars = [...this.chars];
-    this.setChars(newChars);
-    Owlbear.character.save(newChars);
+    this.setChar(char);
+    Owlbear.character.save(char);
   }
 
   protected deleteChar(): void {
@@ -79,18 +101,19 @@ export class CharacterManager extends Component<Props, State> {
     if (!confirm("Delete Character")) return;
 
     // delete
-    this.chars.splice(this.selected, 1);
-    const newChars = [...this.chars];
+    const deleteChar = this.chars[this.selected];
+    const newChars = { ...this.chars };
+    delete newChars[deleteChar.id];
     this.setChars(newChars);
-    Owlbear.character.save(newChars);
-    this.setSelected(0);
+    Owlbear.character.delete(deleteChar.id);
+    this.setSelected();
   }
 
   protected addNewChar(): void {
-    const newChars = [...this.chars, new Character(this.chars)];
-    this.setChars(newChars);
-    Owlbear.character.save(newChars);
-    this.changeSelection(newChars.length - 1);
+    const newChar = new Character(Object.values(this.chars));
+    this.setChar(newChar);
+    Owlbear.character.save(newChar);
+    this.changeSelection(newChar.id);
   }
 
   // Render
@@ -99,13 +122,13 @@ export class CharacterManager extends Component<Props, State> {
       <>
         <div className="character-manager">
           <div className="character-selector">
-            {this.chars.map((char, idx) => (
+            {Object.values(this.chars).map((char) => (
               <button
                 className="character-selector-button"
                 type="button"
-                onClick={() => this.changeSelection(idx)}
-                disabled={idx == this.selected}
-                key={`select-button-${idx}`}
+                onClick={() => this.changeSelection(char.id)}
+                disabled={char.id == this.selected}
+                key={`select-button-${char.id}`}
               >
                 {char.name}
               </button>

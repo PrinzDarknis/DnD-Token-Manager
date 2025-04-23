@@ -20,6 +20,7 @@ export class Character implements ICharacter {
     "9": IRessource;
   };
   otherResources: { [name: string]: IRessource };
+  lastUpdate: Date;
 
   constructor(oldCharacters: ICharacter[]) {
     const oldIDs = oldCharacters.map((char) => char.name);
@@ -41,6 +42,7 @@ export class Character implements ICharacter {
       "9": { available: 0, used: 0 },
     };
     this.otherResources = {};
+    this.lastUpdate = new Date();
   }
 
   static restore(data: ICharacter): Character {
@@ -90,6 +92,9 @@ export class Character implements ICharacter {
       case "ac":
         this.ac = Character.parseNumber(value);
         return;
+      case "lastUpdate":
+        this.lastUpdate = Character.parseDate(value);
+        return;
 
       default: {
         const propertyParts = property.split(".");
@@ -138,6 +143,7 @@ export class Character implements ICharacter {
     "spellslots.7",
     "spellslots.8",
     "spellslots.9",
+    "lastUpdate",
   ];
 
   private static invalideTypeError(expected: string, actual: unknown): Error {
@@ -172,5 +178,18 @@ export class Character implements ICharacter {
       available,
       used,
     };
+  }
+
+  private static parseDate(value: unknown): Date {
+    if (!value) return new Date();
+    if (typeof value == "string") {
+      const date = new Date(value);
+      if (isNaN(date.getDate()))
+        throw Character.invalideTypeError("Date", value);
+      return date;
+    }
+    if (!(value instanceof Date))
+      throw Character.invalideTypeError("Date", value);
+    return value;
   }
 }

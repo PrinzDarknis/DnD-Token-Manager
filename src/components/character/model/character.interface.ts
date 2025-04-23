@@ -18,4 +18,5 @@ export interface ICharacter {
     "9": IRessource;
   };
   otherResources: { [name: string]: IRessource };
+  lastUpdate: Date;
 }

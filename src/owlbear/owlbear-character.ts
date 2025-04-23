@@ -1,8 +1,8 @@
 import OBR, { Metadata } from "@owlbear-rodeo/sdk";
 
-import { Character } from "../components";
+import { Character, ICharacter } from "../components";
 
-import { METADATA_CHARACTERS } from "./constants";
+import { METADATA_CHARACTER } from "./constants";
 
 export class OwlbearCharacter {
   protected readonly ready: Promise<void>;
@@ -10,45 +10,63 @@ export class OwlbearCharacter {
     this.ready = ready;
   }
 
-  async load(): Promise<Character[]> {
+  async loadAll(): Promise<{
+    [id: string]: Character;
+  }> {
     await this.ready;
-
     const metadata = await OBR.room.getMetadata();
-    return this.metadataToChars(metadata);
+    const chars: {
+      [id: string]: Character;
+    } = {};
+    for (const [metakey, metaentry] of Object.entries(metadata)) {
+      if (metakey.includes(METADATA_CHARACTER(""))) {
+        const char = OwlbearCharacter.metadataToChar(metaentry as ICharacter);
+        if (char) chars[char.id] = char;
+      }
+    }
+    console.debug("OwlbearCharacter", "loadAll", chars);
+    return chars;
   }
 
-  async save(chars: Character[]): Promise<void> {
+  async save(char: Character): Promise<void> {
     await this.ready;
 
-    const data = chars.map((char) => char.toSimpleObject());
+    // save
+    const update: Partial<Metadata> = {};
+    char.lastUpdate = new Date();
+    update[METADATA_CHARACTER(char.id)] = char.toSimpleObject();
+
+    await OBR.room.setMetadata(update);
+  }
+
+  async delete(charId: string): Promise<void> {
+    await this.ready;
 
     // save
-    await OBR.room.setMetadata({
-      [METADATA_CHARACTERS]: data,
+    const update: Partial<Metadata> = {
+      [METADATA_CHARACTER(charId)]: undefined,
+    };
+    await OBR.room.setMetadata(update);
+  }
+
+  async registerOnUpdate(onUpdate: (char: Character) => void | Promise<void>) {
+    await this.ready;
+    OBR.room.onMetadataChange(async (metadata) => {
+      for (const [metakey, metaentry] of Object.entries(metadata)) {
+        if (metakey.includes(METADATA_CHARACTER(""))) {
+          const char = OwlbearCharacter.metadataToChar(metaentry as ICharacter);
+          if (char) await onUpdate(char);
+        }
+      }
     });
   }
 
-  async registerOnUpdate(onUpdate: (chars: Character[]) => void) {
-    await this.ready;
-    OBR.room.onMetadataChange((metadata) =>
-      onUpdate(this.metadataToChars(metadata))
-    );
-  }
-
-  protected metadataToChars(metadata: Metadata): Character[] {
-    const data = metadata[METADATA_CHARACTERS];
-
-    if (!Array.isArray(data)) return [];
-
-    return data
-      .map((char) => {
-        try {
-          return Character.restore(char);
-        } catch (e) {
-          console.error(e);
-          return undefined;
-        }
-      })
-      .filter((char) => !!char);
+  static metadataToChar(metadata: ICharacter): Character | undefined {
+    try {
+      return Character.restore(metadata);
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
   }
 }

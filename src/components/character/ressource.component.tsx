@@ -56,7 +56,7 @@ export function RessourceComponent({
       <input
         className="ressource-slot"
         type="checkbox"
-        key={`ressource-slot-${nameKey}-${idx}`}
+        key={`ressource-slot-${nameKey}-${idx}-${Math.random()}`} // Rand to force update Checkbox, otherwise checked is updated but Checkbox doesn't react
         checked={idx < ressource.used}
         onChange={updateUsed}
         onInput={(e) => e.stopPropagation()}

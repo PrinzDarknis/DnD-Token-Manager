@@ -2,7 +2,7 @@ import "./character.css";
 
 import trash from "/trash.svg";
 
-import { Character } from "./model";
+import { Character, IRessource } from "./model";
 import { RessourceComponent } from "./ressource.component";
 import {
   INewRessource,
@@ -44,7 +44,7 @@ export function CharacterComponent({
     e.stopPropagation();
   }
 
-  function updateResource(resourcProperty: string, value: unknown): void {
+  function updateResource(resourcProperty: string, value: IRessource): void {
     character.setValue(resourcProperty, value);
     onUpdate?.(character);
   }

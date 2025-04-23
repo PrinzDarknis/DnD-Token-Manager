@@ -34,18 +34,31 @@ export class CharacterManager extends Component<Props, State> {
       await this.setSelected();
       this.reset?.();
     });
-    Owlbear.character.registerOnUpdate(async (char) => {
-      // check if updated needed
-      const oldChar = this.chars[char.id];
-      if (oldChar && oldChar.lastUpdate >= char.lastUpdate) {
-        console.debug("Skip Character update", char, oldChar);
-        return;
-      }
+    Owlbear.character.registerOnUpdate(
+      // onUpdate
+      async (char) => {
+        // check if updated needed
+        const oldChar = this.chars[char.id];
+        if (oldChar && oldChar.lastUpdate >= char.lastUpdate) {
+          return;
+        }
 
-      // update
-      await this.setChar(char);
-      this.reset?.();
-    });
+        // update
+        await this.setChar(char);
+        this.reset?.();
+      },
+      // check delete
+      async (valideIds) => {
+        const invalideCharIds = Object.values(this.chars)
+          .filter((char) => !valideIds.includes(char.id))
+          .map((char) => char.id);
+        const valideChars = { ...this.chars };
+        for (const invalideID of invalideCharIds) {
+          delete valideChars[invalideID];
+        }
+        await this.setChars(valideChars);
+      }
+    );
   }
 
   // State
@@ -89,6 +102,7 @@ export class CharacterManager extends Component<Props, State> {
   protected changeSelection(id: string): void {
     this.setSelected(id);
     this.reset?.();
+    Owlbear.character.selectedIdTemp = id; // TODO delete
   }
 
   protected updateChar(char: Character): void {
@@ -96,7 +110,7 @@ export class CharacterManager extends Component<Props, State> {
     Owlbear.character.save(char);
   }
 
-  protected deleteChar(): void {
+  protected async deleteChar(): Promise<void> {
     // ask
     if (!confirm("Delete Character")) return;
 
@@ -104,9 +118,9 @@ export class CharacterManager extends Component<Props, State> {
     const deleteChar = this.chars[this.selected];
     const newChars = { ...this.chars };
     delete newChars[deleteChar.id];
-    this.setChars(newChars);
+    await this.setChars(newChars);
     Owlbear.character.delete(deleteChar.id);
-    this.setSelected();
+    await this.setSelected();
   }
 
   protected addNewChar(): void {

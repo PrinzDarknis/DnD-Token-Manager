@@ -10,11 +10,17 @@ export class Owlbear {
   constructor() {
     this.ready = new Promise((resolve) => {
       OBR.onReady(async () => {
+        // update
         try {
           await versionUpdata(Promise.resolve());
         } catch (error) {
           console.error("Error while updation Version", error);
         }
+
+        // setupBackground
+        this.character.setupTokenManagement();
+
+        // fin
         resolve();
       });
     });

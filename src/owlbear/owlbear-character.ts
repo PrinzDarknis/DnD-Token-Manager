@@ -1,6 +1,7 @@
 import OBR, { Metadata } from "@owlbear-rodeo/sdk";
 
 import { Character, ICharacter } from "../components";
+import { debounce } from "../utils";
 
 import { METADATA_CHARACTER } from "./constants";
 
@@ -29,6 +30,10 @@ export class OwlbearCharacter {
   }
 
   async save(char: Character): Promise<void> {
+    return debounce(`OwlbearCharacter-save-${char.id}`, () => this._save(char));
+  }
+
+  async _save(char: Character): Promise<void> {
     await this.ready;
 
     // save

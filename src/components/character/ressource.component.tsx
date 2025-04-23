@@ -24,7 +24,7 @@ export function RessourceComponent({
     const checkbox = e.target as HTMLInputElement;
     const add = checkbox.checked;
     ressource.used = add ? ressource.used + 1 : ressource.used - 1;
-
+    ressource.used = Math.min(Math.max(ressource.used, 0), ressource.available); // enforce limits
     onUpdate?.(ressource);
     e.stopPropagation();
   }
@@ -57,6 +57,7 @@ export function RessourceComponent({
         className="ressource-slot"
         type="checkbox"
         key={`ressource-slot-${nameKey}-${idx}-${Math.random()}`} // Rand to force update Checkbox, otherwise checked is updated but Checkbox doesn't react
+        data-idx={idx}
         checked={idx < ressource.used}
         onChange={updateUsed}
         onInput={(e) => e.stopPropagation()}

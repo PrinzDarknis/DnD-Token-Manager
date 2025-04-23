@@ -22,6 +22,10 @@ export function CharacterComponent({
   onDelete?: () => void;
   registerReset?: (resetFunction: () => void) => void;
 }) {
+  function update(character: Character) {
+    onUpdate?.(character);
+  }
+
   function onImput(e: React.FormEvent) {
     // get Data
     const input = e.target as HTMLInputElement;
@@ -39,19 +43,19 @@ export function CharacterComponent({
 
     // set Data
     character.setValue(property, input.value.trim());
-    onUpdate?.(character);
+    update(character);
 
     e.stopPropagation();
   }
 
   function updateResource(resourcProperty: string, value: IRessource): void {
     character.setValue(resourcProperty, value);
-    onUpdate?.(character);
+    update(character);
   }
 
   function deleteOtherResource(name: string): void {
     character.deleteOtherResource(name);
-    onUpdate?.(character);
+    update(character);
   }
 
   function newResource(data: INewRessource) {

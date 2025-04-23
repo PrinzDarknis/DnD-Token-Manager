@@ -21,6 +21,7 @@ export const MOCK_CHARS: ICharacter[] = [
     otherResources: {
       SteadyAim: { available: 3, used: 0 },
     },
+    lastUpdate: new Date("23.04.2025"),
   },
   {
     name: "Daja",
@@ -48,5 +49,6 @@ export const MOCK_CHARS: ICharacter[] = [
       "Shadow Walk": { available: 3, used: 3 },
       Rast: { available: 3, used: 3 },
     },
+    lastUpdate: new Date("23.04.2025"),
   },
 ];

@@ -2,12 +2,15 @@ import "./character.css";
 
 import trash from "/trash.svg";
 
-import { Character, IRessource } from "./model";
-import { RessourceComponent } from "./ressource.component";
 import {
-  INewRessource,
-  NewRessourceComponent,
-} from "./ressource-new.component";
+  Character,
+  CharacterStandartProperties,
+  CharacterStandartPropertiesComplex,
+  IRessource,
+} from "../../../model";
+
+import { RessourceComponent } from "../ressource";
+import { INewRessource, NewRessourceComponent } from "../ressource-new";
 
 export function CharacterComponent({
   character,
@@ -29,7 +32,9 @@ export function CharacterComponent({
   function onImput(e: React.FormEvent) {
     // get Data
     const input = e.target as HTMLInputElement;
-    const property = input.getAttribute("data-property");
+    const property = input.getAttribute(
+      "data-property"
+    ) as CharacterStandartProperties;
 
     // validate
     if (!property) {
@@ -48,7 +53,10 @@ export function CharacterComponent({
     e.stopPropagation();
   }
 
-  function updateResource(resourcProperty: string, value: IRessource): void {
+  function updateResource(
+    resourcProperty: CharacterStandartPropertiesComplex,
+    value: IRessource
+  ): void {
     character.setValue(resourcProperty, value);
     update(character);
   }
@@ -138,7 +146,10 @@ export function CharacterComponent({
                   gm={gm}
                   ressource={ressource}
                   onUpdate={(newRessource) =>
-                    updateResource(`spellslots.${slotNumber}`, newRessource)
+                    updateResource(
+                      `spellslots.${slotNumber as "1"}`,
+                      newRessource
+                    )
                   }
                 />
               )

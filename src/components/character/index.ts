@@ -1,3 +1,4 @@
-export * from "./model";
-
-export * from "./character-manager.component";
+export * from "./character";
+export * from "./character-manager";
+export * from "./ressource";
+export * from "./ressource-new";

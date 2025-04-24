@@ -1,6 +1,6 @@
 import OBR, { Item, Metadata } from "@owlbear-rodeo/sdk";
 
-import { Character, ICharacter } from "../components";
+import { Character, ICharacter } from "../model";
 import { debounce } from "../utils";
 
 import {
@@ -30,6 +30,7 @@ export class OwlbearCharacter {
         if (char) chars[char.id] = char;
       }
     }
+    console.debug("OwlbearCharacter", "loadAll", "metadata", metadata);
     console.debug("OwlbearCharacter", "loadAll", chars);
     return chars;
   }
@@ -50,7 +51,6 @@ export class OwlbearCharacter {
 
     // save
     const update: Partial<Metadata> = {};
-    char.lastUpdate = new Date();
     update[METADATA_CHARACTER(char.id)] = char.toSimpleObject();
 
     await OBR.room.setMetadata(update);
@@ -144,6 +144,7 @@ export class OwlbearCharacter {
         console.warn(`Unkown Value in ${METADATA_CHARACTER_TOKEN}`, charId);
         return;
       }
+      console.debug("update on token for char", charId);
 
       // get Char
       const char = await this.loadOne(charId);
@@ -152,32 +153,8 @@ export class OwlbearCharacter {
       // get Bubbles
       const bubbles = StatBubblesForDnD.getMetadata(item.metadata);
 
-      // should update
-      let shouldUpdate = false;
-
-      if (
-        typeof bubbles?.["armor class"] == "number" &&
-        bubbles["armor class"] != char.ac
-      ) {
-        shouldUpdate = true;
-        char.ac = bubbles["armor class"];
-      }
-
-      if (typeof bubbles?.health == "number" && bubbles.health != char.ac) {
-        shouldUpdate = true;
-        char.hp = bubbles.health;
-      }
-
-      if (
-        typeof bubbles?.["max health"] == "number" &&
-        bubbles["max health"] != char.ac
-      ) {
-        shouldUpdate = true;
-        char.maxHp = bubbles["max health"];
-      }
-
       // update
-      if (shouldUpdate) this.save(char);
+      if (StatBubblesForDnD.bubblesUpdateChar(bubbles, char)) this.save(char);
     }
   }
 
@@ -187,11 +164,7 @@ export class OwlbearCharacter {
       (items) => {
         for (const item of items) {
           if (item.metadata[METADATA_CHARACTER_TOKEN] == char.id) {
-            const bubbles = StatBubblesForDnD.getMetadata(item.metadata) ?? {};
-            bubbles["armor class"] = char.ac;
-            bubbles.health = char.hp;
-            bubbles["max health"] = char.maxHp;
-            item.metadata[StatBubblesForDnD.METADATA_TAG] = bubbles;
+            StatBubblesForDnD.charUpdateBubbles(char, item);
           }
         }
       }

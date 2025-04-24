@@ -1,10 +1,11 @@
 import { Component, ReactNode } from "react";
+
 import "./character-manager.css";
 
-import { Owlbear } from "../../owlbear";
+import { Owlbear } from "../../../owlbear";
+import { Character } from "../../../model";
 
-import { CharacterComponent } from "./character.component";
-import { Character } from "./model";
+import { CharacterComponent } from "../character";
 
 type Props = object;
 interface State {

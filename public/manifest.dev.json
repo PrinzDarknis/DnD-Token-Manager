@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "Dev",
   "author": "PrinzDarknis",
   "description": "Local Dev Build",
@@ -7,8 +7,9 @@
   "action": {
     "title": "Character",
     "icon": "/character.svg",
-    "popover": "/",
+    "popover": "/html/",
     "height": 600,
     "width": 400
-  }
+  },
+  "background_url": "/html/background.html"
 }

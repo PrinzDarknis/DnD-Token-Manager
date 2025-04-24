@@ -1,7 +1,8 @@
 import { ReactNode, useRef } from "react";
+
 import "./ressource.css";
 
-import { IRessource } from "./model";
+import { IRessource } from "../../../model";
 
 export function RessourceComponent({
   name,

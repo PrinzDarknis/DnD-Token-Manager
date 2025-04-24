@@ -5,3 +5,4 @@ export const METADATA_CHARACTER = (id: string) =>
 export const METADATA_CHARACTER_TOKEN = `${PROJEKT_IDENTIFIER}/character-token`;
 
 export const METADATA_CHARACTER_TOKEN_ACTION = `${PROJEKT_IDENTIFIER}/character-token-action`;
+export const METADATA_SYNC = `${PROJEKT_IDENTIFIER}/sync`;

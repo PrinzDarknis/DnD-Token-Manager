@@ -22,6 +22,7 @@ export const MOCK_CHARS: ICharacter[] = [
       SteadyAim: { available: 3, used: 0 },
     },
     lastUpdate: new Date("23.04.2025"),
+    lastStatUpdate: new Date("23.04.2025"),
   },
   {
     name: "Daja",
@@ -50,5 +51,6 @@ export const MOCK_CHARS: ICharacter[] = [
       Rast: { available: 3, used: 3 },
     },
     lastUpdate: new Date("23.04.2025"),
+    lastStatUpdate: new Date("23.04.2025"),
   },
 ];

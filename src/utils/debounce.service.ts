@@ -1,4 +1,4 @@
-const debounceHolder: { [key: string]: number } = {};
+const debounceHolder: { [key: string]: NodeJS.Timeout | number } = {};
 
 export function debounce(
   key: string,

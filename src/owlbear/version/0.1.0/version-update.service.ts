@@ -3,7 +3,7 @@ import OBR, { Metadata } from "@owlbear-rodeo/sdk";
 import { METADATA_CHARACTER } from "../../constants";
 
 import { OwlbearCharacter_0_1_0 } from "./owlbear-character";
-import { METADATA_CHARACTERS } from "./constants";
+// import { METADATA_CHARACTERS } from "./constants";
 
 export async function versionUpdata_0_1_0(ready: Promise<void>): Promise<void> {
   // Characters
@@ -32,8 +32,8 @@ export async function versionUpdata_0_1_0(ready: Promise<void>): Promise<void> {
     }
 
     // clean up
-    await OBR.room.setMetadata({
-      [METADATA_CHARACTERS]: undefined,
-    });
+    // await OBR.room.setMetadata({ // TODO fix
+    //   [METADATA_CHARACTERS]: undefined,
+    // });
   }
 }

@@ -1,7 +1,8 @@
 import { useRef } from "react";
+
 import "./ressource-new.css";
 
-import { IRessource } from "./model";
+import { IRessource } from "../../../model";
 
 export interface INewRessource {
   name: string;

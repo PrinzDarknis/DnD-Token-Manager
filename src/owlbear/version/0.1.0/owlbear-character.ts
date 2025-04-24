@@ -1,6 +1,6 @@
 import OBR, { Metadata } from "@owlbear-rodeo/sdk";
 
-import { Character } from "../../../components";
+import { Character } from "../../../model";
 
 import { METADATA_CHARACTERS } from "./constants";
 

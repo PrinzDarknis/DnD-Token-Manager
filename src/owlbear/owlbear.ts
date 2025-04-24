@@ -17,9 +17,6 @@ export class Owlbear {
           console.error("Error while updation Version", error);
         }
 
-        // setupBackground
-        this.character.setupTokenManagement();
-
         // fin
         resolve();
       });
@@ -31,5 +28,10 @@ export class Owlbear {
     await this.ready;
     const role = await OBR.player.getRole();
     return role == "GM";
+  }
+
+  async setupBackground(): Promise<void> {
+    await this.ready;
+    this.character.setupTokenManagement();
   }
 }

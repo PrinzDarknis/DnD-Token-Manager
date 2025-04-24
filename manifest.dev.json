@@ -7,8 +7,9 @@
   "action": {
     "title": "Character",
     "icon": "/character.svg",
-    "popover": "/",
+    "popover": "/html/",
     "height": 600,
     "width": 400
-  }
+  },
+  "background_url": "/html/background.html"
 }

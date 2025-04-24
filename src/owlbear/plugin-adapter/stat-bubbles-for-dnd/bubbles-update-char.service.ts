@@ -1,4 +1,4 @@
-import { Character } from "../../../components";
+import { Character } from "../../../model";
 
 import { BubblesMetadata } from "./bubbles-metadata.interface";
 

@@ -10,5 +10,6 @@
     "popover": "/DnD-Token-Manager/html/",
     "height": 600,
     "width": 400
-  }
+  },
+  "background_url": "/DnD-Token-Manager/html/background.html"
 }

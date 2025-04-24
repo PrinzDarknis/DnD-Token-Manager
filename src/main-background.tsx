@@ -1,4 +1,5 @@
 import { Owlbear, PROJEKT_IDENTIFIER } from "./owlbear";
+import { Log } from "./utils";
 
-console.log(`Setup Backgroundtasks: ${PROJEKT_IDENTIFIER}`);
+Log.info("Init", `Setup Backgroundtasks: ${PROJEKT_IDENTIFIER}`);
 Owlbear.setupBackground();

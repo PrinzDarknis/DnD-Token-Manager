@@ -1,3 +1,5 @@
+import { Component, ReactNode } from "react";
+
 import "./character.css";
 
 import trash from "/trash.svg";
@@ -8,28 +10,28 @@ import {
   CharacterStandartPropertiesComplex,
   IRessource,
 } from "../../../model";
+import { Log } from "../../../utils";
 
 import { RessourceComponent } from "../ressource";
 import { INewRessource, NewRessourceComponent } from "../ressource-new";
 
-export function CharacterComponent({
-  character,
-  gm,
-  onUpdate,
-  onDelete,
-  registerReset,
-}: {
+interface Props {
   character: Character;
   gm: boolean;
   onUpdate?: (character: Character) => void;
   onDelete?: () => void;
-  registerReset?: (resetFunction: () => void) => void;
-}) {
-  function update(character: Character) {
-    onUpdate?.(character);
+}
+
+export class CharacterComponent extends Component<Props> {
+  constructor(props: Props) {
+    super(props);
   }
 
-  function onImput(e: React.FormEvent) {
+  protected update(character: Character) {
+    this.props.onUpdate?.(character);
+  }
+
+  protected onImput(e: React.FormEvent) {
     // get Data
     const input = e.target as HTMLInputElement;
     const property = input.getAttribute(
@@ -38,144 +40,187 @@ export function CharacterComponent({
 
     // validate
     if (!property) {
-      console.error("Missing data-property on", input);
+      Log.error("CharacterComponent", "Missing data-property on", input);
       throw new Error("data-property was not defined");
     }
     if (!input.checkValidity() || !input.value) {
-      console.debug(`invalide input "${input.value}" on`, input);
+      Log.debug(
+        "CharacterComponent",
+        `invalide input "${input.value}" on`,
+        input
+      );
       return;
     }
 
     // set Data
-    character.setValue(property, input.value.trim());
-    update(character);
+    this.props.character.setValue(property, input.value.trim());
+    this.update(this.props.character);
 
     e.stopPropagation();
   }
 
-  function updateResource(
+  protected updateResource(
     resourcProperty: CharacterStandartPropertiesComplex,
     value: IRessource
   ): void {
-    character.setValue(resourcProperty, value);
-    update(character);
+    this.props.character.setValue(resourcProperty, value);
+    this.update(this.props.character);
   }
 
-  function deleteOtherResource(name: string): void {
-    character.deleteOtherResource(name);
-    update(character);
+  protected deleteOtherResource(name: string): void {
+    this.props.character.deleteOtherResource(name);
+    this.update(this.props.character);
   }
 
-  function newResource(data: INewRessource) {
-    updateResource(`otherResources.${data.name}`, data.resource);
+  protected newResource(data: INewRessource) {
+    this.updateResource(`otherResources.${data.name}`, data.resource);
   }
 
-  return (
-    <>
-      <div className="character">
-        <form
-          ref={(el) => {
-            registerReset?.(() => {
-              el?.reset();
-            });
-          }}
-          onInput={onImput}
-          onSubmit={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            return false;
-          }}
-        >
-          <div className="character-information">
-            <h1 className="name character-information-item">
-              <input
-                type="text"
-                defaultValue={character.name}
-                data-property="name"
-                pattern=".*\S+.*"
-                maxLength={15}
-              />
-              {gm && (
-                <button
-                  type="button"
-                  className="character-delete"
-                  onClick={() => onDelete?.()}
-                >
-                  <img
-                    src={trash}
-                    className="character-delete-icon"
-                    alt="Delete CHaracter"
-                  />
-                </button>
-              )}
-            </h1>
-            <span className="hp character-information-item">
-              <input
-                type="number"
-                defaultValue={character.hp}
-                data-property="hp"
-                min={0}
-              />
-              <span className="devider">/</span>
-              <input
-                type="number"
-                defaultValue={character.maxHp}
-                data-property="maxHp"
-                min={0}
-              />
-            </span>
-            <span className="ac character-information-item">
-              <label>
-                AC
+  render(): ReactNode {
+    console.debug("render Character", this.props.character);
+    return (
+      <>
+        <div className="character">
+          <form
+            onInput={(e) => this.onImput(e)}
+            onSubmit={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              return false;
+            }}
+          >
+            <div className="character-information">
+              <h1 className="name character-information-item">
                 <input
+                  type="text"
+                  key={`${this.props.character.id}-name`}
+                  defaultValue={this.props.character.name}
+                  data-property="name"
+                  pattern=".*\S+.*"
+                  maxLength={15}
+                />
+                {this.props.gm && (
+                  <button
+                    type="button"
+                    className="character-delete"
+                    onClick={() => this.props.onDelete?.()}
+                  >
+                    <img
+                      src={trash}
+                      className="character-delete-icon"
+                      alt="Delete CHaracter"
+                    />
+                  </button>
+                )}
+              </h1>
+              <span className="hp character-information-item">
+                <input
+                  ref={(e) => {
+                    this.hpInputElement = e;
+                  }}
                   type="number"
-                  defaultValue={character.ac}
-                  data-property="ac"
+                  key={`${this.props.character.id}-hp`}
+                  defaultValue={this.props.character.hp}
+                  data-property="hp"
                   min={0}
                 />
-              </label>
-            </span>
-          </div>
-          <div className="resource-list">
-            <h2>Spellslots</h2>
-            {Object.entries(character.spellslots).map(
-              ([slotNumber, ressource]) => (
-                <RessourceComponent
-                  key={`spellslots-${slotNumber}`}
-                  name={`Level ${slotNumber}`}
-                  gm={gm}
-                  ressource={ressource}
-                  onUpdate={(newRessource) =>
-                    updateResource(
-                      `spellslots.${slotNumber as "1"}`,
-                      newRessource
-                    )
-                  }
+                <span className="devider">/</span>
+                <input
+                  ref={(e) => {
+                    this.maxHpInputElement = e;
+                  }}
+                  type="number"
+                  key={`${this.props.character.id}-maxHp`}
+                  defaultValue={this.props.character.maxHp}
+                  data-property="maxHp"
+                  min={0}
                 />
-              )
-            )}
+              </span>
+              <span className="ac character-information-item">
+                <label>
+                  AC
+                  <input
+                    ref={(e) => {
+                      this.acInputElement = e;
+                    }}
+                    type="number"
+                    key={`${this.props.character.id}-ac`}
+                    defaultValue={this.props.character.ac}
+                    data-property="ac"
+                    min={0}
+                  />
+                </label>
+              </span>
+            </div>
+            <div className="resource-list">
+              <h2>Spellslots</h2>
+              {Object.entries(this.props.character.spellslots).map(
+                ([slotNumber, ressource]) => (
+                  <RessourceComponent
+                    key={`spellslots-${slotNumber}`}
+                    name={`Level ${slotNumber}`}
+                    gm={this.props.gm}
+                    ressource={ressource}
+                    onUpdate={(newRessource) =>
+                      this.updateResource(
+                        `spellslots.${slotNumber as "1"}`,
+                        newRessource
+                      )
+                    }
+                  />
+                )
+              )}
 
-            <h2>Other</h2>
-            {Object.entries(character.otherResources).map(
-              ([name, ressource]) => (
-                <RessourceComponent
-                  key={`spellslots-${name}`}
-                  name={name}
-                  gm={gm}
-                  deleteable
-                  ressource={ressource}
-                  onUpdate={(newRessource) =>
-                    updateResource(`otherResources.${name}`, newRessource)
-                  }
-                  onDelete={() => deleteOtherResource(name)}
-                />
-              )
-            )}
-          </div>
-        </form>
-        <br />
-        {gm && <NewRessourceComponent onCreate={(data) => newResource(data)} />}
-      </div>
-    </>
-  );
+              <h2>Other</h2>
+              {Object.entries(this.props.character.otherResources).map(
+                ([name, ressource]) => (
+                  <RessourceComponent
+                    key={`spellslots-${name}`}
+                    name={name}
+                    gm={this.props.gm}
+                    deleteable
+                    ressource={ressource}
+                    onUpdate={(newRessource) =>
+                      this.updateResource(
+                        `otherResources.${name}`,
+                        newRessource
+                      )
+                    }
+                    onDelete={() => this.deleteOtherResource(name)}
+                  />
+                )
+              )}
+            </div>
+          </form>
+          <br />
+          {this.props.gm && (
+            <NewRessourceComponent
+              onCreate={(data) => this.newResource(data)}
+            />
+          )}
+        </div>
+      </>
+    );
+  }
+
+  hpInputElement: HTMLInputElement | null = null;
+  maxHpInputElement: HTMLInputElement | null = null;
+  acInputElement: HTMLInputElement | null = null;
+  componentDidUpdate(): void {
+    if (
+      this.hpInputElement &&
+      this.hpInputElement.value != `${this.props.character.hp}`
+    )
+      this.hpInputElement.value = `${this.props.character.hp}`;
+    if (
+      this.maxHpInputElement &&
+      this.maxHpInputElement.value != `${this.props.character.maxHp}`
+    )
+      this.maxHpInputElement.value = `${this.props.character.maxHp}`;
+    if (
+      this.acInputElement &&
+      this.acInputElement.value != `${this.props.character.ac}`
+    )
+      this.acInputElement.value = `${this.props.character.ac}`;
+  }
 }

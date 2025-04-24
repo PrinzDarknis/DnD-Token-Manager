@@ -5,5 +5,5 @@ export interface BubblesMetadata {
   health?: number;
   "max health"?: number;
   "temporary health"?: number;
-  [METADATA_SYNC]?: string | Date;
+  [METADATA_SYNC]?: string;
 }

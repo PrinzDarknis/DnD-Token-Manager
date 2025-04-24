@@ -1,5 +1,7 @@
 import { Metadata } from "@owlbear-rodeo/sdk";
 
+import { Log } from "../../../utils";
+
 import { PROJEKT_IDENTIFIER } from "../../constants";
 
 import { BubblesMetadata } from "./bubbles-metadata.interface";
@@ -10,7 +12,7 @@ export function getMetadata(metadata: Metadata): BubblesMetadata | undefined {
 
   if (!bubbles) return undefined;
   if (typeof bubbles != "object") {
-    console.warn(
+    Log.warn(
       PROJEKT_IDENTIFIER,
       "BubblesAdapter",
       "getMetadata",

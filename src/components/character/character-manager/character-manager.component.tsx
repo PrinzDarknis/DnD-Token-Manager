@@ -17,8 +17,6 @@ interface State {
 }
 
 export class CharacterManager extends Component<Props, State> {
-  protected reset: (() => void) | undefined = undefined;
-
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -33,7 +31,6 @@ export class CharacterManager extends Component<Props, State> {
     Owlbear.character.loadAll().then(async (chars) => {
       await this.setChars(chars);
       await this.setSelected();
-      this.reset?.();
     });
     Owlbear.character.registerOnUpdate(
       // onUpdate
@@ -46,8 +43,9 @@ export class CharacterManager extends Component<Props, State> {
 
         // update
         await this.setChar(char);
-        this.reset?.();
       },
+      // onUpdateAll
+      undefined,
       // check delete
       async (valideIds) => {
         const invalideCharIds = Object.values(this.chars)
@@ -102,7 +100,6 @@ export class CharacterManager extends Component<Props, State> {
   // Handler
   protected changeSelection(id: string): void {
     this.setSelected(id);
-    this.reset?.();
     Owlbear.character.selectedIdTemp = id; // TODO delete
   }
 
@@ -164,7 +161,6 @@ export class CharacterManager extends Component<Props, State> {
               character={this.chars[this.selected]}
               onUpdate={(char) => this.updateChar(char)}
               onDelete={() => this.deleteChar()}
-              registerReset={(r) => (this.reset = r)}
             />
           )}
         </div>

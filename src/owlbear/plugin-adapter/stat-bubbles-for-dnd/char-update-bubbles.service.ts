@@ -1,6 +1,7 @@
 import { Item } from "@owlbear-rodeo/sdk";
 
-import { Character } from "../../../components";
+import { Character } from "../../../model";
+
 import { METADATA_SYNC } from "../../constants";
 
 import { getMetadata } from "./get-metadata.service";
@@ -25,7 +26,7 @@ export function charUpdateBubbles(char: Character, item: Item): boolean {
   bubbles["armor class"] = char.ac;
   bubbles.health = char.hp;
   bubbles["max health"] = char.maxHp;
-  bubbles[METADATA_SYNC] = char.lastStatUpdate;
+  bubbles[METADATA_SYNC] = char.lastStatUpdate.toString();
   item.metadata[METADATA_TAG] = bubbles;
   return true;
 }

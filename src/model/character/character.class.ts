@@ -1,4 +1,5 @@
-import { generateID } from "../../utils";
+import { generateID, Log } from "../../utils";
+
 import {
   ICharacter,
   ICharacterOtherResources,
@@ -92,7 +93,7 @@ export class Character implements ICharacter {
       try {
         char.setValue(property, getValue(data, property));
       } catch (e) {
-        console.debug(`Error while restoring character`, e);
+        Log.debug("Character", `Error while restoring character`, e);
       }
 
     if (typeof data.otherResources == "object")
@@ -102,7 +103,7 @@ export class Character implements ICharacter {
         try {
           char.setValue(`otherResources.${resourceName}`, resource);
         } catch (e) {
-          console.debug(`Error while restoring character`, e);
+          Log.debug("Character", `Error while restoring character`, e);
         }
 
     // restore lastUpdate (maybe changed by setter)
@@ -205,7 +206,7 @@ export class Character implements ICharacter {
   ];
 
   private static invalideTypeError(expected: string, actual: unknown): Error {
-    console.error(`Expected ${expected} but got `, actual);
+    Log.error("Character", `Expected ${expected} but got `, actual);
     return new Error(
       `Invalide Type. Expected: ${expected}, Got: ${typeof actual}`
     );

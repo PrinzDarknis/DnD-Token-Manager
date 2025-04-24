@@ -1,0 +1,14 @@
+.character-selector {
+  width: 80%;
+  margin: 0 10vw;
+  background: rgba(0, 0, 0, 0.4);
+  color: white;
+
+  option {
+    background-color: rgba(30, 34, 49, 0.75);
+    background-image: linear-gradient(
+      rgba(255, 255, 255, 0.08),
+      rgba(255, 255, 255, 0.08)
+    );
+  }
+}

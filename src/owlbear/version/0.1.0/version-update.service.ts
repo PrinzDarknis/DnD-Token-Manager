@@ -1,5 +1,7 @@
 import OBR, { Metadata } from "@owlbear-rodeo/sdk";
 
+import { Log } from "../../../utils";
+
 import { METADATA_CHARACTER } from "../../constants";
 
 import { OwlbearCharacter_0_1_0 } from "./owlbear-character";
@@ -14,7 +16,7 @@ export async function versionUpdata_0_1_0(ready: Promise<void>): Promise<void> {
 
     // transform
     if (oldChars.length > 0) {
-      console.debug(
+      Log.debug(
         "versionUpdata_0_1_0",
         "found old chars",
         "procede to update chars"

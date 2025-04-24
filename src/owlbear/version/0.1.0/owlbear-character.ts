@@ -1,6 +1,7 @@
 import OBR, { Metadata } from "@owlbear-rodeo/sdk";
 
 import { Character } from "../../../model";
+import { Log } from "../../../utils";
 
 import { METADATA_CHARACTERS } from "./constants";
 
@@ -45,7 +46,7 @@ export class OwlbearCharacter_0_1_0 {
         try {
           return Character.restore(char);
         } catch (e) {
-          console.error(e);
+          Log.exception(e);
           return undefined;
         }
       })

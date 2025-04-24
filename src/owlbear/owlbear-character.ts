@@ -1,9 +1,10 @@
 import OBR, { Item, Metadata } from "@owlbear-rodeo/sdk";
 
 import { Character, ICharacter } from "../model";
-import { debounce } from "../utils";
+import { debounce, Log } from "../utils";
 
 import {
+  HTML_PRODUCTION_PREFIX,
   METADATA_CHARACTER,
   METADATA_CHARACTER_TOKEN,
   METADATA_CHARACTER_TOKEN_ACTION,
@@ -30,8 +31,7 @@ export class OwlbearCharacter {
         if (char) chars[char.id] = char;
       }
     }
-    console.debug("OwlbearCharacter", "loadAll", "metadata", metadata);
-    console.debug("OwlbearCharacter", "loadAll", chars);
+    Log.debug("OwlbearCharacter", "loadAll", { chars, metadata });
     return chars;
   }
 
@@ -46,7 +46,7 @@ export class OwlbearCharacter {
   }
 
   protected async _save(char: Character): Promise<void> {
-    console.debug("SAVE", char);
+    Log.debug("OwlbearCharacter", "SAVE", char);
     await this.ready;
 
     // save
@@ -68,26 +68,29 @@ export class OwlbearCharacter {
   }
 
   async registerOnUpdate(
-    onUpdate: (char: Character) => void | Promise<void>,
-    onDeleteCheck: (valideIds: string[]) => void | Promise<void>
+    onUpdate?: (char: Character) => void | Promise<void>,
+    onUpdateAll?: (chars: Character[]) => void | Promise<void>,
+    onDeleteCheck?: (valideIds: string[]) => void | Promise<void>
   ) {
     await this.ready;
     OBR.room.onMetadataChange(async (metadata) => {
-      const valideIds: string[] = [];
+      const valideChars: Character[] = [];
 
       // update chars
       for (const [metakey, metaentry] of Object.entries(metadata)) {
         if (metakey.includes(METADATA_CHARACTER(""))) {
           const char = OwlbearCharacter.metadataToChar(metaentry);
           if (char) {
-            await onUpdate(char);
-            valideIds.push(char.id);
+            await onUpdate?.(char);
+            valideChars.push(char);
           }
         }
       }
 
+      await onUpdateAll?.(valideChars);
+
       // check delete
-      await onDeleteCheck(valideIds);
+      await onDeleteCheck?.(valideChars.map((char) => char.id));
     });
   }
 
@@ -95,25 +98,29 @@ export class OwlbearCharacter {
     try {
       return Character.restore(metadata as ICharacter);
     } catch (e) {
-      console.error(e);
+      Log.exception(e);
       return undefined;
     }
   }
 
   // Token-Management
   public selectedIdTemp: string = "";
-  setupTokenManagement(): void {
-    this.setupCharacterAction();
+  async setupTokenManagement(): Promise<void> {
+    await this.ready;
+    await this.setupCharacterAction();
+    await OBR.scene.isReady();
     OBR.scene.items.onChange((items) => this.onTokenUpdate(items));
   }
 
-  protected setupCharacterAction(): void {
+  protected async setupCharacterAction(): Promise<void> {
+    await this.ready;
     const devMode = import.meta.env.DEV ?? false;
+    const htmlPrefix = devMode ? "" : HTML_PRODUCTION_PREFIX;
     OBR.contextMenu.create({
       id: METADATA_CHARACTER_TOKEN_ACTION,
       icons: [
         {
-          icon: devMode ? "/character.svg" : "/DnD-Token-Manager/character.svg",
+          icon: `${htmlPrefix}/character.svg`,
           label: "Set Current Character",
           filter: {
             every: [{ key: "layer", value: "CHARACTER" }],
@@ -121,30 +128,27 @@ export class OwlbearCharacter {
           },
         },
       ],
-      onClick: async (context) => {
-        if (this.selectedIdTemp) {
-          await OBR.scene.items.updateItems(context.items, (items) => {
-            for (const item of items) {
-              item.metadata[METADATA_CHARACTER_TOKEN] = this.selectedIdTemp;
-            }
-          });
-          const char = await this.loadOne(this.selectedIdTemp);
-          if (char) await this.updateToken(char);
-        }
+      embed: {
+        url: `${htmlPrefix}/html/context-menu/token-set-character.html`,
+        height: 50,
       },
     });
   }
 
   protected async onTokenUpdate(items: Item[]): Promise<void> {
+    await this.ready;
     for (const item of items) {
       // is relevant
       const charId = item.metadata[METADATA_CHARACTER_TOKEN];
       if (!charId) return;
       if (typeof charId != "string") {
-        console.warn(`Unkown Value in ${METADATA_CHARACTER_TOKEN}`, charId);
+        Log.warn(
+          "OwlbearCharacter:onTokenUpdate",
+          `Unkown Value in ${METADATA_CHARACTER_TOKEN}`,
+          charId
+        );
         return;
       }
-      console.debug("update on token for char", charId);
 
       // get Char
       const char = await this.loadOne(charId);
@@ -154,11 +158,16 @@ export class OwlbearCharacter {
       const bubbles = StatBubblesForDnD.getMetadata(item.metadata);
 
       // update
-      if (StatBubblesForDnD.bubblesUpdateChar(bubbles, char)) this.save(char);
+      if (StatBubblesForDnD.bubblesUpdateChar(bubbles, char)) {
+        Log.debug("OwlbearCharacter", "update on token for char", charId);
+        this.save(char);
+      }
     }
   }
 
   protected async updateToken(char: Character): Promise<void> {
+    await this.ready;
+    await OBR.scene.isReady();
     await OBR.scene.items.updateItems(
       (item) => item.layer == "CHARACTER",
       (items) => {
@@ -169,5 +178,43 @@ export class OwlbearCharacter {
         }
       }
     );
+  }
+
+  async getSelectedTokenCharacterId(): Promise<string | undefined> {
+    await this.ready;
+
+    // get Selected Items
+    const selection = await OBR.player.getSelection();
+    if (!selection) return undefined;
+    await OBR.scene.isReady();
+    const items = await OBR.scene.items.getItems(selection);
+
+    // get ID
+    let id: string | undefined | false = false;
+    for (const item of items) {
+      const currentId: string | undefined = item.metadata[
+        METADATA_CHARACTER_TOKEN
+      ] as string;
+      if (id != currentId && id !== false) return undefined; // miss match in IDs
+      id = currentId;
+    }
+
+    return id == false ? undefined : id;
+  }
+
+  async setSelectedTokenCharacterId(id: string | undefined): Promise<void> {
+    if (!id) id = undefined; // empty string to undefined
+    await this.ready;
+
+    // get Selected Items
+    const selection = await OBR.player.getSelection();
+    if (!selection) return;
+
+    // update
+    await OBR.scene.items.updateItems(selection, (items) => {
+      for (const item of items) {
+        item.metadata[METADATA_CHARACTER_TOKEN] = id;
+      }
+    });
   }
 }

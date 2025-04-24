@@ -1,4 +1,7 @@
 import OBR from "@owlbear-rodeo/sdk";
+
+import { Log } from "../utils";
+
 import { OwlbearCharacter } from "./owlbear-character";
 import { versionUpdata } from "./version";
 
@@ -14,7 +17,7 @@ export class Owlbear {
         try {
           await versionUpdata(Promise.resolve());
         } catch (error) {
-          console.error("Error while updation Version", error);
+          Log.error("Owlbear", "Error while updation Version", error);
         }
 
         // fin
@@ -32,6 +35,6 @@ export class Owlbear {
 
   async setupBackground(): Promise<void> {
     await this.ready;
-    this.character.setupTokenManagement();
+    await this.character.setupTokenManagement();
   }
 }

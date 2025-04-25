@@ -2,11 +2,13 @@ import OBR from "@owlbear-rodeo/sdk";
 
 import { Log } from "../utils";
 
-import { OwlbearCharacter } from "./owlbear-character";
 import { versionUpdata } from "./version";
+import { OwlbearCharacter } from "./owlbear-character";
+import { OwlbearSettings } from "./owlbear-settings";
 
 export class Owlbear {
   public readonly character: OwlbearCharacter;
+  public readonly settings: OwlbearSettings;
 
   protected readonly ready: Promise<void>;
 
@@ -25,6 +27,7 @@ export class Owlbear {
       });
     });
     this.character = new OwlbearCharacter(this.ready);
+    this.settings = new OwlbearSettings(this.ready);
   }
 
   async isGM(): Promise<boolean> {

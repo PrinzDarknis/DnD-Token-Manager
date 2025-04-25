@@ -3,6 +3,7 @@ import { Item } from "@owlbear-rodeo/sdk";
 import { Character } from "../../../model";
 
 import { METADATA_SYNC } from "../../constants";
+import { Owlbear } from "../..";
 
 import { getMetadata } from "./get-metadata.service";
 import { METADATA_TAG } from "./constants";
@@ -14,6 +15,8 @@ import { METADATA_TAG } from "./constants";
  * @returns true if changes were done, false otherwise
  */
 export function charUpdateBubbles(char: Character, item: Item): boolean {
+  if (!Owlbear.settings.get("plugin-bubbles")) return false;
+
   const bubbles = getMetadata(item.metadata) ?? {};
 
   // should update

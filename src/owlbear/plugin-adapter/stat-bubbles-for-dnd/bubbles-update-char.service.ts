@@ -1,5 +1,7 @@
 import { Character } from "../../../model";
 
+import { Owlbear } from "../..";
+
 import { BubblesMetadata } from "./bubbles-metadata.interface";
 
 /**
@@ -12,7 +14,8 @@ export function bubblesUpdateChar(
   bubbles: BubblesMetadata | undefined,
   char: Character
 ) {
-  // should update
+  if (!Owlbear.settings.get("plugin-bubbles")) return false;
+
   let shouldUpdate = false;
 
   if (

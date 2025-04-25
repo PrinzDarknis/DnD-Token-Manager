@@ -1,0 +1,16 @@
+.settings-controller {
+  width: calc(100vw - 2 * 1rem);
+  padding: 0 1rem;
+
+  fieldset {
+    border: 4px solid rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    border-collapse: collapse;
+  }
+
+  .setting-bool {
+    label {
+      margin-left: 1rem;
+    }
+  }
+}

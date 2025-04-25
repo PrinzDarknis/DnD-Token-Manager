@@ -255,7 +255,7 @@ export class Character implements ICharacter {
     if (!value) return new Date();
     if (typeof value == "string") {
       const date = new Date(value);
-      if (isNaN(date.getDate()))
+      if (isNaN(date.getTime()))
         throw Character.invalideTypeError("Date", value);
       return date;
     }

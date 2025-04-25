@@ -25,7 +25,7 @@ export function charUpdateBubbles(char: Character, item: Item): boolean {
 
   bubbles["armor class"] = char.ac;
   bubbles.health = char.hp;
-  bubbles["max health"] = char.maxHp;
+  bubbles["max health"] = char.maxHp + char.maxHpMod;
   bubbles[METADATA_SYNC] = char.lastStatUpdate.toString();
   item.metadata[METADATA_TAG] = bubbles;
   return true;

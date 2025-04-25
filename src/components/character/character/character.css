@@ -43,22 +43,36 @@
     }
   }
 
-  .hp {
-    background: red;
-    border: 4px solid darkred;
+  .stats {
+    display: flex;
+  }
+
+  .spacer {
+    flex-grow: 1;
+  }
+
+  .round-box {
+    border: 4px solid;
     border-radius: 1rem;
 
     padding: 0 calc(1 * var(--width-base));
+  }
+
+  .hp {
+    background: red;
+    border-color: darkred;
 
     input {
-      width: calc(3.5 * var(--width-base));
+      width: 2rem;
+      &:hover {
+        width: 3rem;
+      }
     }
   }
 
   .ac {
     background: blue;
-    border: 4px solid darkblue;
-    border-radius: 1rem;
+    border-color: darkblue;
 
     padding: 0 0 0 calc(1 * var(--width-base));
 

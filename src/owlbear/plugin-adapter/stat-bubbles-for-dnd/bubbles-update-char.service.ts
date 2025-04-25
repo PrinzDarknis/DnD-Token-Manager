@@ -30,10 +30,10 @@ export function bubblesUpdateChar(
 
   if (
     typeof bubbles?.["max health"] == "number" &&
-    bubbles["max health"] != char.maxHp
+    bubbles["max health"] != char.maxHp + char.maxHpMod
   ) {
     shouldUpdate = true;
-    char.setValue("maxHp", bubbles["max health"]);
+    char.setValue("maxHpMod", bubbles["max health"] - char.maxHp);
   }
 
   return shouldUpdate;

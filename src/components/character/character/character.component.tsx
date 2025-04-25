@@ -77,7 +77,7 @@ export class CharacterComponent extends Component<Props> {
   }
 
   render(): ReactNode {
-    console.debug("render Character", this.props.character);
+    // console.debug("render Character", this.props.character);
     return (
       <>
         <div className="character">
@@ -113,43 +113,64 @@ export class CharacterComponent extends Component<Props> {
                   </button>
                 )}
               </h1>
-              <span className="hp character-information-item">
-                <input
-                  ref={(e) => {
-                    this.hpInputElement = e;
-                  }}
-                  type="number"
-                  key={`${this.props.character.id}-hp`}
-                  defaultValue={this.props.character.hp}
-                  data-property="hp"
-                  min={0}
-                />
-                <span className="devider">/</span>
-                <input
-                  ref={(e) => {
-                    this.maxHpInputElement = e;
-                  }}
-                  type="number"
-                  key={`${this.props.character.id}-maxHp`}
-                  defaultValue={this.props.character.maxHp}
-                  data-property="maxHp"
-                  min={0}
-                />
-              </span>
-              <span className="ac character-information-item">
-                <label>
-                  AC
+              <span className="stats character-information-item">
+                <span className="hp round-box">
                   <input
                     ref={(e) => {
-                      this.acInputElement = e;
+                      this.hpInputElement = e;
                     }}
                     type="number"
-                    key={`${this.props.character.id}-ac`}
-                    defaultValue={this.props.character.ac}
-                    data-property="ac"
+                    className="input-number-hover-buttons"
+                    key={`${this.props.character.id}-hp`}
+                    defaultValue={this.props.character.hp}
+                    data-property="hp"
                     min={0}
+                    max={999}
                   />
-                </label>
+                  <span className="devider">/</span>
+                  <input
+                    ref={(e) => {
+                      this.maxHpInputElement = e;
+                    }}
+                    type="number"
+                    className="input-number-hover-buttons"
+                    key={`${this.props.character.id}-maxHp`}
+                    defaultValue={this.props.character.maxHp}
+                    data-property="maxHp"
+                    min={0}
+                    max={999}
+                  />
+                  <span className="devider">+</span>
+                  <input
+                    ref={(e) => {
+                      this.maxHpModInputElement = e;
+                    }}
+                    type="number"
+                    className="input-number-hover-buttons"
+                    key={`${this.props.character.id}-maxHpMod`}
+                    defaultValue={this.props.character.maxHpMod}
+                    data-property="maxHpMod"
+                    max={999}
+                  />
+                </span>
+                <span className="spacer"></span>
+                <span className="ac round-box">
+                  <label>
+                    AC
+                    <input
+                      ref={(e) => {
+                        this.acInputElement = e;
+                      }}
+                      type="number"
+                      className="input-number-hover-buttons"
+                      key={`${this.props.character.id}-ac`}
+                      defaultValue={this.props.character.ac}
+                      data-property="ac"
+                      min={0}
+                      max={99}
+                    />
+                  </label>
+                </span>
               </span>
             </div>
             <div className="resource-list">
@@ -205,18 +226,28 @@ export class CharacterComponent extends Component<Props> {
 
   hpInputElement: HTMLInputElement | null = null;
   maxHpInputElement: HTMLInputElement | null = null;
+  maxHpModInputElement: HTMLInputElement | null = null;
   acInputElement: HTMLInputElement | null = null;
   componentDidUpdate(): void {
+    // hp
     if (
       this.hpInputElement &&
       this.hpInputElement.value != `${this.props.character.hp}`
     )
       this.hpInputElement.value = `${this.props.character.hp}`;
+    // maxHp
     if (
       this.maxHpInputElement &&
       this.maxHpInputElement.value != `${this.props.character.maxHp}`
     )
       this.maxHpInputElement.value = `${this.props.character.maxHp}`;
+    //maxHpMod
+    if (
+      this.maxHpModInputElement &&
+      this.maxHpModInputElement.value != `${this.props.character.maxHpMod}`
+    )
+      this.maxHpModInputElement.value = `${this.props.character.maxHpMod}`;
+    // ac
     if (
       this.acInputElement &&
       this.acInputElement.value != `${this.props.character.ac}`

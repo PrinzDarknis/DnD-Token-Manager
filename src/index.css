@@ -38,3 +38,17 @@ button {
     color: darkred;
   }
 }
+
+.input-number-hover-buttons {
+  -moz-appearance: textfield;
+  &:hover {
+    -moz-appearance: auto;
+  }
+
+  &:hover::-webkit-inner-spin-button {
+    -webkit-appearance: auto !important;
+  }
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
+}

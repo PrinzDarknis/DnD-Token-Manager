@@ -5,6 +5,7 @@ export interface ICharacter {
   name: string;
   hp: number;
   maxHp: number;
+  maxHpMod: number;
   ac: number;
   readonly spellslots: ICharacterSpellslots;
   readonly otherResources: ICharacterOtherResources;

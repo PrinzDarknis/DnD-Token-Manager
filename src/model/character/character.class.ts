@@ -12,6 +12,7 @@ export class Character implements ICharacter {
   protected _name: string;
   protected _hp: number;
   protected _maxHp: number;
+  protected _maxHpMod: number;
   protected _ac: number;
   protected _spellslots: ICharacterSpellslots;
   protected _otherResources: ICharacterOtherResources;
@@ -30,6 +31,9 @@ export class Character implements ICharacter {
   }
   public get maxHp(): number {
     return this._maxHp;
+  }
+  public get maxHpMod(): number {
+    return this._maxHpMod;
   }
   public get ac(): number {
     return this._ac;
@@ -54,6 +58,7 @@ export class Character implements ICharacter {
     this._name = "Name";
     this._id = id;
     this._maxHp = 0;
+    this._maxHpMod = 0;
     this._hp = 0;
     this._ac = 0;
     this._spellslots = {
@@ -130,6 +135,11 @@ export class Character implements ICharacter {
         this._lastUpdate = new Date();
         this._lastStatUpdate = new Date();
         return;
+      case "maxHpMod":
+        this._maxHpMod = Character.parseNumber(value);
+        this._lastUpdate = new Date();
+        this._lastStatUpdate = new Date();
+        return;
       case "ac":
         this._ac = Character.parseNumber(value);
         this._lastUpdate = new Date();
@@ -179,6 +189,7 @@ export class Character implements ICharacter {
       name: this.name,
       hp: this.hp,
       maxHp: this.maxHp,
+      maxHpMod: this.maxHpMod,
       ac: this.ac,
       spellslots: this.spellslots,
       otherResources: this.otherResources,
@@ -192,6 +203,7 @@ export class Character implements ICharacter {
     "name",
     "hp",
     "maxHp",
+    "maxHpMod",
     "ac",
     "spellslots.1",
     "spellslots.2",
@@ -261,6 +273,7 @@ export type CharacterStandartPropertiesSimple =
   | "name"
   | "hp"
   | "maxHp"
+  | "maxHpMod"
   | "ac"
   | "lastUpdate"
   | "lastStatUpdate";

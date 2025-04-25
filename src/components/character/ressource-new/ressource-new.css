@@ -1,4 +1,6 @@
 .new-ressource {
+  justify-self: center;
+
   > * {
     margin: 0 0.5rem;
     height: 1.5rem;

@@ -213,7 +213,6 @@ export class CharacterComponent extends Component<Props> {
               )}
             </div>
           </form>
-          <br />
           {this.props.gm && (
             <NewRessourceComponent
               onCreate={(data) => this.newResource(data)}

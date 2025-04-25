@@ -8,6 +8,18 @@
     border-collapse: collapse;
   }
 
+  .setting-import-export {
+    display: flex;
+
+    .spacer {
+      flex-grow: 1;
+    }
+
+    button {
+      width: 7rem;
+    }
+  }
+
   .setting-bool {
     label {
       margin-left: 1rem;

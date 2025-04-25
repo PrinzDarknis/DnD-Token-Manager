@@ -103,6 +103,29 @@ export class OwlbearCharacter {
     }
   }
 
+  async overwriteAll(chars: Character[]): Promise<void> {
+    await this.ready;
+    const metadata = await OBR.room.getMetadata();
+    const update: Partial<Metadata> = {};
+
+    // delete old
+    for (const [metakey] of Object.entries(metadata)) {
+      if (metakey.includes(METADATA_CHARACTER(""))) {
+        update[metakey] = undefined;
+      }
+    }
+
+    // insert new
+    for (const char of chars) {
+      char.setValue("hp", char.hp); // update last Edit times
+      update[METADATA_CHARACTER(char.id)] = char.toSimpleObject();
+    }
+
+    // save
+    await OBR.room.setMetadata(update);
+    await this.updateTokenAll(chars);
+  }
+
   // Token-Management
   public selectedIdTemp: string = "";
   async setupTokenManagement(): Promise<void> {
@@ -175,6 +198,23 @@ export class OwlbearCharacter {
           if (item.metadata[METADATA_CHARACTER_TOKEN] == char.id) {
             StatBubblesForDnD.charUpdateBubbles(char, item);
           }
+        }
+      }
+    );
+  }
+
+  protected async updateTokenAll(chars: Character[]): Promise<void> {
+    await this.ready;
+    await OBR.scene.isReady();
+    await OBR.scene.items.updateItems(
+      (item) => item.layer == "CHARACTER",
+      (items) => {
+        for (const item of items) {
+          const tokenCharId = item.metadata[METADATA_CHARACTER_TOKEN];
+          if (!tokenCharId) continue;
+          const char = chars.find((char) => char.id == tokenCharId);
+          if (!char) continue;
+          StatBubblesForDnD.charUpdateBubbles(char, item);
         }
       }
     );

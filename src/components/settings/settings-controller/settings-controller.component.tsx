@@ -1,14 +1,17 @@
-import { Component, ReactNode } from "react";
+import React, { Component, ReactNode } from "react";
 
 import "./settings-controller.css";
 
 import { Owlbear } from "../../../owlbear";
+import { downloadObjectAsJson, Log } from "../../../utils";
 import {
   DefaultGlobalSettings,
   GlobalSettings,
   PersonalSettings,
   DefaultPersonalSettings,
   PersonalSettingsController,
+  ICharacter,
+  Character,
 } from "../../../model";
 
 type Props = object;
@@ -85,6 +88,47 @@ export class SettingsController extends Component<Props, State> {
   }
 
   // handler
+  async export(): Promise<void> {
+    const chars = await Owlbear.character.loadAll();
+    const exportData = Object.values(chars).map((char) =>
+      char.toSimpleObject()
+    );
+    downloadObjectAsJson(
+      exportData,
+      `character-${new Date().toISOString().split("T")[0]}`
+    );
+  }
+
+  async import(e: React.ChangeEvent<HTMLInputElement>): Promise<void> {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const rawData: ICharacter[] = JSON.parse(reader.result as string);
+        if (!Array.isArray(rawData))
+          throw new Error(
+            `JSON content is not an array, got ${typeof rawData}`
+          );
+        const chars = rawData
+          .map((charData) => Character.restore(charData))
+          .filter((char) => !!char);
+        Owlbear.character.overwriteAll(chars);
+      } catch (error) {
+        Log.error(
+          "SettingsController:import",
+          "Error while reading import data",
+          error
+        );
+      }
+      // reset input
+      e.target.value = "";
+    };
+    reader.readAsText(file);
+  }
+
+  protected importFileElement: HTMLInputElement | null = null;
 
   // render
   render(): ReactNode {
@@ -101,6 +145,39 @@ export class SettingsController extends Component<Props, State> {
               <legend>
                 <h2>Global Settings</h2>
               </legend>
+              <fieldset>
+                <legend>
+                  <h3>Character</h3>
+                </legend>
+                <div className="setting setting-import-export">
+                  <span className="spacer"></span>
+                  <button
+                    className="char-import"
+                    type="button"
+                    onClick={() => this.importFileElement?.click()}
+                  >
+                    Import
+                  </button>
+                  <span className="spacer"></span>
+                  <button
+                    className="char-export"
+                    type="button"
+                    onClick={() => this.export()}
+                  >
+                    Export
+                  </button>
+                  <input
+                    ref={(el) => {
+                      this.importFileElement = el;
+                    }}
+                    id="file-upload"
+                    type="file"
+                    onChange={(e) => this.import(e)}
+                    hidden
+                  />
+                  <span className="spacer"></span>
+                </div>
+              </fieldset>
               <fieldset>
                 <legend>
                   <h3>Plugins</h3>

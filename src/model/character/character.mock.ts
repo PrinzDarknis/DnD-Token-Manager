@@ -5,6 +5,7 @@ export const MOCK_CHARS: ICharacter[] = [
     name: "Max",
     id: "MaxID",
     maxHp: 10,
+    maxHpMod: 0,
     hp: 5,
     ac: 15,
     spellslots: {
@@ -28,6 +29,7 @@ export const MOCK_CHARS: ICharacter[] = [
     name: "Daja",
     id: "DajaID",
     maxHp: 10,
+    maxHpMod: 0,
     hp: 5,
     ac: 15,
     spellslots: {

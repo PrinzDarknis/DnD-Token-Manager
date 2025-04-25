@@ -83,5 +83,14 @@
 
   .resource-list {
     overflow-y: auto;
+
+    h2 {
+      margin-top: 1rem;
+      margin-bottom: 0.2rem;
+
+      &:first-child {
+        margin-top: 0;
+      }
+    }
   }
 }

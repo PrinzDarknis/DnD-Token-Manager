@@ -1,6 +1,6 @@
 import { Component, ReactNode } from "react";
 
-import "./character-selector.css";
+import "./character-select.css";
 
 import { Owlbear } from "../../../owlbear";
 import { Character } from "../../../model";
@@ -11,7 +11,7 @@ interface State {
   selected: string | undefined;
 }
 
-export class CharacterSelector extends Component<Props, State> {
+export class CharacterSelect extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -68,9 +68,9 @@ export class CharacterSelector extends Component<Props, State> {
     return (
       <>
         <select
-          name="character-selector"
-          id="character-selector"
-          className="character-selector"
+          name="character-select"
+          id="character-select"
+          className="character-select"
           key={randKey}
           defaultValue={this.selected}
           onChange={(e) => this.onChange(e)}

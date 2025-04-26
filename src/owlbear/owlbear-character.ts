@@ -163,19 +163,19 @@ export class OwlbearCharacter {
     for (const item of items) {
       // is relevant
       const charId = item.metadata[METADATA_CHARACTER_TOKEN];
-      if (!charId) return;
+      if (!charId) continue;
       if (typeof charId != "string") {
         Log.warn(
           "OwlbearCharacter:onTokenUpdate",
           `Unkown Value in ${METADATA_CHARACTER_TOKEN}`,
           charId
         );
-        return;
+        continue;
       }
 
       // get Char
       const char = await this.loadOne(charId);
-      if (!char) return;
+      if (!char) continue;
 
       // get Bubbles
       const bubbles = StatBubblesForDnD.getMetadata(item.metadata);

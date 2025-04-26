@@ -77,7 +77,6 @@ export class CharacterComponent extends Component<Props> {
   }
 
   render(): ReactNode {
-    // console.debug("render Character", this.props.character);
     return (
       <>
         <div className="character">

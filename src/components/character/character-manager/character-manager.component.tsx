@@ -43,7 +43,6 @@ export class CharacterManager extends Component<Props, State> {
 
         // update
         await this.setChar(char);
-        console.debug("update char", char);
       },
       // onUpdateAll
       undefined,

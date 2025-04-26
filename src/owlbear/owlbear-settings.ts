@@ -3,7 +3,7 @@ import OBR, { Metadata } from "@owlbear-rodeo/sdk";
 import { GlobalSettings, DefaultGlobalSettings } from "../model";
 import { Log } from "../utils";
 
-import { METADATA_SETTINGS } from "./constants";
+import { DIR_SOUND, METADATA_BROADCAST, METADATA_SETTINGS } from "./constants";
 
 export class OwlbearSettings {
   protected readonly ready: Promise<void>;
@@ -13,6 +13,7 @@ export class OwlbearSettings {
     this.registerOnUpdate((settings) => {
       this._settings = settings;
     });
+    this.listenBauMessage();
   }
 
   protected _settings: GlobalSettings = DefaultGlobalSettings;
@@ -57,5 +58,41 @@ export class OwlbearSettings {
     } catch {
       return DefaultGlobalSettings;
     }
+  }
+
+  // Bau Bau
+  private async listenBauMessage(): Promise<void> {
+    await this.ready;
+    console.debug("listen");
+    OBR.broadcast.onMessage(
+      `${METADATA_BROADCAST}/bau`,
+      async (raw: unknown) => {
+        const message: { data: string; connectionId: string } = raw as {
+          data: string;
+          connectionId: string;
+        };
+        const bau = message.data;
+        const file =
+          bau == "Fuwawa"
+            ? "Fuwawa  Bau.mp3"
+            : bau == "Mococo"
+            ? "Mococo Bau.mp3"
+            : undefined;
+        if (!file) return;
+        const sound = new Audio(`${DIR_SOUND}/${file}`);
+        await sound.play();
+        console.debug("got Bau", bau);
+      }
+    );
+  }
+
+  async sendBau(): Promise<void> {
+    await this.ready;
+    const whichBau = Math.round(Math.random() * 1000) % 2;
+    console.debug("send Bau", whichBau);
+    const bau = whichBau == 1 ? "Fuwawa" : "Mococo";
+    await OBR.broadcast.sendMessage(`${METADATA_BROADCAST}/bau`, bau, {
+      destination: "ALL",
+    });
   }
 }

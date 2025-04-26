@@ -1,6 +1,7 @@
 import React, { Component, ReactNode } from "react";
 
 import "./settings-controller.css";
+import bauImg from "/bau.svg";
 
 import { Owlbear } from "../../../owlbear";
 import { downloadObjectAsJson, Log } from "../../../utils";
@@ -138,6 +139,13 @@ export class SettingsController extends Component<Props, State> {
           <fieldset className="personal-settings settings-area">
             <legend>
               <h2>Personal Settings</h2>
+              <button
+                type="button"
+                className="bau"
+                onClick={() => Owlbear.settings.sendBau()}
+              >
+                <img src={bauImg} className="bau-icon" alt="Bau Bau" />
+              </button>
             </legend>
           </fieldset>
           {this.gm && (

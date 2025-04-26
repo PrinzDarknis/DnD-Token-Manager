@@ -17,6 +17,12 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, "html", "index.html"),
         background: resolve(__dirname, "html", "background.html"),
+        "context-menu-token-set-character": resolve(
+          __dirname,
+          "html",
+          "context-menu",
+          "token-set-character.html"
+        ),
       },
     },
   },

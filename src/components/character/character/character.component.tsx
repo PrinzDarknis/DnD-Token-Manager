@@ -3,6 +3,8 @@ import { Component, ReactNode } from "react";
 import "./character.css";
 
 import trash from "/trash.svg";
+import shortRestImg from "/icons/short-rest.svg";
+import longRestImg from "/icons/long-rest.svg";
 
 import {
   Character,
@@ -19,7 +21,7 @@ import { ImgButton } from "../../ui";
 
 interface Props {
   character: Character;
-  gm: boolean;
+  edit: boolean;
   onUpdate?: (character: Character) => void;
   onDelete?: () => void;
 }
@@ -78,6 +80,20 @@ export class CharacterComponent extends Component<Props> {
     this.updateResource(`otherResources.${data.name}`, data.resource);
   }
 
+  shortRest(): void {
+    if (!confirm("Short Rest?")) return;
+
+    this.props.character.shortRest();
+    this.update(this.props.character);
+  }
+
+  longRest(): void {
+    if (!confirm("long Rest?")) return;
+
+    this.props.character.longRest();
+    this.update(this.props.character);
+  }
+
   render(): ReactNode {
     return (
       <>
@@ -100,15 +116,25 @@ export class CharacterComponent extends Component<Props> {
                   pattern=".*\S+.*"
                   maxLength={15}
                 />
-                {this.props.gm && (
-                  <span className="character-delete">
+                <span className="character-actions">
+                  <ImgButton
+                    img={shortRestImg}
+                    alt="Short Rest"
+                    onClick={() => this.shortRest()}
+                  />
+                  <ImgButton
+                    img={longRestImg}
+                    alt="Long Rest"
+                    onClick={() => this.longRest()}
+                  />
+                  {this.props.edit && (
                     <ImgButton
                       img={trash}
                       alt="Delete Character"
                       onClick={() => this.props.onDelete?.()}
                     />
-                  </span>
-                )}
+                  )}
+                </span>
               </h1>
               <span className="stats character-information-item">
                 <span className="hp round-box">
@@ -173,7 +199,7 @@ export class CharacterComponent extends Component<Props> {
             <div className="hit-dice-area">
               <HitDice
                 character={this.props.character}
-                gm={this.props.gm}
+                edit={this.props.edit}
                 onUpdate={(char) => this.update(char)}
               />
             </div>
@@ -184,7 +210,7 @@ export class CharacterComponent extends Component<Props> {
                   <RessourceComponent
                     key={`spellslots-${slotNumber}`}
                     name={`Level ${slotNumber}`}
-                    gm={this.props.gm}
+                    edit={this.props.edit}
                     ressource={ressource}
                     onUpdate={(newRessource) =>
                       this.updateResource(
@@ -202,7 +228,7 @@ export class CharacterComponent extends Component<Props> {
                   <RessourceComponent
                     key={`spellslots-${name}`}
                     name={name}
-                    gm={this.props.gm}
+                    edit={this.props.edit}
                     deleteable
                     ressource={ressource}
                     onUpdate={(newRessource) =>
@@ -217,7 +243,7 @@ export class CharacterComponent extends Component<Props> {
               )}
             </div>
           </form>
-          {this.props.gm && (
+          {this.props.edit && (
             <NewRessourceComponent
               onCreate={(data) => this.newResource(data)}
             />

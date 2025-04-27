@@ -127,7 +127,6 @@ export class OwlbearCharacter {
   }
 
   // Token-Management
-  public selectedIdTemp: string = "";
   async setupTokenManagement(): Promise<void> {
     await this.ready;
     await this.setupCharacterAction();

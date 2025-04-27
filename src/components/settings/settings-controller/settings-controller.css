@@ -1,7 +1,4 @@
 .settings-controller {
-  width: calc(100vw - 2 * 1rem);
-  padding: 0 1rem;
-
   .setting-import-export {
     display: flex;
 

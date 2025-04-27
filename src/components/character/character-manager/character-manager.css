@@ -1,7 +1,18 @@
 .character-manager {
-  margin: 1rem 1.8rem;
+  margin: 1rem 0.8rem;
+
+  .header {
+    display: flex;
+
+    .img-button {
+      background: transparent;
+      align-self: center;
+      flex-shrink: 0;
+    }
+  }
 
   .character-selector {
+    flex-grow: 1;
     button {
       margin: 0.1rem;
     }

@@ -2,8 +2,12 @@ import { Component, ReactNode } from "react";
 
 import "./character-manager.css";
 
+import editImg from "/icons/edit.svg";
+
 import { Owlbear } from "../../../owlbear";
 import { Character } from "../../../model";
+
+import { ImgButton } from "../../ui";
 
 import { CharacterComponent } from "../character";
 
@@ -14,6 +18,7 @@ interface State {
   };
   selected: string;
   gm: boolean;
+  edit: boolean;
 }
 
 export class CharacterManager extends Component<Props, State> {
@@ -23,16 +28,16 @@ export class CharacterManager extends Component<Props, State> {
       chars: {},
       selected: "",
       gm: false,
+      edit: false,
     };
   }
 
-  componentDidMount(): void {
-    Owlbear.isGM().then((isGM) => this.setGM(isGM));
-    Owlbear.character.loadAll().then(async (chars) => {
-      await this.setChars(chars);
-      await this.setSelected();
-    });
-    Owlbear.character.registerOnUpdate(
+  async componentDidMount(): Promise<void> {
+    await this.setGM(await Owlbear.isGM());
+    const chars = await Owlbear.character.loadAll();
+    await this.setChars(chars);
+    await this.setSelected();
+    await Owlbear.character.registerOnUpdate(
       // onUpdate
       async (char) => {
         // check if updated needed
@@ -88,19 +93,23 @@ export class CharacterManager extends Component<Props, State> {
     await this.setStatePromise({ ...this.state, selected });
   }
 
-  protected gmBackup: boolean = false; // No Clue why state sometime doesn't work
   get gm(): boolean {
-    return this.state.gm || this.gmBackup;
+    return this.state.gm;
   }
   protected async setGM(gm: boolean): Promise<void> {
     await this.setStatePromise({ ...this.state, gm });
-    this.gmBackup = gm;
+  }
+
+  get edit(): boolean {
+    return this.state.edit;
+  }
+  protected async setEdit(edit: boolean): Promise<void> {
+    await this.setStatePromise({ ...this.state, edit });
   }
 
   // Handler
   protected changeSelection(id: string): void {
     this.setSelected(id);
-    Owlbear.character.selectedIdTemp = id; // TODO delete
   }
 
   protected updateChar(char: Character): void {
@@ -133,31 +142,41 @@ export class CharacterManager extends Component<Props, State> {
     return (
       <>
         <div className="character-manager">
-          <div className="character-selector">
-            {Object.values(this.chars).map((char) => (
-              <button
-                className="character-selector-button"
-                type="button"
-                onClick={() => this.changeSelection(char.id)}
-                disabled={char.id == this.selected}
-                key={`select-button-${char.id}`}
-              >
-                {char.name}
-              </button>
-            ))}
+          <div className="header">
+            <div className="character-selector">
+              {Object.values(this.chars).map((char) => (
+                <button
+                  className="character-selector-button"
+                  type="button"
+                  onClick={() => this.changeSelection(char.id)}
+                  disabled={char.id == this.selected}
+                  key={`select-button-${char.id}`}
+                >
+                  {char.name}
+                </button>
+              ))}
+              {this.edit && (
+                <button
+                  className="character-selector-button"
+                  type="button"
+                  onClick={() => this.addNewChar()}
+                >
+                  +
+                </button>
+              )}
+            </div>
             {this.gm && (
-              <button
-                className="character-selector-button"
-                type="button"
-                onClick={() => this.addNewChar()}
-              >
-                +
-              </button>
+              <ImgButton
+                img={editImg}
+                alt="Edit"
+                onClick={() => this.setEdit(!this.edit)}
+                active={this.edit}
+              />
             )}
           </div>
           {this.chars[this.selected] && (
             <CharacterComponent
-              gm={this.gm}
+              edit={this.edit}
               character={this.chars[this.selected]}
               onUpdate={(char) => this.updateChar(char)}
               onDelete={() => this.deleteChar()}

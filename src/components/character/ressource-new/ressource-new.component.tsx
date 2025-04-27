@@ -35,6 +35,7 @@ export function NewRessourceComponent({
       resource: {
         available: Number(refAvailable.current.value),
         used: 0,
+        shortReset: false,
       },
     });
 

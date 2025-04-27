@@ -10,7 +10,7 @@ import { ImgButton, spaceEvenly } from "../../ui";
 
 interface Props {
   character: Character;
-  gm: boolean;
+  edit: boolean;
   onUpdate: (char: Character) => void;
 }
 interface State {
@@ -79,7 +79,7 @@ export class HitDice extends Component<Props, State> {
   }
 
   async submitEdit(): Promise<void> {
-    if (!this.props.gm) return;
+    if (!this.props.edit) return;
 
     this.props.character.setValue("hitDiceMax", this.editCache.max);
     this.props.character.setValue("hitDice", this.editCache.type);
@@ -88,7 +88,7 @@ export class HitDice extends Component<Props, State> {
   }
 
   async openEdit(): Promise<void> {
-    if (!this.props.gm) return;
+    if (!this.props.edit) return;
 
     await this.setEditCacheMax(this.props.character.hitDiceMax);
     await this.setEditCacheType(this.props.character.hitDice);
@@ -112,7 +112,7 @@ export class HitDice extends Component<Props, State> {
                   this.props.character.hitDiceMax > 10 ? 2 : 1
                 )}
               </span>
-              {this.props.gm && (
+              {this.props.edit && (
                 <ImgButton
                   img={settingsImg}
                   alt="edit"

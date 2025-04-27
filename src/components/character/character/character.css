@@ -14,8 +14,16 @@
     }
   }
 
-  .character-delete {
+  .character-actions {
     margin-left: 1rem;
+
+    .img-button {
+      margin: 0 10px 0 0;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
   }
 
   .name {
@@ -24,6 +32,7 @@
     input {
       border-bottom: 3px solid darkred;
       flex-grow: 1;
+      width: 0;
     }
   }
 

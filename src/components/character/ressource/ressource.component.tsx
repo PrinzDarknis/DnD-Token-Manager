@@ -1,21 +1,26 @@
 import { ReactNode, useRef } from "react";
 
 import "./ressource.css";
+import plusImg from "/icons/plus.svg";
+import minusImg from "/icons/minus.svg";
+import shortRestImg from "/icons/short-rest.svg";
+import loangRestImg from "/icons/long-rest.svg";
 
 import { IRessource } from "../../../model";
 import { mathLimit } from "../../../utils";
+import { ImgButton } from "../../ui";
 
 export function RessourceComponent({
   name,
   ressource,
-  gm,
+  edit,
   deleteable = false,
   onUpdate,
   onDelete,
 }: {
   name: string;
   ressource: IRessource;
-  gm: boolean;
+  edit: boolean;
   deleteable?: boolean;
   onUpdate?: (data: IRessource) => void;
   onDelete?: () => void;
@@ -36,7 +41,7 @@ export function RessourceComponent({
 
     // Check
     if (newValue < 0) {
-      if (deleteable && gm && confirm(`Delete ${name}?`)) {
+      if (deleteable && edit && confirm(`Delete ${name}?`)) {
         onDelete?.();
       }
       return;
@@ -48,6 +53,11 @@ export function RessourceComponent({
     ressource.available = newValue;
     if (ressource.used > ressource.available)
       ressource.used = ressource.available;
+    onUpdate?.(ressource);
+  }
+
+  function changeRestMode(): void {
+    ressource.shortReset = !ressource.shortReset;
     onUpdate?.(ressource);
   }
 
@@ -71,24 +81,27 @@ export function RessourceComponent({
     <div ref={ref} className="ressource">
       <span className="ressource-name">{name}</span>
       <span className="ressource-slots">{checkboxes}</span>
-      {gm && (
-        <button
-          type="button"
-          className="new-ressource-mod new-ressource-add"
+      <ImgButton
+        key="ressource-rest"
+        img={ressource.shortReset ? shortRestImg : loangRestImg}
+        alt={ressource.shortReset ? "Short Rest" : "Long Rest"}
+        onClick={() => changeRestMode()}
+        disabled={!edit}
+      />
+      {edit && [
+        <ImgButton
+          key="ressource-sub"
+          img={minusImg}
+          alt="-"
           onClick={() => modAvailable(-1)}
-        >
-          -
-        </button>
-      )}
-      {gm && (
-        <button
-          type="button"
-          className="new-ressource-mod new-ressource-sub"
+        />,
+        <ImgButton
+          key="ressource-add"
+          img={plusImg}
+          alt="+"
           onClick={() => modAvailable(1)}
-        >
-          +
-        </button>
-      )}
+        />,
+      ]}
     </div>
   );
 }

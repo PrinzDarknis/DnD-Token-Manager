@@ -11,11 +11,13 @@ export function ImgButton({
   className = "",
   active = false,
   noHover = false,
+  disabled = false,
 }: {
   img: string;
   alt: string;
   active?: boolean;
   noHover?: boolean;
+  disabled?: boolean;
   className?:
     | string
     | {
@@ -26,13 +28,18 @@ export function ImgButton({
   const imgClassName =
     typeof className == "string" ? className : cssClass(className);
   return (
-    <button type="button" className="img-button" onClick={() => onClick()}>
+    <button
+      type="button"
+      className="img-button"
+      onClick={() => onClick()}
+      disabled={disabled}
+    >
       <img
         src={img}
         className={cssClass({
           "img-button-icon": true,
           [imgClassName]: true,
-          hoverable: !noHover,
+          hoverable: !noHover && !disabled,
           active: active,
         })}
         alt={alt}

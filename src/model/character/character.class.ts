@@ -78,15 +78,15 @@ export class Character implements ICharacter {
     this._hitDiceMax = 1;
     this._hitDiceRemaining = 0;
     this._spellslots = {
-      "1": { available: 0, used: 0 },
-      "2": { available: 0, used: 0 },
-      "3": { available: 0, used: 0 },
-      "4": { available: 0, used: 0 },
-      "5": { available: 0, used: 0 },
-      "6": { available: 0, used: 0 },
-      "7": { available: 0, used: 0 },
-      "8": { available: 0, used: 0 },
-      "9": { available: 0, used: 0 },
+      "1": { available: 0, used: 0, shortReset: false },
+      "2": { available: 0, used: 0, shortReset: false },
+      "3": { available: 0, used: 0, shortReset: false },
+      "4": { available: 0, used: 0, shortReset: false },
+      "5": { available: 0, used: 0, shortReset: false },
+      "6": { available: 0, used: 0, shortReset: false },
+      "7": { available: 0, used: 0, shortReset: false },
+      "8": { available: 0, used: 0, shortReset: false },
+      "9": { available: 0, used: 0, shortReset: false },
     };
     this._otherResources = {};
     this._lastUpdate = new Date();
@@ -229,6 +229,26 @@ export class Character implements ICharacter {
     };
   }
 
+  shortRest(): void {
+    Object.values(this.spellslots).forEach((ressource: IRessource) => {
+      if (ressource.shortReset) ressource.used = 0;
+    });
+    Object.values(this.otherResources).forEach((ressource) => {
+      if (ressource.shortReset) ressource.used = 0;
+    });
+  }
+
+  longRest(): void {
+    this.setValue("hp", this.maxHp);
+    this.setValue("maxHpMod", 0);
+    Object.values(this.spellslots).forEach((ressource: IRessource) => {
+      ressource.used = 0;
+    });
+    Object.values(this.otherResources).forEach((ressource) => {
+      ressource.used = 0;
+    });
+  }
+
   // static
   static readonly STANDART_PROPERTES: CharacterStandartProperties[] = [
     "name",
@@ -272,16 +292,31 @@ export class Character implements ICharacter {
     return value;
   }
 
+  private static parseBoolean(
+    value: unknown,
+    hideError: boolean = false
+  ): boolean {
+    if (typeof value != "boolean")
+      if (hideError) return false;
+      else throw Character.invalideTypeError("string", value);
+    return value;
+  }
+
   private static parseResource(value: unknown): IRessource {
     if (typeof value != "object")
       throw Character.invalideTypeError("IRessource", value);
 
     const available = Character.parseNumber((value as IRessource).available);
     const used = Character.parseNumber((value as IRessource).used);
+    const shortReset = Character.parseBoolean(
+      (value as IRessource).shortReset,
+      true
+    );
 
     return {
       available,
       used,
+      shortReset,
     };
   }
 

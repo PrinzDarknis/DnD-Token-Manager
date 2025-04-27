@@ -46,6 +46,8 @@
   }
 
   .tab-content {
+    width: calc(100vw - 2 * 1rem);
+    padding: 0 1rem;
     position: absolute;
     transition: ease-in 0.3s;
   }

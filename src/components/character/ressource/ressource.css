@@ -3,6 +3,11 @@
 
   &:hover {
     color: greenyellow;
+
+    .img-button-icon {
+      filter: invert(89%) sepia(29%) saturate(1064%) hue-rotate(27deg)
+        brightness(100%) contrast(104%);
+    }
   }
 
   .ressource-name {
@@ -15,11 +20,8 @@
     flex-grow: 1;
   }
 
-  .new-ressource-mod {
+  .img-button {
     height: 1.2rem;
     width: 1.2rem;
-    padding: 0;
-    vertical-align: middle;
-    font-size: xx-small;
   }
 }

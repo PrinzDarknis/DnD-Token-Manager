@@ -39,5 +39,6 @@ export class Owlbear {
   async setupBackground(): Promise<void> {
     await this.ready;
     await this.character.setupTokenManagement();
+    await this.settings.setupMessageListener();
   }
 }

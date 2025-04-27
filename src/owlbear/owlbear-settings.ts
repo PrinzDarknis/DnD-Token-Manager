@@ -13,7 +13,6 @@ export class OwlbearSettings {
     this.registerOnUpdate((settings) => {
       this._settings = settings;
     });
-    this.listenBauMessage();
   }
 
   protected _settings: GlobalSettings = DefaultGlobalSettings;
@@ -60,10 +59,14 @@ export class OwlbearSettings {
     }
   }
 
+  // Message
+  async setupMessageListener(): Promise<void> {
+    this.listenBauMessage();
+  }
+
   // Bau Bau
   private async listenBauMessage(): Promise<void> {
     await this.ready;
-    console.debug("listen");
     OBR.broadcast.onMessage(
       `${METADATA_BROADCAST}/bau`,
       async (raw: unknown) => {
@@ -80,8 +83,9 @@ export class OwlbearSettings {
             : undefined;
         if (!file) return;
         const sound = new Audio(`${DIR_SOUND}/${file}`);
+        sound.muted = true;
+        sound.muted = false;
         await sound.play();
-        console.debug("got Bau", bau);
       }
     );
   }
@@ -89,7 +93,6 @@ export class OwlbearSettings {
   async sendBau(): Promise<void> {
     await this.ready;
     const whichBau = Math.round(Math.random() * 1000) % 2;
-    console.debug("send Bau", whichBau);
     const bau = whichBau == 1 ? "Fuwawa" : "Mococo";
     await OBR.broadcast.sendMessage(`${METADATA_BROADCAST}/bau`, bau, {
       destination: "ALL",

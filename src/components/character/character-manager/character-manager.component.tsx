@@ -112,8 +112,8 @@ export class CharacterManager extends Component<Props, State> {
     this.setSelected(id);
   }
 
-  protected updateChar(char: Character): void {
-    this.setChar(char);
+  protected async updateChar(char: Character): Promise<void> {
+    await this.setChar(char);
     Owlbear.character.save(char);
   }
 

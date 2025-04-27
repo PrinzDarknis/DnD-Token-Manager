@@ -5,6 +5,7 @@ import {
   ICharacterOtherResources,
   ICharacterSpellslots,
 } from "./character.interface";
+import { DiceType } from "./dice.type";
 import { IRessource } from "./ressource.interface";
 
 export class Character implements ICharacter {
@@ -14,6 +15,9 @@ export class Character implements ICharacter {
   protected _maxHp: number;
   protected _maxHpMod: number;
   protected _ac: number;
+  protected _hitDice: DiceType;
+  protected _hitDiceMax: number;
+  protected _hitDiceRemaining: number;
   protected _spellslots: ICharacterSpellslots;
   protected _otherResources: ICharacterOtherResources;
   protected _lastUpdate: Date;
@@ -38,6 +42,15 @@ export class Character implements ICharacter {
   public get ac(): number {
     return this._ac;
   }
+  public get hitDice(): DiceType {
+    return this._hitDice;
+  }
+  public get hitDiceMax(): number {
+    return this._hitDiceMax;
+  }
+  public get hitDiceRemaining(): number {
+    return this._hitDiceRemaining;
+  }
   public get spellslots(): ICharacterSpellslots {
     return this._spellslots;
   }
@@ -61,6 +74,9 @@ export class Character implements ICharacter {
     this._maxHpMod = 0;
     this._hp = 0;
     this._ac = 0;
+    this._hitDice = "D8";
+    this._hitDiceMax = 1;
+    this._hitDiceRemaining = 0;
     this._spellslots = {
       "1": { available: 0, used: 0 },
       "2": { available: 0, used: 0 },
@@ -145,6 +161,18 @@ export class Character implements ICharacter {
         this._lastUpdate = new Date();
         this._lastStatUpdate = new Date();
         return;
+      case "hitDice":
+        this._hitDice = Character.parseDiceType(value);
+        this._lastUpdate = new Date();
+        return;
+      case "hitDiceMax":
+        this._hitDiceMax = Character.parseNumber(value);
+        this._lastUpdate = new Date();
+        return;
+      case "hitDiceRemaining":
+        this._hitDiceRemaining = Character.parseNumber(value);
+        this._lastUpdate = new Date();
+        return;
       case "lastUpdate":
         this._lastUpdate = Character.parseDate(value);
         return;
@@ -191,6 +219,9 @@ export class Character implements ICharacter {
       maxHp: this.maxHp,
       maxHpMod: this.maxHpMod,
       ac: this.ac,
+      hitDice: this.hitDice,
+      hitDiceMax: this.hitDiceMax,
+      hitDiceRemaining: this.hitDiceRemaining,
       spellslots: this.spellslots,
       otherResources: this.otherResources,
       lastUpdate: this.lastUpdate,
@@ -205,6 +236,9 @@ export class Character implements ICharacter {
     "maxHp",
     "maxHpMod",
     "ac",
+    "hitDice",
+    "hitDiceMax",
+    "hitDiceRemaining",
     "spellslots.1",
     "spellslots.2",
     "spellslots.3",
@@ -263,6 +297,29 @@ export class Character implements ICharacter {
       throw Character.invalideTypeError("Date", value);
     return value;
   }
+
+  private static parseDiceType(value: unknown): DiceType {
+    if (typeof value != "string")
+      throw Character.invalideTypeError("DiceType", value);
+
+    switch (value as DiceType) {
+      case "D4":
+        return "D4";
+      case "D6":
+        return "D6";
+      case "D8":
+        return "D8";
+      case "D10":
+        return "D10";
+      case "D12":
+        return "D12";
+      case "D20":
+        return "D20";
+
+      default:
+        throw Character.invalideTypeError("DiceType", value);
+    }
+  }
 }
 
 export type CharacterStandartProperties =
@@ -275,6 +332,9 @@ export type CharacterStandartPropertiesSimple =
   | "maxHp"
   | "maxHpMod"
   | "ac"
+  | "hitDice"
+  | "hitDiceMax"
+  | "hitDiceRemaining"
   | "lastUpdate"
   | "lastStatUpdate";
 

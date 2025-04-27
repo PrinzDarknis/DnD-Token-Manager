@@ -3,6 +3,7 @@ import { ReactNode, useRef } from "react";
 import "./ressource.css";
 
 import { IRessource } from "../../../model";
+import { mathLimit } from "../../../utils";
 
 export function RessourceComponent({
   name,
@@ -25,7 +26,7 @@ export function RessourceComponent({
     const checkbox = e.target as HTMLInputElement;
     const add = checkbox.checked;
     ressource.used = add ? ressource.used + 1 : ressource.used - 1;
-    ressource.used = Math.min(Math.max(ressource.used, 0), ressource.available); // enforce limits
+    ressource.used = mathLimit(ressource.used, 0, ressource.available); // enforce limits
     onUpdate?.(ressource);
     e.stopPropagation();
   }

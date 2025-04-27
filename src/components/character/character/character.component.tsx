@@ -14,6 +14,8 @@ import { Log } from "../../../utils";
 
 import { RessourceComponent } from "../ressource";
 import { INewRessource, NewRessourceComponent } from "../ressource-new";
+import { HitDice } from "../hit-dice";
+import { ImgButton } from "../../ui";
 
 interface Props {
   character: Character;
@@ -99,17 +101,13 @@ export class CharacterComponent extends Component<Props> {
                   maxLength={15}
                 />
                 {this.props.gm && (
-                  <button
-                    type="button"
-                    className="character-delete"
-                    onClick={() => this.props.onDelete?.()}
-                  >
-                    <img
-                      src={trash}
-                      className="character-delete-icon"
-                      alt="Delete CHaracter"
+                  <span className="character-delete">
+                    <ImgButton
+                      img={trash}
+                      alt="Delete Character"
+                      onClick={() => this.props.onDelete?.()}
                     />
-                  </button>
+                  </span>
                 )}
               </h1>
               <span className="stats character-information-item">
@@ -171,6 +169,13 @@ export class CharacterComponent extends Component<Props> {
                   </label>
                 </span>
               </span>
+            </div>
+            <div className="hit-dice-area">
+              <HitDice
+                character={this.props.character}
+                gm={this.props.gm}
+                onUpdate={(char) => this.update(char)}
+              />
             </div>
             <div className="resource-list">
               <h2>Spellslots</h2>

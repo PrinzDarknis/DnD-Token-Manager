@@ -1,0 +1,13 @@
+.even-field {
+  display: flex;
+  flex-direction: column;
+
+  .even-row {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .spacer {
+    flex-grow: 1;
+  }
+}

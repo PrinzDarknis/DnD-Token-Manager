@@ -14,6 +14,7 @@ import {
   ICharacter,
   Character,
 } from "../../../model";
+import { ImgButton } from "../../ui";
 
 type Props = object;
 interface State {
@@ -139,13 +140,11 @@ export class SettingsController extends Component<Props, State> {
           <fieldset className="personal-settings settings-area">
             <legend>
               <h2>Personal Settings</h2>
-              <button
-                type="button"
-                className="bau"
+              <ImgButton
+                img={bauImg}
+                alt="Bau Bau"
                 onClick={() => Owlbear.settings.sendBau()}
-              >
-                <img src={bauImg} className="bau-icon" alt="Bau Bau" />
-              </button>
+              />
             </legend>
           </fieldset>
           {this.gm && (

@@ -15,23 +15,7 @@
   }
 
   .character-delete {
-    height: 2rem;
-    width: 2rem;
-    padding: 0;
     margin-left: 1rem;
-  }
-
-  .character-delete-icon {
-    max-width: 100%;
-    max-height: 100%;
-
-    filter: invert(100%) sepia(2%) saturate(7%) hue-rotate(337deg)
-      brightness(101%) contrast(101%);
-
-    &:hover {
-      filter: invert(14%) sepia(74%) saturate(6873%) hue-rotate(358deg)
-        brightness(101%) contrast(117%);
-    }
   }
 
   .name {

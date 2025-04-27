@@ -1,0 +1,22 @@
+.hit-dice-component {
+  .hit-dices {
+    flex-grow: 1;
+
+    button {
+      background: transparent;
+    }
+  }
+
+  .hit-dice-view {
+    display: flex;
+    flex-flow: wrap;
+  }
+
+  .hit-dice-edit {
+    display: flex;
+
+    .spacer {
+      flex-grow: 1;
+    }
+  }
+}

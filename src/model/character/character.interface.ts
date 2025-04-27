@@ -1,3 +1,4 @@
+import { DiceType } from "./dice.type";
 import { IRessource } from "./ressource.interface";
 
 export interface ICharacter {
@@ -7,6 +8,9 @@ export interface ICharacter {
   maxHp: number;
   maxHpMod: number;
   ac: number;
+  hitDice: DiceType;
+  hitDiceMax: number;
+  hitDiceRemaining: number;
   readonly spellslots: ICharacterSpellslots;
   readonly otherResources: ICharacterOtherResources;
   readonly lastUpdate: Date;

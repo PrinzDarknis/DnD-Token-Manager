@@ -1,9 +1,10 @@
 import OBR, { Metadata } from "@owlbear-rodeo/sdk";
 
-import { GlobalSettings, DefaultGlobalSettings } from "../model";
+import { GlobalSettings, DefaultGlobalSettings, Sound } from "../model";
 import { Log } from "../utils";
 
 import { DIR_SOUND, METADATA_BROADCAST, METADATA_SETTINGS } from "./constants";
+import { BroadcastEvent } from "./types";
 
 export class OwlbearSettings {
   protected readonly ready: Promise<void>;
@@ -61,27 +62,18 @@ export class OwlbearSettings {
 
   // Message
   async setupMessageListener(): Promise<void> {
-    this.listenBauMessage();
+    this.listenSound();
   }
 
-  // Bau Bau
-  private async listenBauMessage(): Promise<void> {
+  // Sound
+  private async listenSound(): Promise<void> {
     await this.ready;
     OBR.broadcast.onMessage(
-      `${METADATA_BROADCAST}/bau`,
+      `${METADATA_BROADCAST}/sound`,
       async (raw: unknown) => {
-        const message: { data: string; connectionId: string } = raw as {
-          data: string;
-          connectionId: string;
-        };
-        const bau = message.data;
-        const file =
-          bau == "Fuwawa"
-            ? "Fuwawa  Bau.mp3"
-            : bau == "Mococo"
-            ? "Mococo Bau.mp3"
-            : undefined;
-        if (!file) return;
+        const message: BroadcastEvent = raw as BroadcastEvent;
+        const file = message.data;
+        if (typeof file != "string") return;
         const sound = new Audio(`${DIR_SOUND}/${file}`);
         sound.muted = true;
         sound.muted = false;
@@ -90,11 +82,13 @@ export class OwlbearSettings {
     );
   }
 
-  async sendBau(): Promise<void> {
+  async playSound(sound: Sound): Promise<void> {
     await this.ready;
-    const whichBau = Math.round(Math.random() * 1000) % 2;
-    const bau = whichBau == 1 ? "Fuwawa" : "Mococo";
-    await OBR.broadcast.sendMessage(`${METADATA_BROADCAST}/bau`, bau, {
+    const file =
+      typeof sound.file == "string"
+        ? sound.file
+        : sound.file[Math.floor(Math.random() * sound.file.length)];
+    await OBR.broadcast.sendMessage(`${METADATA_BROADCAST}/sound`, file, {
       destination: "ALL",
     });
   }

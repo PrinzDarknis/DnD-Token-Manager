@@ -1,7 +1,6 @@
 import React, { Component, ReactNode } from "react";
 
 import "./settings-controller.css";
-import bauImg from "/bau.svg";
 
 import { Owlbear } from "../../../owlbear";
 import { downloadObjectAsJson, Log } from "../../../utils";
@@ -14,7 +13,6 @@ import {
   ICharacter,
   Character,
 } from "../../../model";
-import { ImgButton } from "../../ui";
 
 type Props = object;
 interface State {
@@ -140,11 +138,6 @@ export class SettingsController extends Component<Props, State> {
           <fieldset className="personal-settings settings-area">
             <legend>
               <h2>Personal Settings</h2>
-              <ImgButton
-                img={bauImg}
-                alt="Bau Bau"
-                onClick={() => Owlbear.settings.sendBau()}
-              />
             </legend>
           </fieldset>
           {this.gm && (

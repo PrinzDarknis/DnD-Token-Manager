@@ -3,8 +3,7 @@ import OBR, { Metadata } from "@owlbear-rodeo/sdk";
 import { GlobalSettings, DefaultGlobalSettings, Sound } from "../model";
 import { Log } from "../utils";
 
-import { DIR_SOUND, METADATA_BROADCAST, METADATA_SETTINGS } from "./constants";
-import { BroadcastEvent } from "./types";
+import { DIR_SOUND, BROADCAST, METADATA_SETTINGS } from "./constants";
 
 export class OwlbearSettings {
   protected readonly ready: Promise<void>;
@@ -68,18 +67,14 @@ export class OwlbearSettings {
   // Sound
   private async listenSound(): Promise<void> {
     await this.ready;
-    OBR.broadcast.onMessage(
-      `${METADATA_BROADCAST}/sound`,
-      async (raw: unknown) => {
-        const message: BroadcastEvent = raw as BroadcastEvent;
-        const file = message.data;
-        if (typeof file != "string") return;
-        const sound = new Audio(`${DIR_SOUND}/${file}`);
-        sound.muted = true;
-        sound.muted = false;
-        await sound.play();
-      }
-    );
+    OBR.broadcast.onMessage(`${BROADCAST}/sound`, async (message) => {
+      const file = message.data;
+      if (typeof file != "string") return;
+      const sound = new Audio(`${DIR_SOUND}/${file}`);
+      sound.muted = true;
+      sound.muted = false;
+      await sound.play();
+    });
   }
 
   async playSound(sound: Sound): Promise<void> {
@@ -88,7 +83,7 @@ export class OwlbearSettings {
       typeof sound.file == "string"
         ? sound.file
         : sound.file[Math.floor(Math.random() * sound.file.length)];
-    await OBR.broadcast.sendMessage(`${METADATA_BROADCAST}/sound`, file, {
+    await OBR.broadcast.sendMessage(`${BROADCAST}/sound`, file, {
       destination: "ALL",
     });
   }

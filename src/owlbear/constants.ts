@@ -10,7 +10,10 @@ export const METADATA_CHARACTER_TOKEN_ACTION = `${PROJEKT_IDENTIFIER}/character-
 export const METADATA_SYNC = `${PROJEKT_IDENTIFIER}/sync`;
 export const METADATA_SETTINGS = `${PROJEKT_IDENTIFIER}/settings`;
 
-export const METADATA_BROADCAST = `${PROJEKT_IDENTIFIER}/broadcast`;
+export const BROADCAST = `${PROJEKT_IDENTIFIER}/broadcast`;
+export const BROADCAST_PUZZLE = `${PROJEKT_IDENTIFIER}/broadcast/puzzle`;
+export const BROADCAST_PUZZLE_ACTION = `${BROADCAST_PUZZLE}/action`;
+export const BROADCAST_PUZZLE_UPDATE = `${BROADCAST_PUZZLE}/update`;
 
 export const HTML_PRODUCTION_PREFIX = "/DnD-Token-Manager";
 

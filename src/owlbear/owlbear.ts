@@ -5,10 +5,12 @@ import { Log } from "../utils";
 import { versionUpdata } from "./version";
 import { OwlbearCharacter } from "./owlbear-character";
 import { OwlbearSettings } from "./owlbear-settings";
+import { OwlbearPuzzle } from "./owlbear-puzzle";
 
 export class Owlbear {
   public readonly character: OwlbearCharacter;
   public readonly settings: OwlbearSettings;
+  public readonly puzzle: OwlbearPuzzle;
 
   protected readonly ready: Promise<void>;
 
@@ -28,6 +30,7 @@ export class Owlbear {
     });
     this.character = new OwlbearCharacter(this.ready);
     this.settings = new OwlbearSettings(this.ready);
+    this.puzzle = new OwlbearPuzzle(this.ready);
   }
 
   async isGM(): Promise<boolean> {

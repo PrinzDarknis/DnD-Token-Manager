@@ -8,17 +8,14 @@
     max-height: 100%;
 
     /* Clac Filter: https://codepen.io/sosuke/pen/Pjoqqp */
-    filter: invert(100%) sepia(2%) saturate(7%) hue-rotate(337deg)
-      brightness(101%) contrast(101%);
+    filter: var(--svg-white);
 
     &.active {
-      filter: invert(14%) sepia(74%) saturate(6873%) hue-rotate(358deg)
-        brightness(101%) contrast(117%);
+      filter: var(--svg-red);
     }
 
     &.hoverable:hover {
-      filter: invert(10%) sepia(79%) saturate(5099%) hue-rotate(357deg)
-        brightness(81%) contrast(112%);
+      filter: var(--svg-darkred);
     }
   }
 }

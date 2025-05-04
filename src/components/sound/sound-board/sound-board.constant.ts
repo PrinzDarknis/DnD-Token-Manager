@@ -10,6 +10,8 @@ import chokoboImg from "/icons/sound/chokobo.svg";
 import exclamationImg from "/icons/sound/!.svg";
 import gooseImg from "/icons/sound/goose.svg";
 import victoryImg from "/icons/sound/victory.svg";
+import cricketImg from "/icons/sound/cricket.svg";
+import mortalKombatImg from "/icons/sound/mortal-kombat.svg";
 
 export const Sounds: Sound[] = [
   {
@@ -61,5 +63,15 @@ export const Sounds: Sound[] = [
     name: "Victory",
     img: victoryImg,
     file: "victory.mp3",
+  },
+  {
+    name: "Cricket",
+    img: cricketImg,
+    file: "cricket.mp3",
+  },
+  {
+    name: "Fatality",
+    img: mortalKombatImg,
+    file: "fatality.mp3",
   },
 ];

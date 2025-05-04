@@ -1,0 +1,28 @@
+.svg-img {
+  max-width: 100%;
+  max-height: 100%;
+
+  filter: var(--svg-white);
+
+  &.black {
+    filter: var(--svg-black);
+  }
+  &.red {
+    filter: var(--svg-red);
+  }
+  &.darkred {
+    filter: var(--svg-darkred);
+  }
+  &.gray {
+    filter: var(--svg-gray);
+  }
+  &.ligthgray {
+    filter: var(--svg-ligthgray);
+  }
+  &.dimgray {
+    filter: var(--svg-dimgray);
+  }
+  &.white {
+    filter: var(--svg-white);
+  }
+}

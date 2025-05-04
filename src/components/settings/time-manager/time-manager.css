@@ -1,0 +1,113 @@
+.time-manager {
+  .headline {
+    margin-top: 1rem;
+    display: flex;
+  }
+
+  .moon-phase {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .moon-phase-active {
+    background-color: rgba(255, 255, 255, 0.062);
+    border-radius: 8px;
+  }
+
+  .moon-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .height-spacer {
+    width: 1.5rem;
+    height: calc(1.5rem / 8);
+  }
+
+  .grow-spacer {
+    flex-grow: 1;
+  }
+
+  .time-manager {
+    display: flex;
+    margin-top: 1rem;
+  }
+
+  .time-control {
+    flex-grow: 1;
+
+    .game-time {
+      width: 4rem;
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      text-align: center;
+    }
+  }
+
+  .button {
+    cursor: pointer;
+
+    &:hover {
+      color: darkred;
+    }
+  }
+
+  .tasks {
+    margin-top: 1rem;
+  }
+
+  .task {
+    display: flex;
+  }
+
+  .task-name {
+    width: 10rem;
+    overflow-wrap: break-word;
+
+    &.edit {
+      width: 5rem;
+    }
+  }
+
+  .task-time {
+    width: 5rem;
+  }
+
+  .task-time-edit {
+    display: flex;
+
+    input {
+      width: 3rem;
+    }
+  }
+
+  .task-control {
+    flex-grow: 1;
+    padding: calc((1.5rem - 1.2rem) / 2) 0;
+
+    .img-button {
+      height: 1.2rem;
+      width: 1.2rem;
+    }
+  }
+
+  .new-tasks {
+    padding-left: 1rem;
+
+    .img-button {
+      height: 1.5rem;
+      width: 1.5rem;
+      vertical-align: text-top;
+    }
+
+    .new-task-name {
+      width: 6rem;
+      margin-right: 1rem;
+    }
+
+    .new-task-timespan {
+      width: 3rem;
+      margin-right: 1rem;
+    }
+  }
+}

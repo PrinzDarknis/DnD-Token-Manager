@@ -6,6 +6,7 @@ import {
   SettingsController,
   SoundBoard,
   TabManager,
+  TimeManager,
 } from "./components";
 
 createRoot(document.getElementById("root")!).render(
@@ -15,6 +16,7 @@ createRoot(document.getElementById("root")!).render(
         { name: "Character", content: <CharacterManager /> },
         { name: "⚙", content: <SettingsController /> },
         { name: "𝅘𝅥𝅮", content: <SoundBoard /> },
+        { name: "☾", content: <TimeManager /> },
       ]}
     />
   </StrictMode>

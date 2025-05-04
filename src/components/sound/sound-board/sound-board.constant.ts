@@ -13,6 +13,7 @@ import victoryImg from "/icons/sound/victory.svg";
 import cricketImg from "/icons/sound/cricket.svg";
 import mortalKombatImg from "/icons/sound/mortal-kombat.svg";
 import badDragonImg from "/icons/Bad_Dragon_logo.svg";
+import dragonImg from "/icons/dragon1.svg";
 
 export const Sounds: Sound[] = [
   {
@@ -85,5 +86,10 @@ export const Sounds: Sound[] = [
       "wet-slap4.mp3",
       "wet-slap5.mp3",
     ],
+  },
+  {
+    name: "Dragon",
+    img: dragonImg,
+    file: "dragon.mp3",
   },
 ];

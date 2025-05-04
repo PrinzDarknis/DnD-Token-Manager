@@ -9,7 +9,7 @@ import trashImg from "/trash.svg";
 
 import { cssClass, Log } from "../../../utils";
 import { Owlbear } from "../../../owlbear";
-import { Task } from "../../../model";
+import { Task, TimeInfo } from "../../../model";
 
 import { ImgButton, moonIcons, spaceEvenly } from "../../ui";
 
@@ -18,8 +18,7 @@ interface State {
   gm: boolean;
   edit: boolean;
   editTask: EditTask;
-  gameDay: number;
-  tasks: Task[];
+  timeInfo: TimeInfo;
 }
 interface EditTask {
   key: string;
@@ -36,21 +35,24 @@ export class TimeManager extends Component<Props, State> {
       editTask: {
         key: "",
       },
-      gameDay: 1,
-      tasks: [
-        {
-          name: "Test",
-          begin: 10,
-          timespan: 26,
-          open: true,
-          failed: false,
-        },
-      ],
+      timeInfo: {
+        gameDay: 1,
+        tasks: [],
+      },
     };
   }
 
+  protected unSubscribeMetaListener?: () => void;
   async componentDidMount(): Promise<void> {
     await this.setGM(await Owlbear.isGM());
+    await this.setTimeInfo(await Owlbear.time.load());
+    this.unSubscribeMetaListener = await Owlbear.time.registerOnUpdate(
+      async (timeInfo) => this.setTimeInfo(timeInfo)
+    );
+  }
+
+  componentWillUnmount(): void {
+    this.unSubscribeMetaListener?.();
   }
 
   // State
@@ -79,24 +81,38 @@ export class TimeManager extends Component<Props, State> {
     await this.setStatePromise({ ...this.state, editTask });
   }
 
+  get timeInfo(): TimeInfo {
+    return this.state.timeInfo;
+  }
+  protected async setTimeInfo(timeInfo: TimeInfo): Promise<void> {
+    await this.setStatePromise({ ...this.state, timeInfo });
+  }
+
   get gameDay(): number {
-    return this.state.gameDay;
+    return this.state.timeInfo.gameDay;
   }
   protected async setGameDay(gameDay: number): Promise<void> {
-    await this.setStatePromise({ ...this.state, gameDay });
+    await this.setStatePromise({
+      ...this.state,
+      timeInfo: { ...this.state.timeInfo, gameDay },
+    });
   }
 
   get tasks(): Task[] {
-    return this.state.tasks;
+    return this.state.timeInfo.tasks;
   }
   protected async setTasks(tasks: Task[]): Promise<void> {
-    await this.setStatePromise({ ...this.state, tasks });
+    await this.setStatePromise({
+      ...this.state,
+      timeInfo: { ...this.state.timeInfo, tasks },
+    });
   }
 
   // handler
   async modGameDay(mod: number): Promise<void> {
     const newDay = this.gameDay + mod;
     await this.setGameDay(newDay);
+    await Owlbear.time.save(this.timeInfo);
   }
 
   async succeedTask(task: Task): Promise<void> {
@@ -159,10 +175,9 @@ export class TimeManager extends Component<Props, State> {
   }
 
   async updateTasks(): Promise<void> {
-    // TODO save
     const newTasks = [...this.tasks];
     await this.setTasks(newTasks);
-    console.debug("updateTasks", newTasks);
+    await Owlbear.time.save(this.timeInfo);
   }
 
   // render
@@ -194,23 +209,52 @@ export class TimeManager extends Component<Props, State> {
               <span className="lable">GameDay:</span>
               <span className="time-control">
                 {spaceEvenly([
-                  <span className="button" onClick={() => this.modGameDay(-30)}>
+                  <span
+                    key={`time-control-button-<<<`}
+                    className="button"
+                    onClick={() => this.modGameDay(-30)}
+                  >
                     {"<<<"}
                   </span>,
-                  <span className="button" onClick={() => this.modGameDay(-7)}>
+                  <span
+                    key={`time-control-button-<<`}
+                    className="button"
+                    onClick={() => this.modGameDay(-7)}
+                  >
                     {"<<"}
                   </span>,
-                  <span className="button" onClick={() => this.modGameDay(-1)}>
+                  <span
+                    key={`time-control-button-<`}
+                    className="button"
+                    onClick={() => this.modGameDay(-1)}
+                  >
                     {"<"}
                   </span>,
-                  <span className="game-time">{this.gameDay}</span>,
-                  <span className="button" onClick={() => this.modGameDay(1)}>
+                  <span
+                    key={`time-control-button-game-time`}
+                    className="game-time"
+                  >
+                    {this.gameDay}
+                  </span>,
+                  <span
+                    key={`time-control-button->`}
+                    className="button"
+                    onClick={() => this.modGameDay(1)}
+                  >
                     {">"}
                   </span>,
-                  <span className="button" onClick={() => this.modGameDay(7)}>
+                  <span
+                    key={`time-control-button->>`}
+                    className="button"
+                    onClick={() => this.modGameDay(7)}
+                  >
                     {">>"}
                   </span>,
-                  <span className="button" onClick={() => this.modGameDay(30)}>
+                  <span
+                    key={`time-control-button->>>`}
+                    className="button"
+                    onClick={() => this.modGameDay(30)}
+                  >
                     {">>>"}
                   </span>,
                 ])}
@@ -314,7 +358,9 @@ export class TimeManager extends Component<Props, State> {
     return (
       <ul className="task-list">
         {this.getTasks(open).map((task, idx) => (
-          <li>{this.renderTask(task, `close-task-${idx}`)}</li>
+          <li key={`${open ? "open" : "close"}-task-list-item-${idx}`}>
+            {this.renderTask(task, `${open ? "open" : "close"}-task-${idx}`)}
+          </li>
         ))}
       </ul>
     );
@@ -348,6 +394,7 @@ export class TimeManager extends Component<Props, State> {
             <span className="task-control">
               {spaceEvenly([
                 <ImgButton
+                  key={`task-control-success`}
                   img={checkImg}
                   alt="Success"
                   onClick={() =>
@@ -356,6 +403,7 @@ export class TimeManager extends Component<Props, State> {
                   active={!task.open && !task.failed}
                 />,
                 <ImgButton
+                  key={`task-control-fail`}
                   img={failedImg}
                   alt="Fail"
                   onClick={() =>
@@ -364,6 +412,7 @@ export class TimeManager extends Component<Props, State> {
                   active={task.failed}
                 />,
                 <ImgButton
+                  key={`task-control-edit`}
                   img={editImg}
                   alt="Edit"
                   onClick={() =>
@@ -376,6 +425,7 @@ export class TimeManager extends Component<Props, State> {
                   active={this.editTask.key == key}
                 />,
                 <ImgButton
+                  key={`task-control-delete`}
                   img={trashImg}
                   alt="Delete"
                   onClick={() => this.deleteTask(task)}
@@ -396,7 +446,7 @@ export class TimeManager extends Component<Props, State> {
           key={key}
         >
           <input
-            className="task-name"
+            className="task-name edit"
             type="text"
             value={this.editTask.tempTask?.name}
             onChange={(e) => {
@@ -428,6 +478,7 @@ export class TimeManager extends Component<Props, State> {
             <span className="task-control">
               {spaceEvenly([
                 <ImgButton
+                  key={`task-control-edit`}
                   img={editImg}
                   alt="Edit"
                   onClick={() => {

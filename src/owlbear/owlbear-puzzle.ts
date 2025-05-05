@@ -1,8 +1,12 @@
-import OBR from "@owlbear-rodeo/sdk";
+import OBR, { Metadata } from "@owlbear-rodeo/sdk";
 
 import { PuzzleInfo } from "../model";
 
-import { BROADCAST_PUZZLE_ACTION, BROADCAST_PUZZLE_UPDATE } from "./constants";
+import {
+  BROADCAST_PUZZLE_ACTION,
+  BROADCAST_PUZZLE_UPDATE,
+  METADATA_PUZZLE_CURRENT,
+} from "./constants";
 
 interface ActionMessageData {
   action: string;
@@ -81,5 +85,26 @@ export class OwlbearPuzzle {
 
   private clearTakeOver(): void {
     clearTimeout(this.takeOverTimeout);
+  }
+
+  // Current Puzzle
+  async loadCurrentPuzzle(): Promise<PuzzleInfo | undefined> {
+    await this.ready;
+
+    const metadata = await OBR.room.getMetadata();
+    const data: PuzzleInfo = metadata[METADATA_PUZZLE_CURRENT] as PuzzleInfo;
+    if (!data || !data.puzzle) return undefined;
+    data.processing = false;
+    return data;
+  }
+
+  async saveCurrentPuzzle(puzzleInfo: PuzzleInfo) {
+    await this.ready;
+
+    // save
+    const update: Partial<Metadata> = {};
+    update[METADATA_PUZZLE_CURRENT] = puzzleInfo;
+
+    await OBR.room.setMetadata(update);
   }
 }

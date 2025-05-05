@@ -10,6 +10,8 @@ export const METADATA_CHARACTER_TOKEN_ACTION = `${PROJEKT_IDENTIFIER}/character-
 export const METADATA_SYNC = `${PROJEKT_IDENTIFIER}/sync`;
 export const METADATA_SETTINGS = `${PROJEKT_IDENTIFIER}/settings`;
 export const METADATA_TIME = `${PROJEKT_IDENTIFIER}/time`;
+export const METADATA_PUZZLE_CURRENT = `${PROJEKT_IDENTIFIER}/puzzle/current`;
+export const METADATA_PUZZLE_LIST = `${PROJEKT_IDENTIFIER}/puzzle/list`;
 
 export const BROADCAST = `${PROJEKT_IDENTIFIER}/broadcast`;
 export const BROADCAST_PUZZLE = `${PROJEKT_IDENTIFIER}/broadcast/puzzle`;

@@ -27,6 +27,8 @@ export class PuzzleView extends Component<Props, State> {
     this.unSubscribeActionListener = await Owlbear.puzzle.listenUpdate(
       (puzzle) => this.setPuzzle(puzzle)
     );
+    const currentPuzzle = await Owlbear.puzzle.loadCurrentPuzzle();
+    if (currentPuzzle) await this.setPuzzle(currentPuzzle);
   }
 
   componentWillUnmount(): void {
@@ -65,6 +67,7 @@ export class PuzzleView extends Component<Props, State> {
       processing,
     };
     await Owlbear.puzzle.sendUpdate(update);
+    Owlbear.puzzle.saveCurrentPuzzle(update);
   }
 
   // render

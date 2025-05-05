@@ -241,6 +241,7 @@ export class Character implements ICharacter {
   longRest(): void {
     this.setValue("hp", this.maxHp);
     this.setValue("maxHpMod", 0);
+    this.setValue("hitDiceRemaining", this.hitDiceMax);
     Object.values(this.spellslots).forEach((ressource: IRessource) => {
       ressource.used = 0;
     });

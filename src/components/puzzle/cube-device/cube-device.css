@@ -1,2 +1,52 @@
-.component-name {
+.cube-device {
+  --cube-size: 4rem;
+
+  .cube {
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    position: relative;
+    cursor: default;
+
+    width: var(--cube-size);
+    height: var(--cube-size);
+    border: 4px solid rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+  }
+
+  .cube-symbole {
+    display: none;
+    position: absolute;
+    transition: ease-in 0.3s;
+    flex-shrink: 0;
+
+    width: var(--cube-size);
+    height: var(--cube-size);
+    align-content: center;
+    text-align: center;
+
+    &.left {
+      display: unset;
+      transform: translate(calc(-1 * var(--cube-size)));
+    }
+    &.center {
+      display: unset;
+      transform: translate(0);
+    }
+    &.rigth {
+      display: unset;
+      transform: translate(var(--cube-size));
+    }
+  }
+
+  .cube-action-container {
+    margin: 1rem;
+    text-align: center;
+
+    &.disabled {
+      .img-button-icon {
+        filter: var(--svg-gray);
+      }
+    }
+  }
 }

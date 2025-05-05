@@ -4,11 +4,11 @@ import "./space-evenly.css";
 
 export function spaceEvenly(
   elements: ReactNode[],
-  rows: number = 1
+  rows: number = 1,
+  key: string = `${Math.random()}`
 ): ReactNode {
-  const keyRand = Math.random(); // unique keys for each instance
   const keyMap = (x: number, y: number) =>
-    `spaceEvenly-${keyRand}-row-${x}-colum-${y}`;
+    `spaceEvenly-${key}-row-${x}-colum-${y}`;
   const splitPoint = Math.ceil(elements.length / rows);
   const field: ReactNode[][] = [];
 

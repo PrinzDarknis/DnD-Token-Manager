@@ -11,6 +11,8 @@ interface ActionMessageData {
 }
 
 export class OwlbearPuzzle {
+  private readonly timeUntilTakeOver = 5 * 1000;
+
   protected readonly ready: Promise<void>;
   constructor(ready: Promise<void>) {
     this.ready = ready;
@@ -26,6 +28,7 @@ export class OwlbearPuzzle {
     OBR.broadcast.sendMessage(BROADCAST_PUZZLE_ACTION, data, {
       destination: "ALL",
     });
+    this.readyTakeOver(action, actionData);
   }
 
   async listenAction(
@@ -46,6 +49,7 @@ export class OwlbearPuzzle {
 
   async sendUpdate(puzzleInfo: PuzzleInfo): Promise<void> {
     await this.ready;
+    puzzleInfo.master = await OBR.player.getConnectionId();
     OBR.broadcast.sendMessage(BROADCAST_PUZZLE_UPDATE, puzzleInfo, {
       destination: "ALL",
     });
@@ -56,11 +60,26 @@ export class OwlbearPuzzle {
   ): Promise<() => void> {
     await this.ready;
     const unSubscribe = OBR.broadcast.onMessage(
-      BROADCAST_PUZZLE_ACTION,
+      BROADCAST_PUZZLE_UPDATE,
       async (message) => {
+        this.clearTakeOver();
         gotUpdate(message.data as PuzzleInfo);
       }
     );
     return unSubscribe;
+  }
+
+  // Take Over
+  private takeOverTimeout?: NodeJS.Timeout;
+  private readyTakeOver(action: string, actionData: unknown): void {
+    this.clearTakeOver();
+    this.takeOverTimeout = setTimeout(async () => {
+      const myId = await OBR.player.getConnectionId();
+      this.sendAction(action, actionData, myId);
+    }, this.timeUntilTakeOver);
+  }
+
+  private clearTakeOver(): void {
+    clearTimeout(this.takeOverTimeout);
   }
 }

@@ -29,7 +29,7 @@ export abstract class AbstractPuzzle<
   PuzzleActions,
   AdditionalState
 > extends Component<Props<PuzzleConfig, PuzzleState>, State & AdditionalState> {
-  abstract readonly name: string;
+  abstract readonly puzzleName: string;
   abstract readonly actionTime: number;
 
   abstract getDefaultAdditionalState(): AdditionalState;
@@ -117,10 +117,10 @@ export abstract class AbstractPuzzle<
 
   // render
   render(): ReactNode {
-    if (this.props.puzzleInfo.name != this.name) {
+    if (this.props.puzzleInfo.puzzle != this.puzzleName) {
       Log.warn(
         this.constructor.name,
-        `Puzzle State compatible with component. Component: ${this.name}, State for: ${this.props.puzzleInfo.name}`,
+        `Puzzle State compatible with component. Component: ${this.puzzleName}, State for: ${this.props.puzzleInfo.puzzle}`,
         this.props.puzzleInfo
       );
       return;
@@ -130,6 +130,7 @@ export abstract class AbstractPuzzle<
     const actions: ReactNode[] = view
       ? [
           <ImgButton
+            key={`puzzle-actions-edit`}
             img={editImg}
             alt="Edit"
             onClick={() => this.setViewEdit(!this.viewEdit)}
@@ -142,7 +143,9 @@ export abstract class AbstractPuzzle<
       <>
         <div className="abstract-puzzle">
           <div className="puzzle-header">
-            <span className="puzzle-name">{this.name}</span>
+            <span className="puzzle-name">
+              {this.props.puzzleInfo.visableName}
+            </span>
             {this.props.gm && <span className="puzzle-actions">{actions}</span>}
           </div>
           <div className="puzzle-area">

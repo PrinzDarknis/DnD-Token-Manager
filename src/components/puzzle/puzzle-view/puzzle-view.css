@@ -1,2 +1,6 @@
 .puzzle-view {
+  .no-puzzle {
+    margin: 4rem;
+    text-align: center;
+  }
 }

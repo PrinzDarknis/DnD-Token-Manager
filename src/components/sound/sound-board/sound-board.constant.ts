@@ -12,8 +12,12 @@ import gooseImg from "/icons/sound/goose.svg";
 import victoryImg from "/icons/sound/victory.svg";
 import cricketImg from "/icons/sound/cricket.svg";
 import mortalKombatImg from "/icons/sound/mortal-kombat.svg";
+import whipImg from "/icons/sound/whip.svg";
+import wineImg from "/icons/sound/wine.svg";
+import courtImg from "/icons/sound/court.svg";
 import badDragonImg from "/icons/Bad_Dragon_logo.svg";
 import dragonImg from "/icons/dragon1.svg";
+// import foxTailImg from "/icons/fox-tail.svg";
 
 export const Sounds: Sound[] = [
   {
@@ -91,5 +95,24 @@ export const Sounds: Sound[] = [
     name: "Dragon",
     img: dragonImg,
     file: "dragon.mp3",
+  },
+  {
+    name: "Whip",
+    img: whipImg,
+    file: "whip.mp3",
+  },
+  {
+    name: "Osmanthus Wine",
+    img: wineImg,
+    file: "Osmanthus Wine.mp3",
+  },
+  {
+    name: "Oratrice Mecanique D'Analyse Cardinale ",
+    img: courtImg,
+    file: [
+      "Oratrice Mecanique D'Analyse Cardinale 1.mp3",
+      "Oratrice Mecanique D'Analyse Cardinale 2.mp3",
+      "Oratrice Mecanique D'Analyse Cardinale 3.mp3",
+    ],
   },
 ];

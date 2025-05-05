@@ -89,7 +89,6 @@ export abstract class AbstractPuzzle<
     action: Action,
     actionData: PuzzleActions[Action]
   ): Promise<void> {
-    console.debug("sendAction", action, actionData);
     Owlbear.puzzle.sendAction(
       action as string,
       actionData,
@@ -106,7 +105,6 @@ export abstract class AbstractPuzzle<
     this.masterProcessing = true;
 
     const newPuzzleState = await this.executeAction(action, actionData);
-    console.debug("sendUpdate", newPuzzleState);
     await this.props.onStateUpdate(newPuzzleState, true);
 
     setTimeout(async () => {

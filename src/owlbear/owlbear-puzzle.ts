@@ -95,6 +95,13 @@ export class OwlbearPuzzle {
     const data: PuzzleInfo = metadata[METADATA_PUZZLE_CURRENT] as PuzzleInfo;
     if (!data || !data.puzzle) return undefined;
     data.processing = false;
+
+    // check if master is there
+    if (!(await this.isPlayerThere(data.master))) {
+      data.master = await OBR.player.getConnectionId();
+      this.saveCurrentPuzzle(data); // become master
+    }
+
     return data;
   }
 
@@ -106,5 +113,14 @@ export class OwlbearPuzzle {
     update[METADATA_PUZZLE_CURRENT] = puzzleInfo;
 
     await OBR.room.setMetadata(update);
+  }
+
+  private async isPlayerThere(connectionId: string): Promise<boolean> {
+    await this.ready;
+    const players = await OBR.party.getPlayers();
+    for (const player of players) {
+      if (player.connectionId == connectionId) return true;
+    }
+    return false;
   }
 }

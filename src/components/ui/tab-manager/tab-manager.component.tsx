@@ -1,4 +1,4 @@
-import { Component, ReactNode } from "react";
+import React, { Component, ReactNode } from "react";
 
 import "./tab-manager.css";
 
@@ -6,9 +6,12 @@ import { cssClass } from "../../../utils";
 
 interface Props {
   tabs: Tab[];
+  gmTabs: Tab[];
+  gm: boolean | Promise<boolean>;
 }
 interface State {
   index: number;
+  gm: boolean;
 }
 interface Tab {
   name: string;
@@ -20,10 +23,13 @@ export class TabManager extends Component<Props, State> {
     super(props);
     this.state = {
       index: 0,
+      gm: false,
     };
   }
 
-  async componentDidMount(): Promise<void> {}
+  async componentDidMount(): Promise<void> {
+    await this.setGm(await this.props.gm);
+  }
 
   // State
   async setStatePromise(state: State): Promise<void> {
@@ -37,15 +43,23 @@ export class TabManager extends Component<Props, State> {
     await this.setState({ ...this.state, index });
   }
 
+  get gm(): boolean {
+    return this.state.gm;
+  }
+  async setGm(gm: boolean): Promise<void> {
+    await this.setState({ ...this.state, gm });
+  }
+
   // handler
 
   // render
   render(): ReactNode {
+    const tabs = [...this.props.tabs, ...(this.gm ? this.props.gmTabs : [])];
     return (
       <>
         <div className="tab-manager">
           <div className="tab-selector">
-            {this.props.tabs.map((tab, idx) => (
+            {tabs.map((tab, idx) => (
               <div
                 className={cssClass({
                   "tab-header": true,
@@ -59,7 +73,7 @@ export class TabManager extends Component<Props, State> {
             ))}
           </div>
           <div className="tab-area">
-            {this.props.tabs.map((tab, idx) => (
+            {tabs.map((tab, idx) => (
               <div
                 className={cssClass({
                   "tab-content": true,
@@ -69,7 +83,7 @@ export class TabManager extends Component<Props, State> {
                 })}
                 key={`tab-content-${tab.name}`}
               >
-                {tab.content}
+                {React.cloneElement(tab.content as never, { gm: this.gm })}
               </div>
             ))}
           </div>

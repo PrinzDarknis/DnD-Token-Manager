@@ -11,12 +11,6 @@ export class AutoResizeTextarea extends Component<Props> {
 
   onInput() {
     if (this.textarea) {
-      console.debug("TEST", {
-        style: this.textarea.style,
-        scrollHeight: this.textarea.scrollHeight,
-        clientHeight: this.textarea.clientHeight,
-        offsetHeight: this.textarea.offsetHeight,
-      });
       this.textarea.style.height = "auto";
       this.textarea.style.height = this.textarea.scrollHeight + "px";
     }
@@ -48,6 +42,5 @@ export class AutoResizeTextarea extends Component<Props> {
 
   componentDidUpdate(): void {
     this.onInput();
-    console.log("componentDidUpdate");
   }
 }

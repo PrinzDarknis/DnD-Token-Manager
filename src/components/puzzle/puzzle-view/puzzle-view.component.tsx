@@ -10,7 +10,7 @@ import { CubeDevice, CubeDevicePuzzleInfo } from "../cube-device";
 import { T9, T9PuzzleInfo } from "../t9";
 
 interface Props {
-  gm: boolean;
+  gm?: boolean;
 }
 interface State {
   puzzle?: PuzzleInfo;
@@ -91,7 +91,7 @@ export class PuzzleView extends Component<Props, State> {
       case "Cube Device":
         return (
           <CubeDevice
-            gm={this.props.gm}
+            gm={!!this.props.gm}
             mode="view"
             onStateUpdate={(...args) => this.onStateUpdate(...args)}
             puzzleInfo={this.puzzle as CubeDevicePuzzleInfo}
@@ -100,7 +100,7 @@ export class PuzzleView extends Component<Props, State> {
       case "T9":
         return (
           <T9
-            gm={this.props.gm}
+            gm={!!this.props.gm}
             mode="view"
             onStateUpdate={(...args) => this.onStateUpdate(...args)}
             puzzleInfo={this.puzzle as T9PuzzleInfo}

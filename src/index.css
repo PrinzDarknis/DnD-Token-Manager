@@ -12,6 +12,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
+  /* Variables */
+  --standard-border: 4px solid rgba(0, 0, 0, 0.2);
+
   /* Clac Filter: https://codepen.io/sosuke/pen/Pjoqqp */
   --svg-white: invert(100%) sepia(2%) saturate(7%) hue-rotate(337deg)
     brightness(101%) contrast(101%);
@@ -70,7 +73,7 @@ button {
 }
 
 fieldset {
-  border: 4px solid rgba(0, 0, 0, 0.2);
+  border: var(--standard-border);
   border-radius: 8px;
   border-collapse: collapse;
 }

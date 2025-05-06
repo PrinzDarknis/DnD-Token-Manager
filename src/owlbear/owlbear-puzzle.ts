@@ -6,6 +6,7 @@ import {
   BROADCAST_PUZZLE_ACTION,
   BROADCAST_PUZZLE_UPDATE,
   METADATA_PUZZLE_CURRENT,
+  METADATA_PUZZLE_LIST,
 } from "./constants";
 
 interface ActionMessageData {
@@ -105,7 +106,7 @@ export class OwlbearPuzzle {
     return data;
   }
 
-  async saveCurrentPuzzle(puzzleInfo: PuzzleInfo) {
+  async saveCurrentPuzzle(puzzleInfo: PuzzleInfo): Promise<void> {
     await this.ready;
 
     // save
@@ -115,6 +116,39 @@ export class OwlbearPuzzle {
     await OBR.room.setMetadata(update);
   }
 
+  // List
+  async loadList(): Promise<PuzzleInfo[]> {
+    await this.ready;
+
+    const metadata = await OBR.room.getMetadata();
+    const puzzles: PuzzleInfo[] = metadata[
+      METADATA_PUZZLE_LIST
+    ] as PuzzleInfo[];
+    return puzzles ?? [];
+  }
+
+  async listenListUpdate(
+    onUpdate: (puzzles: PuzzleInfo[]) => void | Promise<void>
+  ): Promise<() => void> {
+    return OBR.room.onMetadataChange(async (metadata) => {
+      const puzzles: PuzzleInfo[] = metadata[
+        METADATA_PUZZLE_LIST
+      ] as PuzzleInfo[];
+      await onUpdate(puzzles ?? []);
+    });
+  }
+
+  async saveList(puzzles: PuzzleInfo<unknown, unknown>[]): Promise<void> {
+    await this.ready;
+
+    // save
+    const update: Partial<Metadata> = {};
+    update[METADATA_PUZZLE_LIST] = puzzles;
+
+    await OBR.room.setMetadata(update);
+  }
+
+  // Other
   private async isPlayerThere(connectionId: string): Promise<boolean> {
     await this.ready;
     const players = await OBR.party.getPlayers();

@@ -9,7 +9,12 @@
     }
 
     .puzzle-actions {
-      writing-mode: vertical-lr; /* center Button */
+      display: flex;
+      align-items: center;
+
+      .img-button {
+        margin-left: 1rem;
+      }
     }
   }
 }

@@ -12,12 +12,14 @@ export function ImgButton({
   active = false,
   noHover = false,
   disabled = false,
+  type = "button",
 }: {
   img: string;
   alt: string;
   active?: boolean;
   noHover?: boolean;
   disabled?: boolean;
+  type?: "button" | "reset" | "submit";
   className?:
     | string
     | {
@@ -29,7 +31,7 @@ export function ImgButton({
     typeof className == "string" ? className : cssClass(className);
   return (
     <button
-      type="button"
+      type={type}
       className="img-button"
       onClick={() => onClick()}
       disabled={disabled}

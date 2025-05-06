@@ -10,7 +10,7 @@
 
     width: var(--cube-size);
     height: var(--cube-size);
-    border: 4px solid rgba(0, 0, 0, 0.2);
+    border: var(--standard-border);
     border-radius: 8px;
   }
 

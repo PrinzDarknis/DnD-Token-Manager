@@ -6,8 +6,7 @@ import { Owlbear } from "../../../owlbear";
 import { PuzzleInfo } from "../../../model";
 import { Log } from "../../../utils";
 
-import { CubeDevice, CubeDevicePuzzleInfo } from "../cube-device";
-import { T9, T9PuzzleInfo } from "../t9";
+import { renderPuzzle } from "../render-puzzle.service";
 
 interface Props {
   gm?: boolean;
@@ -79,37 +78,15 @@ export class PuzzleView extends Component<Props, State> {
           {!this.puzzle ? (
             <div className="no-puzzle">{"No Puzzle is loaded <3"}</div>
           ) : (
-            this.renderPuzzle(this.puzzle.puzzle)
+            renderPuzzle(
+              this.puzzle,
+              "view",
+              (...args) => this.onStateUpdate(...args),
+              this.props.gm ?? false
+            )
           )}
         </div>
       </>
     );
-  }
-
-  renderPuzzle(puzzleName: string): ReactNode {
-    switch (puzzleName) {
-      case "Cube Device":
-        return (
-          <CubeDevice
-            gm={!!this.props.gm}
-            mode="view"
-            onStateUpdate={(...args) => this.onStateUpdate(...args)}
-            puzzleInfo={this.puzzle as CubeDevicePuzzleInfo}
-          />
-        );
-      case "T9":
-        return (
-          <T9
-            gm={!!this.props.gm}
-            mode="view"
-            onStateUpdate={(...args) => this.onStateUpdate(...args)}
-            puzzleInfo={this.puzzle as T9PuzzleInfo}
-          />
-        );
-
-      default:
-        Log.error("PuzzleView", "try to load unkown Puzzle", this.puzzle);
-        return "unkown Puzzle";
-    }
   }
 }

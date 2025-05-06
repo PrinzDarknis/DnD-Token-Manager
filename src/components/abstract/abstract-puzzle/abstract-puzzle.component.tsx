@@ -3,6 +3,8 @@ import { Component, ReactNode } from "react";
 import "./abstract-puzzle.css";
 
 import editImg from "/icons/edit.svg";
+import saveImg from "/icons/save.svg";
+import failedImg from "/icons/failed.svg";
 
 import { PuzzleInfo } from "../../../model";
 
@@ -18,6 +20,13 @@ interface Props<PuzzleConfig, PuzzleState> {
     newPuzzleState: PuzzleState,
     processing: boolean
   ) => void | Promise<void>;
+  onEditUpdate?: (
+    puzzle: PuzzleInfo<PuzzleConfig, PuzzleState>
+  ) => void | Promise<void>;
+  onSave?: (
+    puzzle: PuzzleInfo<PuzzleConfig, PuzzleState>
+  ) => void | Promise<void>;
+  onCancle?: () => void | Promise<void>;
 }
 interface State {
   viewEdit: boolean;
@@ -115,6 +124,18 @@ export abstract class AbstractPuzzle<
     }, this.actionTime);
   }
 
+  private async save(): Promise<void> {
+    await this.props.onSave?.(this.props.puzzleInfo);
+  }
+
+  private async cancle(): Promise<void> {
+    await this.props.onCancle?.();
+  }
+
+  protected async notifyEditPuzzleUpdate(): Promise<void> {
+    await this.props.onEditUpdate?.(this.props.puzzleInfo);
+  }
+
   // render
   render(): ReactNode {
     if (this.props.puzzleInfo.puzzle != this.puzzleName) {
@@ -137,7 +158,22 @@ export abstract class AbstractPuzzle<
             active={this.viewEdit}
           />,
         ]
-      : [];
+      : [
+          <ImgButton
+            key={`puzzle-actions-save`}
+            img={saveImg}
+            alt="Save"
+            onClick={() => this.save()}
+            active={this.viewEdit}
+          />,
+          <ImgButton
+            key={`puzzle-actions-cancle`}
+            img={failedImg}
+            alt="Cancle"
+            onClick={() => this.cancle()}
+            active={this.viewEdit}
+          />,
+        ];
 
     return (
       <>

@@ -1,2 +1,40 @@
-.puzzle-edit {
+.puzzle-edit-list {
+  margin: 1rem;
+
+  table {
+    border-collapse: collapse;
+  }
+
+  thead {
+    border-bottom: var(--standard-border);
+  }
+
+  tr:nth-child(2n) {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+
+  .table-load,
+  .table-edit {
+    text-align: center;
+
+    .img-button {
+      width: 1.2rem;
+      height: 1.2rem;
+      margin-top: 8px;
+    }
+  }
+
+  .puzzle-edit-list-new-area {
+    margin: 2rem 0;
+  }
+
+  .puzzle-edit-list-new-container {
+    select {
+      width: 7rem;
+    }
+
+    input {
+      width: 7rem;
+    }
+  }
 }

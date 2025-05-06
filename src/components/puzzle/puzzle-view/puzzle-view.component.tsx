@@ -7,6 +7,7 @@ import { PuzzleInfo } from "../../../model";
 import { Log } from "../../../utils";
 
 import { CubeDevice, CubeDevicePuzzleInfo } from "../cube-device";
+import { T9, T9PuzzleInfo } from "../t9";
 
 interface Props {
   gm: boolean;
@@ -94,6 +95,15 @@ export class PuzzleView extends Component<Props, State> {
             mode="view"
             onStateUpdate={(...args) => this.onStateUpdate(...args)}
             puzzleInfo={this.puzzle as CubeDevicePuzzleInfo}
+          />
+        );
+      case "T9":
+        return (
+          <T9
+            gm={this.props.gm}
+            mode="view"
+            onStateUpdate={(...args) => this.onStateUpdate(...args)}
+            puzzleInfo={this.puzzle as T9PuzzleInfo}
           />
         );
 

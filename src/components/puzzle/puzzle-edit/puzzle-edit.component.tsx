@@ -4,7 +4,10 @@ import "./puzzle-edit.css";
 
 import { Owlbear } from "../../../owlbear";
 
-import { CubeDevicePuzzleInfo } from "../cube-device";
+import { spaceEvenly } from "../../ui";
+
+import { CUBE_DEVICE_EXAMPLE } from "../cube-device";
+import { T9_EXAMPLE } from "../t9";
 
 type Props = object;
 type State = object;
@@ -27,24 +30,29 @@ export class PuzzleEdit extends Component<Props, State> {
 
   // render
   render(): ReactNode {
-    const data: CubeDevicePuzzleInfo = {
-      master: "XXX",
-      processing: false,
-      puzzle: "Cube Device",
-      saveName: "Temp",
-      visableName: "Test Puzzle",
-      config: {
-        nrOfCubes: 3,
-        startPositions: [0, 1, 2],
-        symbols: ["A", "B", "C", "D"],
-      },
-      state: { positions: [0, 1, 2] },
-    };
+    const buttons: ReactNode[] = [
+      <button
+        key={"puzzle-edit-button-cube-device"}
+        onClick={() => Owlbear.puzzle.sendUpdate(CUBE_DEVICE_EXAMPLE)}
+      >
+        Cube Device
+      </button>,
+      <button
+        key={"puzzle-edit-button-t9"}
+        onClick={() => Owlbear.puzzle.sendUpdate(T9_EXAMPLE)}
+      >
+        T9
+      </button>,
+    ];
 
     return (
       <>
         <div className="puzzle-edit">
-          <button onClick={() => Owlbear.puzzle.sendUpdate(data)}>Set</button>
+          {spaceEvenly(
+            buttons,
+            Math.ceil(buttons.length % 3),
+            "puzzle-edit-buttons"
+          )}
         </div>
       </>
     );

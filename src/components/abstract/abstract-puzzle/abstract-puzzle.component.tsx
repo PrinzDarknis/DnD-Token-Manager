@@ -49,7 +49,7 @@ export abstract class AbstractPuzzle<
   }
 
   // Listeners
-  protected unSubscribeActionListener?: () => void;
+  private unSubscribeActionListener?: () => void;
   async componentDidMount<Action extends keyof PuzzleActions>(): Promise<void> {
     this.unSubscribeActionListener = await Owlbear.puzzle.listenAction(
       (action: string, actionData: unknown) =>
@@ -62,7 +62,9 @@ export abstract class AbstractPuzzle<
   }
 
   // State
-  private async setStatePromise(state: State & AdditionalState): Promise<void> {
+  protected async setStatePromise(
+    state: State & AdditionalState
+  ): Promise<void> {
     return new Promise<void>((resolve) => this.setState(state, resolve));
   }
 

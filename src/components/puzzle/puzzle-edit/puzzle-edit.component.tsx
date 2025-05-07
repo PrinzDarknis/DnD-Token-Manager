@@ -3,6 +3,7 @@ import { Component, ReactNode } from "react";
 import "./puzzle-edit.css";
 import editImg from "/icons/edit.svg";
 import upImg from "/icons/up.svg";
+import downImg from "/icons/down.svg";
 import plusImg from "/icons/plus.svg";
 import trashImg from "/trash.svg";
 
@@ -14,7 +15,7 @@ import { ImgButton, spaceEvenly } from "../../ui";
 import { CUBE_DEVICE_EXAMPLE } from "../cube-device";
 import { T9_EXAMPLE } from "../t9";
 import { renderPuzzle } from "../render-puzzle.service";
-import { Log } from "../../../utils";
+import { downloadObjectAsJson, Log } from "../../../utils";
 
 type Props = object;
 interface State {
@@ -128,12 +129,47 @@ export class PuzzleEdit extends Component<Props, State> {
     await Owlbear.puzzle.saveList(this.puzzles);
   }
 
+  async export(): Promise<void> {
+    downloadObjectAsJson(
+      this.puzzles,
+      `puzzles-${new Date().toISOString().split("T")[0]}`
+    );
+  }
+
+  async import(e: React.ChangeEvent<HTMLInputElement>): Promise<void> {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async () => {
+      try {
+        const puzzles: PuzzleInfo[] = JSON.parse(reader.result as string);
+        if (!Array.isArray(puzzles))
+          throw new Error(
+            `JSON content is not an array, got ${typeof puzzles}`
+          );
+        await this.setPuzzles(puzzles);
+        await Owlbear.puzzle.saveList(this.puzzles);
+      } catch (error) {
+        Log.error(
+          "SettingsController:import",
+          "Error while reading import data",
+          error
+        );
+      }
+      // reset input
+      e.target.value = "";
+    };
+    reader.readAsText(file);
+  }
+
   // render
   render(): ReactNode {
     if (this.editPuzzle) return this.renderEdit();
     return this.renderList();
   }
 
+  protected importFileElement: HTMLInputElement | null = null;
   renderList(): ReactNode {
     return (
       <>
@@ -180,6 +216,38 @@ export class PuzzleEdit extends Component<Props, State> {
               ))}
             </tbody>
           </table>
+
+          <div className="puzzle-edit-list-save">
+            <div className="puzzle-edit-list-save-container">
+              {spaceEvenly(
+                [
+                  <ImgButton
+                    key={"puzzle-edit-list-save-export"}
+                    img={downImg}
+                    alt="export"
+                    onClick={() => this.export()}
+                  />,
+                  <ImgButton
+                    key={"puzzle-edit-list-save-import"}
+                    img={upImg}
+                    alt="import"
+                    onClick={() => this.importFileElement?.click()}
+                  />,
+                ],
+                1,
+                "puzzle-edit-list-save"
+              )}
+              <input
+                ref={(el) => {
+                  this.importFileElement = el;
+                }}
+                id="file-upload"
+                type="file"
+                onChange={(e) => this.import(e)}
+                hidden
+              />
+            </div>
+          </div>
 
           <div className="puzzle-edit-list-new-area">
             <div className="puzzle-edit-list-new-container">

@@ -38,6 +38,10 @@
     }
   }
 
+  .puzzle-edit-list-save {
+    margin: 2rem 0;
+  }
+
   .puzzle-edit-list-new-area {
     margin: 2rem 0;
   }

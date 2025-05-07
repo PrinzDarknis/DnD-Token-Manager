@@ -4,6 +4,7 @@ import "./puzzle-edit.css";
 import editImg from "/icons/edit.svg";
 import upImg from "/icons/up.svg";
 import plusImg from "/icons/plus.svg";
+import trashImg from "/trash.svg";
 
 import { Owlbear } from "../../../owlbear";
 import { PuzzleInfo } from "../../../model";
@@ -106,6 +107,27 @@ export class PuzzleEdit extends Component<Props, State> {
     }
   }
 
+  async deletePuzzle(puzzle: PuzzleInfo): Promise<void> {
+    const idx = this.puzzles.findIndex((p) => p.saveName == puzzle.saveName);
+    if (idx == -1) {
+      Log.error("PuzzleEdit:deletePuzzle", "try to delete an unkown puzzle", {
+        puzzle,
+        kownPuzzles: this.puzzles,
+      });
+      return;
+    }
+
+    if (
+      !confirm(
+        `Delete Puzzle: ${puzzle.puzzle} ${puzzle.saveName} - ${puzzle.visableName}`
+      )
+    )
+      return;
+    this.puzzles.splice(idx, 1);
+
+    await Owlbear.puzzle.saveList(this.puzzles);
+  }
+
   // render
   render(): ReactNode {
     if (this.editPuzzle) return this.renderEdit();
@@ -119,11 +141,12 @@ export class PuzzleEdit extends Component<Props, State> {
           <table className="puzzle-edit-list-table">
             <thead>
               <tr>
-                <th>Save</th>
-                <th>Name</th>
-                <th>Puzzle</th>
-                <th>Edit</th>
-                <th>Load</th>
+                <th className="th-name">Save</th>
+                <th className="th-name">Name</th>
+                <th className="th-type">Puzzle</th>
+                <th className="th-icon">Edit</th>
+                <th className="th-icon">Load</th>
+                <th className="th-icon">Delete</th>
               </tr>
             </thead>
             <tbody>
@@ -132,18 +155,25 @@ export class PuzzleEdit extends Component<Props, State> {
                   <td className="table-save-name">{puzzle.saveName}</td>
                   <td className="table-visable-name">{puzzle.visableName}</td>
                   <td className="table-visable-puzzle">{puzzle.puzzle}</td>
-                  <td className="table-edit">
+                  <td className="table-icon table-edit">
                     <ImgButton
                       img={editImg}
                       alt="edit"
                       onClick={() => this.setEditPuzzle(puzzle)}
                     />
                   </td>
-                  <td className="table-load">
+                  <td className="table-icon table-load">
                     <ImgButton
                       img={upImg}
                       alt="load"
                       onClick={() => this.loadPuzzle(puzzle)}
+                    />
+                  </td>
+                  <td className="table-icon table-delete">
+                    <ImgButton
+                      img={trashImg}
+                      alt="delete"
+                      onClick={() => this.deletePuzzle(puzzle)}
                     />
                   </td>
                 </tr>

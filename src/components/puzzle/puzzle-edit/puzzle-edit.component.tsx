@@ -36,8 +36,8 @@ export class PuzzleEdit extends Component<Props, State> {
   protected unSubscribeUpdateListener?: () => void;
   async componentDidMount(): Promise<void> {
     if (this.DEBUG) {
+      await this.loadPuzzle(this.DEBUG);
       await this.setEditPuzzle(this.DEBUG);
-      this.loadPuzzle(this.DEBUG);
     }
 
     await this.setPuzzles(await Owlbear.puzzle.loadList());

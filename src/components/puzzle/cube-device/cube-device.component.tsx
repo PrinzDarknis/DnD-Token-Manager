@@ -107,6 +107,11 @@ export class CubeDevice extends AbstractPuzzle<
     );
   }
 
+  // Edit
+  async onSave(): Promise<PuzzleInfo<PuzzleConfig, PuzzleState> | undefined> {
+    return this.props.puzzleInfo;
+  }
+
   renderEdit(): ReactNode {
     return <div className="cube-device"></div>;
   }

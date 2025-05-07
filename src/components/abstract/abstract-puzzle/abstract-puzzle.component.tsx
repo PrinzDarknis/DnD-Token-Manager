@@ -48,6 +48,7 @@ export abstract class AbstractPuzzle<
   ): Promise<PuzzleState>;
   abstract renderView(): ReactNode;
   abstract renderEdit(): ReactNode;
+  abstract onSave(): Promise<PuzzleInfo<PuzzleConfig, PuzzleState> | undefined>;
 
   constructor(props: Props<PuzzleConfig, PuzzleState>) {
     super(props);
@@ -125,11 +126,22 @@ export abstract class AbstractPuzzle<
   }
 
   private async save(): Promise<void> {
-    await this.props.onSave?.(this.props.puzzleInfo);
+    if (!this.props.puzzleInfo.visableName) {
+      alert("Visibal Name can't be empty");
+      return;
+    }
+
+    const puzzle = await this.onSave();
+    if (puzzle) await this.props.onSave?.(puzzle);
   }
 
   private async cancle(): Promise<void> {
     await this.props.onCancle?.();
+  }
+
+  private async updateVisableName(name: string): Promise<void> {
+    this.props.puzzleInfo.visableName = name;
+    await this.setState({ ...this.state });
   }
 
   protected async notifyEditPuzzleUpdate(): Promise<void> {
@@ -179,9 +191,18 @@ export abstract class AbstractPuzzle<
       <>
         <div className="abstract-puzzle">
           <div className="puzzle-header">
-            <span className="puzzle-name">
-              {this.props.puzzleInfo.visableName}
-            </span>
+            {view ? (
+              <span className="puzzle-name">
+                {this.props.puzzleInfo.visableName}
+              </span>
+            ) : (
+              <input
+                type="text"
+                className="puzzle-name puzzle-name-edit"
+                value={this.props.puzzleInfo.visableName}
+                onChange={(e) => this.updateVisableName(e.target.value)}
+              />
+            )}
             {this.props.gm && <span className="puzzle-actions">{actions}</span>}
           </div>
           <div className="puzzle-area">

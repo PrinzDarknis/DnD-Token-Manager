@@ -9,11 +9,19 @@ import { PlayerInfo, PuzzleInfo } from "../../../model";
 import { Owlbear } from "../../../owlbear";
 
 import { AbstractPuzzle } from "../../abstract";
-import { AutoResizeTextarea, ImgButton, spaceEvenly, Tooltip } from "../../ui";
+import {
+  AutoResizeTextarea,
+  ImgButton,
+  NumberEdit,
+  Select,
+  spaceEvenly,
+  Tooltip,
+} from "../../ui";
 
 import { ALPHABET, CODED_ALPHABET } from "./t9.mockdata";
 import { IT9 } from "./t9.interface";
 import { t9Code, t9Decode, t9IsValideCode } from "./t9-decode.service";
+import { MultiPick } from "../../ui/input/multi-pick";
 
 interface PuzzleConfig {
   /** 9 Symbols a 3 Letters */
@@ -34,6 +42,13 @@ interface AdditionalState {
     targetText: string;
     complexDecode: boolean;
   };
+  edit?: EditState;
+}
+interface EditState {
+  symbols: string[];
+  letters: string[][];
+  unsetSymbols: string[];
+  unsetLetters: string[];
 }
 
 export type T9PuzzleInfo = PuzzleInfo<PuzzleConfig, PuzzleState> & {
@@ -304,8 +319,180 @@ export class T9 extends AbstractPuzzle<
     );
   }
 
+  // Puzzle - Edit AdditionalState
+  get edit(): EditState | undefined {
+    return this.state.edit;
+  }
+
+  async notifyEditUpdate(): Promise<void> {
+    await this.setState({ ...this.state });
+  }
+
+  async loadEdit(): Promise<void> {
+    const symbols: string[] = [];
+    const letters: string[][] = [];
+    let unsetLetters: string[] = ALPHABET;
+
+    for (const [symbol, affiliatLetters] of Object.entries(
+      this.puzzleConfig.code
+    )) {
+      symbols.push(symbol);
+      letters.push(affiliatLetters);
+      unsetLetters = unsetLetters.filter(
+        (letter) => !affiliatLetters.includes(letter)
+      );
+    }
+
+    const edit: EditState = {
+      symbols,
+      letters,
+      unsetLetters,
+      unsetSymbols: CODED_ALPHABET.filter((s) => !symbols.includes(s)),
+    };
+    await this.setStatePromise({ ...this.state, edit });
+  }
+
+  async reconstructPuzzle(): Promise<T9PuzzleInfo> {
+    if (!this.edit) {
+      Log.error("T9:reconstructPuzzle", "edit is not defined");
+      throw new Error("edit is not defined");
+    }
+
+    const playerReadable: string[][] = [];
+    const code: IT9 = {};
+
+    for (let idx = 0; idx < this.edit.symbols.length; idx++) {
+      const symbol = this.edit.symbols[idx];
+      const letters = this.edit.letters[idx];
+      code[symbol] = letters;
+      playerReadable.push([]);
+    }
+
+    const puzzle: T9PuzzleInfo = {
+      puzzle: "T9",
+      master: this.props.puzzleInfo.master,
+      saveName: this.props.puzzleInfo.saveName,
+      visableName: this.props.puzzleInfo.visableName,
+      processing: false,
+      config: {
+        code,
+      },
+      state: { playerReadable },
+    };
+
+    return puzzle;
+  }
+
+  async editSymbolLength(n: number): Promise<void> {
+    if (!this.edit) return;
+
+    while (n > this.edit.symbols.length) {
+      this.edit.symbols.push(this.edit.unsetSymbols.pop() ?? "");
+      this.edit.letters.push([]);
+    }
+    while (n < this.edit.symbols.length) {
+      const deletedSymbol = this.edit.symbols.pop();
+      const deletedLetters = this.edit.letters.pop();
+      if (deletedSymbol) this.edit.unsetSymbols.unshift(deletedSymbol);
+      if (deletedLetters) this.edit.unsetLetters.unshift(...deletedLetters);
+    }
+
+    await this.notifyEditUpdate();
+  }
+
+  async editSymbolUpdate(symbol: string, idx: number): Promise<void> {
+    if (!this.edit) return;
+    this.edit.symbols[idx] = symbol;
+    await this.notifyEditUpdate();
+  }
+
+  async editLettersUpdate(letters: string[], idx: number): Promise<void> {
+    if (!this.edit) return;
+    this.edit.letters[idx] = letters;
+
+    // update unsetLetters
+    let unsetLetters: string[] = ALPHABET;
+    for (const affiliatLetters of this.edit.letters) {
+      unsetLetters = unsetLetters.filter(
+        (letter) => !affiliatLetters.includes(letter)
+      );
+    }
+    this.edit.unsetLetters = unsetLetters;
+
+    await this.notifyEditUpdate();
+  }
+
   // Puzzle - Edit
+  async onSave(): Promise<PuzzleInfo<PuzzleConfig, PuzzleState> | undefined> {
+    if (!this.edit) return;
+    if (this.edit.unsetLetters.length > 0)
+      if (
+        !confirm(
+          `The following letters are not set: ${this.edit?.unsetLetters}`
+        )
+      )
+        return;
+
+    return await this.reconstructPuzzle();
+  }
+
   renderEdit(): ReactNode {
-    return <div className="t9"></div>;
+    if (!this.edit) {
+      this.loadEdit();
+      return <div className="t9">Loading...</div>;
+    }
+
+    return (
+      <div className="t9">
+        <div className="config-area">
+          <div className="config-container">
+            <div className="inline-edit symbols-number">
+              <div className="inline-edit-lable symbols-number-lable">
+                Number of Symbols:
+              </div>
+              <div className="inline-edit-edit symbols-number-edit">
+                <NumberEdit
+                  value={this.edit.symbols.length}
+                  steps={[1]}
+                  onChange={(n) => this.editSymbolLength(n)}
+                  min={1}
+                  max={9}
+                />
+              </div>
+            </div>
+            <div className="symbols">
+              <div className="multiline-edit">
+                <div className="multiline-edit-edit">
+                  {spaceEvenly(
+                    this.edit.symbols.map((symbol, idx) => (
+                      <div key={`symbols-area-${idx}`} className="symbols-area">
+                        <div className="select-container">
+                          <Select
+                            value={symbol}
+                            options={[symbol, ...this.edit!.unsetSymbols]}
+                            onChange={(s) => this.editSymbolUpdate(s, idx)}
+                          />
+                        </div>
+                        <div className="letters-container">
+                          <MultiPick
+                            key={`test-${idx}`}
+                            value={this.edit!.letters[idx]}
+                            options={this.edit!.unsetLetters}
+                            // options={[...ALPHABET]}
+                            onChange={(l) => this.editLettersUpdate(l, idx)}
+                          />
+                        </div>
+                      </div>
+                    )),
+                    Math.ceil(this.edit.symbols.length / 3),
+                    "symbols-area"
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 }

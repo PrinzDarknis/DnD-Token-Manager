@@ -1,4 +1,5 @@
 export * from "./utils";
+export * from "./input";
 
 export * from "./auto-resize-textarea";
 export * from "./img-button";

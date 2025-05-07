@@ -208,6 +208,7 @@ export class TimeManager extends Component<Props, State> {
             <div className="time-manager">
               <span className="lable">GameDay:</span>
               <span className="time-control">
+                {/* // TODO NumberEdit */}
                 {spaceEvenly([
                   <span
                     key={`time-control-button-<<<`}

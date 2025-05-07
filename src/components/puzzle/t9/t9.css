@@ -1,6 +1,7 @@
 .t9 {
   --cube-size: 4rem;
   --cube-size-with-border: calc(var(--cube-size) + (2 * 4px));
+  --max-width: 23rem;
 
   .t {
     display: flex;
@@ -84,6 +85,48 @@
 
     ~ .tooltiptext {
       color: orangered;
+    }
+  }
+
+  /* Edit */
+  .config-area {
+    max-width: 480px;
+
+    .symbols {
+      margin-top: 1rem;
+    }
+
+    .inline-edit {
+      display: flex;
+
+      .inline-edit-lable {
+        width: 11rem;
+      }
+
+      .inline-edit-edit {
+        width: 10rem;
+      }
+    }
+
+    .multiline-edit-edit {
+      .even-row {
+        margin: 1rem 0;
+      }
+    }
+
+    .symbols-area {
+      width: 4rem;
+      place-items: center;
+
+      .select-container {
+        width: 3rem;
+        height: 3rem;
+      }
+
+      .letters-container {
+        width: 4rem;
+        margin-top: 1rem;
+      }
     }
   }
 }

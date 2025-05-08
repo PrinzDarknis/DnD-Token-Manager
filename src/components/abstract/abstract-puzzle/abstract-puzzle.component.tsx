@@ -125,6 +125,18 @@ export abstract class AbstractPuzzle<
     }, this.actionTime);
   }
 
+  private async viewSave(): Promise<void> {
+    const puzzle = { ...this.props.puzzleInfo };
+    puzzle.processing = false;
+
+    const oldPuzzles = await Owlbear.puzzle.loadList();
+    const idx = oldPuzzles.findIndex((p) => p.saveName == puzzle.saveName);
+    if (idx == -1) oldPuzzles.push(puzzle);
+    else oldPuzzles[idx] = puzzle;
+
+    await Owlbear.puzzle.saveList(oldPuzzles);
+  }
+
   private async save(): Promise<void> {
     if (!this.props.puzzleInfo.visableName) {
       alert("Visibal Name can't be empty");
@@ -162,6 +174,12 @@ export abstract class AbstractPuzzle<
     const view = this.props.mode == "view";
     const actions: ReactNode[] = view
       ? [
+          <ImgButton
+            key={`puzzle-actions-save`}
+            img={saveImg}
+            alt="Save"
+            onClick={() => this.viewSave()}
+          />,
           <ImgButton
             key={`puzzle-actions-edit`}
             img={editImg}

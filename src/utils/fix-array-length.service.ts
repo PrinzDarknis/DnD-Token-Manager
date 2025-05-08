@@ -8,11 +8,11 @@
 export function fixArrayLength<T>(
   array: T[],
   targetLength: number,
-  getfillValue: () => T
+  getfillValue: (idx: number) => T
 ): T[] {
   const deletedArr: T[] = [];
   while (targetLength > array.length) {
-    array.push(getfillValue());
+    array.push(getfillValue(array.length));
   }
   while (targetLength < array.length) {
     const deleted = array.pop();

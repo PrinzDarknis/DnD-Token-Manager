@@ -9,7 +9,8 @@ export const CUBE_DEVICE_EXAMPLE: CubeDevicePuzzleInfo = {
   config: {
     nrOfCubes: 3,
     startPositions: [0, 1, 2],
-    symbols: ["A", "B", "C", "D"],
+    symbols: ["☿", "♀", "⚥", "♂"],
+    links: [[0], [1], [2]],
   },
   state: { positions: [0, 1, 2] },
 };

@@ -21,6 +21,7 @@ interface PuzzleConfig {
   nrOfCubes: number;
   symbols: string[];
   startPositions: number[];
+  links: number[][];
 }
 interface PuzzleState {
   positions: number[];
@@ -67,9 +68,11 @@ export class CubeDevice extends AbstractPuzzle<
   ): Promise<PuzzleState> {
     switch (action) {
       case "activate":
-        this.puzzleState.positions[actionData.cubeNr] =
-          (this.puzzleState.positions[actionData.cubeNr] + 1) %
-          this.puzzleConfig.symbols.length;
+        this.puzzleConfig.links[actionData.cubeNr].forEach((linkedCube) => {
+          this.puzzleState.positions[linkedCube] =
+            (this.puzzleState.positions[linkedCube] + 1) %
+            this.puzzleConfig.symbols.length;
+        });
         return this.puzzleState;
 
       default:
@@ -139,7 +142,13 @@ export class CubeDevice extends AbstractPuzzle<
   private async editUpdateNrCubes(nr: number): Promise<void> {
     this.puzzleConfig.nrOfCubes = nr;
     fixArrayLength(this.puzzleConfig.startPositions, nr, () => 0);
+    fixArrayLength(this.puzzleConfig.links, nr, (idx) => [idx]);
     fixArrayLength(this.puzzleState.positions, nr, () => 0);
+
+    // fix Links
+    this.puzzleConfig.links = this.puzzleConfig.links.map((links) =>
+      links.filter((cubeIdx) => cubeIdx < nr)
+    );
 
     this.notifyEditPuzzleUpdate();
   }
@@ -157,6 +166,14 @@ export class CubeDevice extends AbstractPuzzle<
     if (symbolIdx < 0) return;
 
     this.puzzleConfig.startPositions[cubeIdx] = symbolIdx;
+    this.notifyEditPuzzleUpdate();
+  }
+
+  private async editUpdateLinks(
+    linkedCubs: number[],
+    cubeIdx: number
+  ): Promise<void> {
+    this.puzzleConfig.links[cubeIdx] = linkedCubs;
     this.notifyEditPuzzleUpdate();
   }
 
@@ -222,6 +239,25 @@ export class CubeDevice extends AbstractPuzzle<
                 )),
                 Math.ceil(this.puzzleConfig.startPositions.length / 5),
                 "start-positions"
+              )}
+            </div>
+          </div>
+          <div className="multiline-edit link-select">
+            <div className="multiline-edit-lable link-select-lable">
+              Start Positions:
+            </div>
+            <div className="multiline-edit-edit link-select-edit">
+              {spaceEvenly(
+                this.puzzleConfig.links.map((linkedCubes, idx) => (
+                  <MultiPick<number>
+                    key={`link-select-${idx}`}
+                    value={linkedCubes}
+                    options={[...Array(this.puzzleConfig.nrOfCubes).keys()]}
+                    onChange={(links) => this.editUpdateLinks(links, idx)}
+                  />
+                )),
+                Math.ceil(this.puzzleConfig.startPositions.length / 5),
+                "link-select"
               )}
             </div>
           </div>

@@ -51,7 +51,10 @@
   }
 
   &.cube-device-edit {
+    margin-bottom: 1rem;
+
     .inline-edit {
+      margin-top: 1rem;
       display: flex;
 
       .inline-edit-lable {
@@ -64,6 +67,8 @@
     }
 
     .multiline-edit {
+      margin-top: 1rem;
+
       .multiline-edit-lable {
       }
 
@@ -83,8 +88,10 @@
       }
     }
 
-    .start-positions-edit {
-      .select {
+    .start-positions-edit,
+    .link-select-edit {
+      .select,
+      .multi-pick {
         width: 3.5rem;
       }
     }

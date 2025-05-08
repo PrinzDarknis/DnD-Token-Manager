@@ -26,7 +26,8 @@ async function getCurrentVersion(file) {
  */
 async function versionUpdate(files) {
   const [major, minor, patch] = await getCurrentVersion(files[0]);
-  console.log({ major, minor, patch });
+  console.log("old Version :", { major, minor, patch });
+  console.log("new Version :", { major, minor, patch: patch + 1 });
   for (const file of files) {
     const rawData = await readFile(file);
     const data = JSON.parse(rawData);

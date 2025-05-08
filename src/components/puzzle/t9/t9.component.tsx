@@ -403,6 +403,8 @@ export class T9 extends AbstractPuzzle<
 
   async editSymbolUpdate(symbol: string, idx: number): Promise<void> {
     if (!this.edit) return;
+    this.edit.unsetSymbols.push(this.edit.symbols[idx]);
+    this.edit.unsetSymbols = this.edit.unsetSymbols.filter((s) => s != symbol);
     this.edit.symbols[idx] = symbol;
     await this.notifyEditUpdate();
   }

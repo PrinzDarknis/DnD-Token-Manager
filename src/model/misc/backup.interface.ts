@@ -1,4 +1,4 @@
-import { Character } from "../character";
+import { ICharacter } from "../character";
 import { PuzzleInfo } from "../puzzle";
 import { GlobalSettings } from "../settings";
 
@@ -8,7 +8,7 @@ export interface Backup {
   type: "Backup" | "Import";
   date: number;
   settings: GlobalSettings;
-  character: Character[];
+  character: ICharacter[];
   timeInfo: TimeInfo;
   puzzle: { current: PuzzleInfo | undefined; list: PuzzleInfo[] };
 }

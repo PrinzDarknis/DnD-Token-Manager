@@ -1,6 +1,12 @@
 import OBR, { Metadata } from "@owlbear-rodeo/sdk";
 
-import { GlobalSettings, DefaultGlobalSettings, Sound, Backup } from "../model";
+import {
+  GlobalSettings,
+  DefaultGlobalSettings,
+  Sound,
+  Backup,
+  Character,
+} from "../model";
 import { Log } from "../utils";
 
 import {
@@ -114,7 +120,9 @@ export class OwlbearSettings {
       type: "Backup",
       date: Date.now(),
       settings: await Owlbear.settings.load(),
-      character: Object.values(await Owlbear.character.loadAll()),
+      character: Object.values(await Owlbear.character.loadAll()).map((c) =>
+        c.toSimpleObject()
+      ),
       timeInfo: await Owlbear.time.load(),
       puzzle: {
         current: await Owlbear.puzzle.loadCurrentPuzzle(),
@@ -158,7 +166,11 @@ export class OwlbearSettings {
 
   async loadBackup(backup: Backup): Promise<void> {
     await Owlbear.settings.save(backup.settings);
-    await Owlbear.character.overwriteAll(backup.character);
+    await Owlbear.character.overwriteAll(
+      backup.character
+        .map((c) => Character.restore(c))
+        .filter((c) => typeof c != "undefined")
+    );
     await Owlbear.time.save(backup.timeInfo);
     await Owlbear.puzzle.saveCurrentPuzzle(backup.puzzle.current);
     await Owlbear.puzzle.saveList(backup.puzzle.list);

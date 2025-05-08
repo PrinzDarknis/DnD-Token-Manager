@@ -107,7 +107,7 @@ export class OwlbearPuzzle {
     return data;
   }
 
-  async saveCurrentPuzzle(puzzleInfo: PuzzleInfo): Promise<void> {
+  async saveCurrentPuzzle(puzzleInfo: PuzzleInfo | undefined): Promise<void> {
     await this.ready;
 
     // save

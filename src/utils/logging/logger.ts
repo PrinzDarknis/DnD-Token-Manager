@@ -1,7 +1,7 @@
 import { LogLevel } from "./log-level.enum";
 
 export class Logger {
-  logLevel: LogLevel = LogLevel.TRACE;
+  logLevel: LogLevel = LogLevel.DEBUG;
 
   protected log(
     level: LogLevel,

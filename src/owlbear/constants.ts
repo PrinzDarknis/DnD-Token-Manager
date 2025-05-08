@@ -21,3 +21,5 @@ export const BROADCAST_PUZZLE_UPDATE = `${BROADCAST_PUZZLE}/update`;
 export const HTML_PRODUCTION_PREFIX = "/DnD-Token-Manager";
 
 export const DIR_SOUND = `${DEV_MODE ? "" : HTML_PRODUCTION_PREFIX}/sounds`;
+
+export const STORAGE_KEY_BACKUPS = "dnd-token-manager/backup";

@@ -174,7 +174,7 @@ export class PuzzleEdit extends Component<Props, State> {
     return (
       <>
         <div className="puzzle-edit-list">
-          <table className="puzzle-edit-list-table">
+          <table className="puzzle-edit-list-table design-table">
             <thead>
               <tr>
                 <th className="th-name">Save</th>

@@ -77,3 +77,36 @@ fieldset {
   border-radius: 8px;
   border-collapse: collapse;
 }
+
+.design-table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+
+  thead {
+    border-bottom: var(--standard-border);
+  }
+
+  th {
+    text-align: left;
+  }
+
+  tr:nth-child(2n) {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+
+  .th-icon {
+    visibility: collapse;
+    width: 1.5rem;
+  }
+
+  .table-icon {
+    text-align: center;
+
+    .img-button {
+      width: 1.2rem;
+      height: 1.2rem;
+      margin-top: 8px;
+    }
+  }
+}

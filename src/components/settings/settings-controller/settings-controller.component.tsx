@@ -1,9 +1,13 @@
 import React, { Component, ReactNode } from "react";
 
 import "./settings-controller.css";
+import upImg from "/icons/up.svg";
+import downImg from "/icons/down.svg";
+import trashImg from "/trash.svg";
+import plusImg from "/icons/plus.svg";
 
 import { Owlbear } from "../../../owlbear";
-import { downloadObjectAsJson, Log } from "../../../utils";
+import { downloadObjectAsJson, goodTimeString, Log } from "../../../utils";
 import {
   DefaultGlobalSettings,
   GlobalSettings,
@@ -12,13 +16,16 @@ import {
   PersonalSettingsController,
   ICharacter,
   Character,
+  Backup,
 } from "../../../model";
+import { ImgButton, readFile, spaceEvenly } from "../../ui";
 
 type Props = object;
 interface State {
   gm: boolean;
   globalSettings: GlobalSettings;
   personalSettings: PersonalSettings;
+  backups: Backup[];
 }
 
 export class SettingsController extends Component<Props, State> {
@@ -28,14 +35,16 @@ export class SettingsController extends Component<Props, State> {
       gm: false,
       globalSettings: DefaultGlobalSettings,
       personalSettings: DefaultPersonalSettings,
+      backups: [],
     };
   }
 
   async componentDidMount(): Promise<void> {
-    await this.setGM(await Owlbear.isGM());
     await this.setStatePromise({
       ...this.state,
+      gm: await Owlbear.isGM(),
       personalSettings: PersonalSettingsController.load(),
+      backups: await Owlbear.settings.loadBackups(),
     });
     if (this.gm) {
       await this.setStatePromise({
@@ -61,8 +70,12 @@ export class SettingsController extends Component<Props, State> {
   get gm(): boolean {
     return this.state.gm;
   }
-  async setGM(gm: boolean): Promise<void> {
-    await this.setStatePromise({ ...this.state, gm });
+
+  get backups(): Backup[] {
+    return this.state.backups;
+  }
+  async setBackups(backups: Backup[]): Promise<void> {
+    await this.setStatePromise({ ...this.state, backups });
   }
 
   async updateGlobalSettings<K extends keyof GlobalSettings>(
@@ -87,7 +100,9 @@ export class SettingsController extends Component<Props, State> {
     PersonalSettingsController.save(settings);
   }
 
-  // handler
+  // Character Im- and Export
+  protected importCharacterFileElement: HTMLInputElement | null = null;
+
   async export(): Promise<void> {
     const chars = await Owlbear.character.loadAll();
     const exportData = Object.values(chars).map((char) =>
@@ -128,7 +143,44 @@ export class SettingsController extends Component<Props, State> {
     reader.readAsText(file);
   }
 
-  protected importFileElement: HTMLInputElement | null = null;
+  // Backups
+  protected importBackupFileElement: HTMLInputElement | null = null;
+
+  async createBackup(): Promise<void> {
+    await this.setBackups(await Owlbear.settings.createBackup());
+  }
+
+  async deleteBackup(
+    type: Backup["type"],
+    date: Backup["date"]
+  ): Promise<void> {
+    await this.setBackups(await Owlbear.settings.deleteBackup(type, date));
+  }
+
+  async importBackup(e: React.ChangeEvent<HTMLInputElement>): Promise<void> {
+    const backup = await readFile<Backup>(e.target.files?.[0]);
+    e.target.value = "";
+    if (!backup) return;
+    await this.setBackups(await Owlbear.settings.importBackup(backup));
+  }
+
+  async exportBackup(backup: Backup): Promise<void> {
+    downloadObjectAsJson(backup, this.getBackupName(backup));
+  }
+
+  async loadBackup(backup: Backup): Promise<void> {
+    if (
+      !confirm(
+        "Are you sure you want to load this backup? It's overwrites all current data."
+      )
+    )
+      return;
+    await Owlbear.settings.loadBackup(backup);
+  }
+
+  private getBackupName(backup: Backup): string {
+    return `${backup.type} ${goodTimeString(new Date(backup.date))}`;
+  }
 
   // render
   render(): ReactNode {
@@ -154,7 +206,7 @@ export class SettingsController extends Component<Props, State> {
                   <button
                     className="char-import"
                     type="button"
-                    onClick={() => this.importFileElement?.click()}
+                    onClick={() => this.importCharacterFileElement?.click()}
                   >
                     Import
                   </button>
@@ -168,7 +220,7 @@ export class SettingsController extends Component<Props, State> {
                   </button>
                   <input
                     ref={(el) => {
-                      this.importFileElement = el;
+                      this.importCharacterFileElement = el;
                     }}
                     id="file-upload"
                     type="file"
@@ -197,6 +249,86 @@ export class SettingsController extends Component<Props, State> {
                   <label htmlFor="global-settings-plugin-bubbles">
                     Stat Bubbles for D&D
                   </label>
+                </div>
+              </fieldset>
+              <fieldset>
+                <legend>
+                  <h3>Backups</h3>
+                </legend>
+                <div className="setting setting-table backup-table">
+                  <table className="design-table">
+                    <thead>
+                      <tr>
+                        <td className="setting-table-header">Name</td>
+                        <td className="setting-table-header th-icon">Load</td>
+                        <td className="setting-table-header th-icon">
+                          Download
+                        </td>
+                        <td className="setting-table-header th-icon">Delete</td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {this.backups.map((backup, idx) => (
+                        <tr key={`setting-table-row-${idx}`}>
+                          <td className="setting-table-data setting-table-data-name">
+                            {this.getBackupName(backup)}
+                          </td>
+                          <td className="setting-table-data table-icon">
+                            <ImgButton
+                              img={upImg}
+                              alt="load"
+                              onClick={() => this.loadBackup(backup)}
+                            />
+                          </td>
+                          <td className="setting-table-data table-icon">
+                            <ImgButton
+                              img={downImg}
+                              alt="download"
+                              onClick={() => this.exportBackup(backup)}
+                            />
+                          </td>
+                          <td className="setting-table-data table-icon">
+                            <ImgButton
+                              img={trashImg}
+                              alt="delete"
+                              onClick={() =>
+                                this.deleteBackup(backup.type, backup.date)
+                              }
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="setting setting-buttons backup-buttons">
+                  {spaceEvenly(
+                    [
+                      <ImgButton
+                        key={"backup-general-buttons-create"}
+                        img={plusImg}
+                        alt="Create Backup"
+                        onClick={() => this.createBackup()}
+                      />,
+                      <ImgButton
+                        key={"backup-general-buttons-import"}
+                        img={upImg}
+                        alt="Import"
+                        onClick={() => this.importBackupFileElement?.click()}
+                      />,
+                    ],
+                    1,
+                    "backup-general-buttons"
+                  )}
+                  <input
+                    ref={(el) => {
+                      this.importBackupFileElement = el;
+                    }}
+                    id="file-upload-backup"
+                    type="file"
+                    onChange={(e) => this.importBackup(e)}
+                    hidden
+                  />
                 </div>
               </fieldset>
             </fieldset>

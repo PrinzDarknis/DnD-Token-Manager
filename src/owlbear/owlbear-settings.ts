@@ -1,9 +1,15 @@
 import OBR, { Metadata } from "@owlbear-rodeo/sdk";
 
-import { GlobalSettings, DefaultGlobalSettings, Sound } from "../model";
+import { GlobalSettings, DefaultGlobalSettings, Sound, Backup } from "../model";
 import { Log } from "../utils";
 
-import { DIR_SOUND, BROADCAST, METADATA_SETTINGS } from "./constants";
+import {
+  DIR_SOUND,
+  BROADCAST,
+  METADATA_SETTINGS,
+  STORAGE_KEY_BACKUPS,
+} from "./constants";
+import { Owlbear } from ".";
 
 export class OwlbearSettings {
   protected readonly ready: Promise<void>;
@@ -87,5 +93,81 @@ export class OwlbearSettings {
     await OBR.broadcast.sendMessage(`${BROADCAST}/sound`, file, {
       destination: "ALL",
     });
+  }
+
+  // Backup
+  private getBackupStorageKey(): string {
+    const roomName = OBR.room.id;
+    const storageKey = `${STORAGE_KEY_BACKUPS}/${roomName}`;
+    return storageKey;
+  }
+
+  private async saveBackupList(backups: Backup[]): Promise<Backup[]> {
+    localStorage.setItem(this.getBackupStorageKey(), JSON.stringify(backups));
+    return backups;
+  }
+
+  async createBackup(): Promise<Backup[]> {
+    await this.ready;
+
+    const backup: Backup = {
+      type: "Backup",
+      date: Date.now(),
+      settings: await Owlbear.settings.load(),
+      character: Object.values(await Owlbear.character.loadAll),
+      timeInfo: await Owlbear.time.load(),
+      puzzle: {
+        current: await Owlbear.puzzle.loadCurrentPuzzle(),
+        list: await Owlbear.puzzle.loadList(),
+      },
+    };
+
+    const oldBackups = await this.loadBackups();
+    oldBackups.push(backup);
+    return await this.saveBackupList(oldBackups);
+  }
+
+  async importBackup(backup: Backup): Promise<Backup[]> {
+    await this.ready;
+    backup.type = "Import";
+    const oldBackups = await this.loadBackups();
+    oldBackups.push(backup);
+    return await this.saveBackupList(oldBackups);
+  }
+
+  async loadBackups(): Promise<Backup[]> {
+    const rawBackups = localStorage.getItem(
+      this.getBackupStorageKey()
+    ) as string;
+    try {
+      const backups = JSON.parse(rawBackups);
+      if (!backups) return [];
+      if (!Array.isArray(backups)) {
+        Log.error("OwlbearSettings:OwlbearSettings", "unkown format", backups);
+        return [];
+      }
+      return backups;
+    } catch {
+      return [];
+    }
+  }
+
+  async loadBackup(backup: Backup): Promise<void> {
+    await Owlbear.settings.save(backup.settings);
+    await Owlbear.character.overwriteAll(backup.character);
+    await Owlbear.time.save(backup.timeInfo);
+    await Owlbear.puzzle.saveCurrentPuzzle(backup.puzzle.current);
+    await Owlbear.puzzle.saveList(backup.puzzle.list);
+  }
+
+  async deleteBackup(
+    type: Backup["type"],
+    date: Backup["date"]
+  ): Promise<Backup[]> {
+    const oldBackups = await this.loadBackups();
+    const filteredBackups = oldBackups.filter(
+      (backups) => backups.date != date || backups.type != type
+    );
+    return await this.saveBackupList(filteredBackups);
   }
 }

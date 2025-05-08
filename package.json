@@ -8,6 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "version-update": "node .\\version-update.js",
+    "predeploy": "npm run version-update && npm run build",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {

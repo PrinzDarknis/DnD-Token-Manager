@@ -60,4 +60,4 @@ export const ALPHABET = [
   "Z",
 ];
 
-export const CODED_ALPHABET = shuffle(SYMBOLS.slice(0, 26));
+export const CODED_ALPHABET = shuffle(SYMBOLS.slice(0, 27));

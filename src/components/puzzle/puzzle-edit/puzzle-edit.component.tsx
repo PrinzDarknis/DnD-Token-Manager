@@ -302,13 +302,16 @@ export class PuzzleEdit extends Component<Props, State> {
       <>
         <div className="puzzle-edit-edit">
           {renderPuzzle(
+            "puzzle-edit-edit",
             this.editPuzzle!,
             "edit",
-            (newPuzzleState: unknown) =>
-              this.setEditPuzzle({
-                ...this.editPuzzle!,
-                state: newPuzzleState,
-              }),
+            (newPuzzleState: unknown) => {
+              if (this.editPuzzle)
+                this.setEditPuzzle({
+                  ...this.editPuzzle,
+                  state: newPuzzleState,
+                });
+            },
             true,
             (puzzle: PuzzleInfo) => this.setEditPuzzle(puzzle),
             (puzzle: PuzzleInfo) => this.savePuzzle(puzzle),

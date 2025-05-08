@@ -7,6 +7,7 @@ import { CubeDevice, CubeDevicePuzzleInfo } from "./cube-device";
 import { T9, T9PuzzleInfo } from "./t9";
 
 export function renderPuzzle(
+  key: string,
   puzzle: PuzzleInfo,
   mode: "view" | "edit",
   onStateUpdate: (
@@ -22,6 +23,7 @@ export function renderPuzzle(
     case "Cube Device":
       return (
         <CubeDevice
+          key={key}
           gm={gm}
           mode={mode}
           puzzleInfo={puzzle as CubeDevicePuzzleInfo}
@@ -34,6 +36,7 @@ export function renderPuzzle(
     case "T9":
       return (
         <T9
+          key={key}
           gm={gm}
           mode={mode}
           puzzleInfo={puzzle as T9PuzzleInfo}

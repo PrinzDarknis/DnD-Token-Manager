@@ -79,6 +79,7 @@ export class PuzzleView extends Component<Props, State> {
             <div className="no-puzzle">{"No Puzzle is loaded <3"}</div>
           ) : (
             renderPuzzle(
+              "puzzle-view",
               this.puzzle,
               "view",
               (...args) => this.onStateUpdate(...args),

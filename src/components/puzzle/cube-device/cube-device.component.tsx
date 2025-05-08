@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 
 import "./cube-device.css";
 import magicHandImg from "/icons/misc/magic-hand.svg";
+import randomImg from "/icons/random.svg";
 
 import { cssClass, fixArrayLength, Log, mod } from "../../../utils";
 import { PuzzleInfo } from "../../../model";
@@ -14,6 +15,7 @@ import {
   RadioGroup,
   Select,
   spaceEvenly,
+  Tooltip,
 } from "../../ui";
 import { ALPHABET, SYMBOLS } from "../symbols.constant";
 
@@ -68,17 +70,23 @@ export class CubeDevice extends AbstractPuzzle<
   ): Promise<PuzzleState> {
     switch (action) {
       case "activate":
-        this.puzzleConfig.links[actionData.cubeNr].forEach((linkedCube) => {
-          this.puzzleState.positions[linkedCube] =
-            (this.puzzleState.positions[linkedCube] + 1) %
-            this.puzzleConfig.symbols.length;
-        });
-        return this.puzzleState;
+        return this.actionActivate(actionData, this.puzzleState);
 
       default:
         Log.warn("CubeDevice", "Unkown Action", { action, actionData });
         return this.puzzleState;
     }
+  }
+
+  private actionActivate(
+    actionData: PuzzleActions["activate"],
+    state: PuzzleState
+  ): PuzzleState {
+    this.puzzleConfig.links[actionData.cubeNr].forEach((linkedCube) => {
+      state.positions[linkedCube] =
+        (state.positions[linkedCube] + 1) % this.puzzleConfig.symbols.length;
+    });
+    return state;
   }
 
   renderView(): ReactNode {
@@ -134,6 +142,30 @@ export class CubeDevice extends AbstractPuzzle<
 
   // Edit
   async onSave(): Promise<PuzzleInfo<PuzzleConfig, PuzzleState> | undefined> {
+    // Check
+    if (this.puzzleConfig.symbols.length < 3) {
+      alert("At least 3 Symbols musst be selected");
+      return;
+    }
+
+    const cubesLinked: boolean[] = Array(this.puzzleConfig.nrOfCubes).fill(
+      false
+    );
+    for (const cubeLinks of this.puzzleConfig.links) {
+      if (cubeLinks.length == 0) {
+        alert("All Cubes musst have at lest one linked Cube");
+        return;
+      }
+      cubeLinks.forEach((link) => (cubesLinked[link] = true));
+    }
+
+    for (let cubeIdx = 0; cubeIdx < cubesLinked.length; cubeIdx++) {
+      if (!cubesLinked[cubeIdx]) {
+        alert(`There is no Link to Cube ${cubeIdx + 1}`);
+        return;
+      }
+    }
+
     this.props.puzzleInfo.state.positions =
       this.props.puzzleInfo.config.startPositions;
     return this.props.puzzleInfo;
@@ -174,6 +206,19 @@ export class CubeDevice extends AbstractPuzzle<
     cubeIdx: number
   ): Promise<void> {
     this.puzzleConfig.links[cubeIdx] = linkedCubs;
+    this.notifyEditPuzzleUpdate();
+  }
+
+  private async editRandomizeStartPositions(): Promise<void> {
+    let state = this.puzzleState;
+    state.positions = Array(this.puzzleConfig.nrOfCubes).fill(0);
+    for (let round = 0; round < 20; round++) {
+      const activateCube = Math.floor(
+        Math.random() * this.puzzleConfig.nrOfCubes
+      );
+      state = this.actionActivate({ cubeNr: activateCube }, state);
+    }
+    this.puzzleConfig.startPositions = state.positions;
     this.notifyEditPuzzleUpdate();
   }
 
@@ -226,6 +271,13 @@ export class CubeDevice extends AbstractPuzzle<
           <div className="multiline-edit start-positions">
             <div className="multiline-edit-lable start-positions-lable">
               Start Positions:
+              <Tooltip tooltip="Roll random Start Positions">
+                <ImgButton
+                  img={randomImg}
+                  alt="randomize"
+                  onClick={() => this.editRandomizeStartPositions()}
+                />
+              </Tooltip>
             </div>
             <div className="multiline-edit-edit start-positions-edit">
               {spaceEvenly(
@@ -244,7 +296,7 @@ export class CubeDevice extends AbstractPuzzle<
           </div>
           <div className="multiline-edit link-select">
             <div className="multiline-edit-lable link-select-lable">
-              Start Positions:
+              Linked Cubes:
             </div>
             <div className="multiline-edit-edit link-select-edit">
               {spaceEvenly(

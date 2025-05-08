@@ -1,6 +1,7 @@
 import OBR, { Metadata } from "@owlbear-rodeo/sdk";
 
 import { PuzzleInfo } from "../model";
+import { Log } from "../utils";
 
 import {
   BROADCAST_PUZZLE_ACTION,
@@ -114,6 +115,7 @@ export class OwlbearPuzzle {
     update[METADATA_PUZZLE_CURRENT] = puzzleInfo;
 
     await OBR.room.setMetadata(update);
+    Log.trace("OwlbearPuzzle", "saveCurrentPuzzle", update);
   }
 
   // List
@@ -146,6 +148,7 @@ export class OwlbearPuzzle {
     update[METADATA_PUZZLE_LIST] = puzzles;
 
     await OBR.room.setMetadata(update);
+    Log.trace("OwlbearPuzzle", "saveList", update);
   }
 
   // Other

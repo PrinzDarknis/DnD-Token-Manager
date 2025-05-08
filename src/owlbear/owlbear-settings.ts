@@ -30,6 +30,7 @@ export class OwlbearSettings {
     update[METADATA_SETTINGS] = settings;
 
     await OBR.room.setMetadata(update);
+    Log.trace("OwlbearSettings", "save", update);
   }
 
   async load(): Promise<GlobalSettings> {

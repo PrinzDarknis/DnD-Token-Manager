@@ -31,6 +31,7 @@ export async function versionUpdata_0_1_0(ready: Promise<void>): Promise<void> {
       }
 
       await OBR.room.setMetadata(update);
+      Log.trace("versionUpdata_0_1_0", "setMetadata", update);
     }
 
     // clean up

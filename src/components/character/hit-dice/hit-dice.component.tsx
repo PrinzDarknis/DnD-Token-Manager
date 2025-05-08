@@ -67,7 +67,6 @@ export class HitDice extends Component<Props, State> {
 
   // handler
   async clickDice(idx: number): Promise<void> {
-    console.debug("Click Dice", idx, this.props.character.hitDiceRemaining);
     let newValue =
       idx < this.props.character.hitDiceRemaining
         ? this.props.character.hitDiceRemaining - 1

@@ -276,7 +276,6 @@ export class TimeManager extends Component<Props, State> {
                 onSubmit={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
-                  console.debug("submit");
                   this.newTask();
                 }}
               >

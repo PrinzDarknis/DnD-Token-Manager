@@ -27,6 +27,9 @@ export class OwlbearCharacter_0_1_0 {
     await OBR.room.setMetadata({
       [METADATA_CHARACTERS]: data,
     });
+    Log.trace("OwlbearCharacter_0_1_0", "save", {
+      [METADATA_CHARACTERS]: data,
+    });
   }
 
   async registerOnUpdate(onUpdate: (chars: Character[]) => void) {

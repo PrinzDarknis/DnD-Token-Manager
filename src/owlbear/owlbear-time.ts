@@ -1,6 +1,8 @@
 import OBR, { Metadata } from "@owlbear-rodeo/sdk";
 
 import { TimeInfo } from "../model";
+import { Log } from "../utils";
+
 import { METADATA_TIME } from "./constants";
 
 export class OwlbearTime {
@@ -22,6 +24,7 @@ export class OwlbearTime {
     return OBR.room.onMetadataChange(async (metadata) => {
       const timeInfo = this.extractTimeInfo(metadata);
       await onUpdate(timeInfo);
+      Log.trace("OwlbearTime", "onUpdate", timeInfo);
     });
   }
 
@@ -30,6 +33,7 @@ export class OwlbearTime {
     const update: Partial<Metadata> = {};
     update[METADATA_TIME] = timeInfo;
     await OBR.room.setMetadata(update);
+    Log.trace("OwlbearTime", "save", update);
   }
 
   private extractTimeInfo(metadata: Metadata): TimeInfo {

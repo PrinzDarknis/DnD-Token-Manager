@@ -55,6 +55,7 @@ export class OwlbearCharacter {
 
     await OBR.room.setMetadata(update);
     await this.updateToken(char);
+    Log.trace("OwlbearCharacter", "_save", update);
   }
 
   async delete(charId: string): Promise<void> {
@@ -65,6 +66,7 @@ export class OwlbearCharacter {
       [METADATA_CHARACTER(charId)]: undefined,
     };
     await OBR.room.setMetadata(update);
+    Log.trace("OwlbearCharacte", "delete", update);
   }
 
   async registerOnUpdate(
@@ -123,6 +125,7 @@ export class OwlbearCharacter {
 
     // save
     await OBR.room.setMetadata(update);
+    Log.trace("OwlbearCharacte", "overwriteAll", update);
     await this.updateTokenAll(chars);
   }
 

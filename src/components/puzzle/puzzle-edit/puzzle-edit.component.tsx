@@ -24,7 +24,7 @@ interface State {
 }
 
 export class PuzzleEdit extends Component<Props, State> {
-  readonly DEBUG?: PuzzleInfo;
+  readonly DEBUG?: PuzzleInfo = CUBE_DEVICE_EXAMPLE;
 
   constructor(props: Props) {
     super(props);

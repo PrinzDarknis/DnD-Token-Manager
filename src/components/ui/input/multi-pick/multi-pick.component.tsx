@@ -11,6 +11,7 @@ interface Props<T> {
   options: T[];
   alias?: string[];
   onChange: (newValues: T[]) => void;
+  noHover?: boolean;
 }
 
 export class MultiPick<
@@ -18,7 +19,7 @@ export class MultiPick<
 > extends Component<Props<T>> {
   // handler
   async onChnage(valueIdx: number): Promise<void> {
-    const values = [...this.props.value];
+    const values = [...this.props.value].filter((v) => typeof v != "undefined");
     const changedValue = this.options[valueIdx];
     const idx = values.indexOf(changedValue);
     if (idx == -1) values.push(changedValue);
@@ -39,7 +40,10 @@ export class MultiPick<
     // make sure the selected values are included
     const additionalOptions = [];
     for (const selectedOption of this.props.value) {
-      if (!this.props.options.includes(selectedOption))
+      if (
+        !this.props.options.includes(selectedOption) &&
+        typeof selectedOption != "undefined"
+      )
         additionalOptions.push(selectedOption);
     }
     this.options = [...additionalOptions, ...this.props.options];
@@ -47,12 +51,17 @@ export class MultiPick<
     return (
       <>
         <div
-          className="multi-pick"
-          onMouseOver={(e) =>
-            fixTooltipPosition(e.currentTarget, this.selectorElement)
-          }
+          className={cssClass({
+            "multi-pick": true,
+            "no-hover": this.props.noHover ?? false,
+          })}
+          onMouseOver={(e) => {
+            if (!this.props.noHover)
+              fixTooltipPosition(e.currentTarget, this.selectorElement);
+          }}
         >
           <div className="show-selection">{this.props.value.join(", ")}</div>
+
           <div
             className="selector"
             ref={(e) => {

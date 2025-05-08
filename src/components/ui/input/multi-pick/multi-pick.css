@@ -51,4 +51,21 @@
       opacity: 1;
     }
   }
+
+  &.no-hover {
+    width: inherit;
+
+    .show-selection {
+      display: none;
+    }
+
+    .selector {
+      visibility: visible;
+      display: block;
+      opacity: 1;
+      position: unset;
+
+      width: inherit;
+    }
+  }
 }

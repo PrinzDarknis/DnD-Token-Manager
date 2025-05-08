@@ -3,11 +3,19 @@ import { ReactNode } from "react";
 import "./cube-device.css";
 import magicHandImg from "/icons/misc/magic-hand.svg";
 
-import { cssClass, Log, mod } from "../../../utils";
+import { cssClass, fixArrayLength, Log, mod } from "../../../utils";
 import { PuzzleInfo } from "../../../model";
 
 import { AbstractPuzzle } from "../../abstract";
-import { ImgButton, spaceEvenly } from "../../ui";
+import {
+  ImgButton,
+  MultiPick,
+  NumberEdit,
+  RadioGroup,
+  Select,
+  spaceEvenly,
+} from "../../ui";
+import { ALPHABET, SYMBOLS } from "../symbols.constant";
 
 interface PuzzleConfig {
   nrOfCubes: number;
@@ -20,7 +28,11 @@ interface PuzzleState {
 interface PuzzleActions {
   activate: { cubeNr: number };
 }
-type AdditionalState = object;
+interface AdditionalState {
+  editSymbolCollection: string[];
+}
+
+const BOTH_SYMBOL_COLLECTION = [...ALPHABET, ...SYMBOLS];
 
 export type CubeDevicePuzzleInfo = PuzzleInfo<PuzzleConfig, PuzzleState> & {
   puzzle: "Cube Device";
@@ -36,9 +48,19 @@ export class CubeDevice extends AbstractPuzzle<
   readonly actionTime: number = 500;
 
   getDefaultAdditionalState(): AdditionalState {
-    return {};
+    return {
+      editSymbolCollection: SYMBOLS,
+    };
   }
 
+  get editSymbolCollection(): string[] {
+    return this.state.editSymbolCollection;
+  }
+  async setEditSymbolCollection(editSymbolCollection: string[]): Promise<void> {
+    await this.setStatePromise({ ...this.state, editSymbolCollection });
+  }
+
+  // View
   async executeAction<Action extends keyof PuzzleActions>(
     action: Action,
     actionData: PuzzleActions[Action]
@@ -109,11 +131,103 @@ export class CubeDevice extends AbstractPuzzle<
 
   // Edit
   async onSave(): Promise<PuzzleInfo<PuzzleConfig, PuzzleState> | undefined> {
+    this.props.puzzleInfo.state.positions =
+      this.props.puzzleInfo.config.startPositions;
     return this.props.puzzleInfo;
   }
 
+  private async editUpdateNrCubes(nr: number): Promise<void> {
+    this.puzzleConfig.nrOfCubes = nr;
+    fixArrayLength(this.puzzleConfig.startPositions, nr, () => 0);
+    fixArrayLength(this.puzzleState.positions, nr, () => 0);
+
+    this.notifyEditPuzzleUpdate();
+  }
+
+  private async editUpdateSymbols(symbols: string[]): Promise<void> {
+    this.puzzleConfig.symbols = symbols;
+    this.notifyEditPuzzleUpdate();
+  }
+
+  private async editUpdateStartPosition(
+    symbol: string,
+    cubeIdx: number
+  ): Promise<void> {
+    const symbolIdx = this.puzzleConfig.symbols.indexOf(symbol);
+    if (symbolIdx < 0) return;
+
+    this.puzzleConfig.startPositions[cubeIdx] = symbolIdx;
+    this.notifyEditPuzzleUpdate();
+  }
+
   renderEdit(): ReactNode {
-    return <div className="cube-device"></div>;
+    return (
+      <div className="cube-device cube-device-edit">
+        <div className="edit-container">
+          <div className="inline-edit cube-number">
+            <div className="inline-edit-lable cube-number-lable">
+              Number of Cubes:
+            </div>
+            <div className="inline-edit-edit cube-number-edit">
+              <NumberEdit
+                value={this.puzzleConfig.nrOfCubes}
+                steps={[1]}
+                onChange={(n) => this.editUpdateNrCubes(n)}
+                min={1}
+                max={9}
+              />
+            </div>
+          </div>
+          <div className="inline-edit symbol-type">
+            <div className="inline-edit-lable symbol-type-lable">
+              Symbol Collection:
+            </div>
+            <div className="inline-edit-edit symbol-type-edit">
+              <RadioGroup<string[]>
+                groupName="symbol-type"
+                value={this.editSymbolCollection}
+                options={[ALPHABET, SYMBOLS, BOTH_SYMBOL_COLLECTION]}
+                alias={["Alphabet", "Symbols", "Both"]}
+                onChange={(sc) => this.setEditSymbolCollection(sc)}
+                optionsPerRow={1}
+              />
+            </div>
+          </div>
+          <div className="multiline-edit symbol-select">
+            <div className="multiline-edit-lable symbol-select-lable">
+              Symbols:
+            </div>
+            <div className="multiline-edit-edit symbol-select-edit">
+              <MultiPick
+                value={this.puzzleConfig.symbols}
+                options={this.editSymbolCollection}
+                onChange={(s) => this.editUpdateSymbols(s)}
+                noHover
+              />
+            </div>
+          </div>
+          <div className="multiline-edit start-positions">
+            <div className="multiline-edit-lable start-positions-lable">
+              Start Positions:
+            </div>
+            <div className="multiline-edit-edit start-positions-edit">
+              {spaceEvenly(
+                this.puzzleConfig.startPositions.map((position, idx) => (
+                  <Select
+                    key={`start-positions-${idx}`}
+                    value={this.puzzleConfig.symbols[position]}
+                    options={this.puzzleConfig.symbols}
+                    onChange={(s) => this.editUpdateStartPosition(s, idx)}
+                  />
+                )),
+                Math.ceil(this.puzzleConfig.startPositions.length / 5),
+                "start-positions"
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   // Helper

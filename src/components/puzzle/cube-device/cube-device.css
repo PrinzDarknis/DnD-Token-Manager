@@ -49,4 +49,44 @@
       }
     }
   }
+
+  &.cube-device-edit {
+    .inline-edit {
+      display: flex;
+
+      .inline-edit-lable {
+        width: 11rem;
+      }
+
+      .inline-edit-edit {
+        width: 10rem;
+      }
+    }
+
+    .multiline-edit {
+      .multiline-edit-lable {
+      }
+
+      .multiline-edit-edit {
+        width: 20rem;
+        place-self: center;
+
+        .multi-pick {
+          margin-left: -4px; /* fix border of selector */
+        }
+      }
+    }
+
+    .symbol-type-edit {
+      label {
+        width: 7rem;
+      }
+    }
+
+    .start-positions-edit {
+      .select {
+        width: 3.5rem;
+      }
+    }
+  }
 }

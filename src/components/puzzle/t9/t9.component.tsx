@@ -16,12 +16,13 @@ import {
   Select,
   spaceEvenly,
   Tooltip,
+  MultiPick,
 } from "../../ui";
 
-import { ALPHABET, CODED_ALPHABET } from "./t9.mockdata";
+import { ALPHABET, CODED_ALPHABET } from "../symbols.constant";
+
 import { IT9 } from "./t9.interface";
 import { t9Code, t9Decode, t9IsValideCode } from "./t9-decode.service";
-import { MultiPick } from "../../ui/input/multi-pick";
 
 interface PuzzleConfig {
   /** 9 Symbols a 3 Letters */

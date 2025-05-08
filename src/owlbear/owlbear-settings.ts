@@ -114,13 +114,17 @@ export class OwlbearSettings {
       type: "Backup",
       date: Date.now(),
       settings: await Owlbear.settings.load(),
-      character: Object.values(await Owlbear.character.loadAll),
+      character: Object.values(await Owlbear.character.loadAll()),
       timeInfo: await Owlbear.time.load(),
       puzzle: {
         current: await Owlbear.puzzle.loadCurrentPuzzle(),
         list: await Owlbear.puzzle.loadList(),
       },
     };
+    Log.trace("GlobalSettings:createBackup", "create Backup", {
+      backup,
+      temp: await Owlbear.character.loadAll(),
+    });
 
     const oldBackups = await this.loadBackups();
     oldBackups.push(backup);

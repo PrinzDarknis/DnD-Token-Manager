@@ -18,6 +18,7 @@ import courtImg from "/icons/sound/court.svg";
 import badDragonImg from "/icons/Bad_Dragon_logo.svg";
 import dragonImg from "/icons/dragon1.svg";
 import primoImg from "/icons/sound/primo.svg";
+import fireballImg from "/icons/sound/fireball.svg";
 // import foxTailImg from "/icons/fox-tail.svg";
 
 export const Sounds: Sound[] = [
@@ -120,5 +121,10 @@ export const Sounds: Sound[] = [
     name: "Paimon",
     img: primoImg,
     file: "paimon.mp3",
+  },
+  {
+    name: "Fireball",
+    img: fireballImg,
+    file: "fireball.mp3",
   },
 ];

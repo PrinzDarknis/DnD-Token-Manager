@@ -7,7 +7,7 @@ import {
   Backup,
   Character,
 } from "../model";
-import { Log } from "../utils";
+import { Log, LogLevel } from "../utils";
 
 import {
   DIR_SOUND,
@@ -59,6 +59,10 @@ export class OwlbearSettings {
     OBR.room.onMetadataChange(async (metadata) => {
       const settings = this.extractSettings(metadata);
       await onUpdate(settings);
+
+      if (settings["debug-trace"]) {
+        Log.logLevel = LogLevel.TRACE;
+      }
     });
   }
 

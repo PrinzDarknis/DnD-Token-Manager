@@ -8,6 +8,7 @@ import { OwlbearSettings } from "./owlbear-settings";
 import { OwlbearPuzzle } from "./owlbear-puzzle";
 import { OwlbearTime } from "./owlbear-time";
 import { OwlbearPlayer } from "./owlbear-player";
+import { OwlbearLog } from "./owlbear-log";
 
 export class Owlbear {
   public readonly character: OwlbearCharacter;
@@ -15,6 +16,7 @@ export class Owlbear {
   public readonly puzzle: OwlbearPuzzle;
   public readonly time: OwlbearTime;
   public readonly player: OwlbearPlayer;
+  public readonly log: OwlbearLog;
 
   protected readonly ready: Promise<void>;
 
@@ -37,6 +39,7 @@ export class Owlbear {
     this.puzzle = new OwlbearPuzzle(this.ready);
     this.time = new OwlbearTime(this.ready);
     this.player = new OwlbearPlayer(this.ready);
+    this.log = new OwlbearLog(this.ready);
   }
 
   async isGM(): Promise<boolean> {

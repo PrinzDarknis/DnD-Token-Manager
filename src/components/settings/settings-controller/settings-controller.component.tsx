@@ -253,6 +253,22 @@ export class SettingsController extends Component<Props, State> {
               </fieldset>
               <fieldset>
                 <legend>
+                  <h3>Debug</h3>
+                </legend>
+                <div className="setting setting-bool">
+                  <input
+                    type="checkbox"
+                    checked={this.state.globalSettings["debug-trace"]}
+                    name="global-settings-debug-trace"
+                    onChange={(e) =>
+                      this.updateGlobalSettings("debug-trace", e.target.checked)
+                    }
+                  />
+                  <label htmlFor="global-settings-debug-trace">Trace Log</label>
+                </div>
+              </fieldset>
+              <fieldset>
+                <legend>
                   <h3>Backups</h3>
                 </legend>
                 <div className="setting setting-table backup-table">

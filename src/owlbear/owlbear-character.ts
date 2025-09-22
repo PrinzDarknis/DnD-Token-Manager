@@ -184,7 +184,10 @@ export class OwlbearCharacter {
 
       // update
       if (StatBubblesForDnD.bubblesUpdateChar(bubbles, char)) {
-        Log.debug("OwlbearCharacter", "update on token for char", charId);
+        Log.trace("OwlbearCharacter", "update char from token", {
+          char,
+          bubbles,
+        });
         this.save(char);
       }
     }
@@ -198,7 +201,11 @@ export class OwlbearCharacter {
       (items) => {
         for (const item of items) {
           if (item.metadata[METADATA_CHARACTER_TOKEN] == char.id) {
-            StatBubblesForDnD.charUpdateBubbles(char, item);
+            if (StatBubblesForDnD.charUpdateBubbles(char, item))
+              Log.trace("OwlbearCharacter", "update token from char", {
+                char,
+                metadata: StatBubblesForDnD.createCopyOfMetadata(item.metadata),
+              });
           }
         }
       }

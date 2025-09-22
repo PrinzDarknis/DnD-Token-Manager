@@ -1,3 +1,4 @@
+import { Owlbear } from "../../owlbear";
 import { LogLevel } from "./log-level.enum";
 
 export class Logger {
@@ -13,6 +14,10 @@ export class Logger {
 
     const info = `[${source}] ${message}${args && args.length > 0 ? ":" : ""}`;
 
+    // Log to GM
+    Owlbear.log.sendLog(level, info, args);
+
+    // Local Log
     switch (level) {
       case LogLevel.TRACE:
         console.trace(info, ...args);

@@ -19,6 +19,7 @@ import badDragonImg from "/icons/Bad_Dragon_logo.svg";
 import dragonImg from "/icons/dragon1.svg";
 import primoImg from "/icons/sound/primo.svg";
 import fireballImg from "/icons/sound/fireball.svg";
+import crabImg from "/icons/sound/crab.svg";
 // import foxTailImg from "/icons/fox-tail.svg";
 
 export const Sounds: Sound[] = [
@@ -126,5 +127,10 @@ export const Sounds: Sound[] = [
     name: "Fireball",
     img: fireballImg,
     file: "fireball.mp3",
+  },
+  {
+    name: "Crab Dance",
+    img: crabImg,
+    file: "crab-dance.mp3",
   },
 ];

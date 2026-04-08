@@ -72,7 +72,7 @@ export class OwlbearCharacter {
   async registerOnUpdate(
     onUpdate?: (char: Character) => void | Promise<void>,
     onUpdateAll?: (chars: Character[]) => void | Promise<void>,
-    onDeleteCheck?: (valideIds: string[]) => void | Promise<void>
+    onDeleteCheck?: (valideIds: string[]) => void | Promise<void>,
   ) {
     await this.ready;
     OBR.room.onMetadataChange(async (metadata) => {
@@ -163,6 +163,9 @@ export class OwlbearCharacter {
   protected async onTokenUpdate(items: Item[]): Promise<void> {
     await this.ready;
     for (const item of items) {
+      // changers responsibility
+      if (item.lastModifiedUserId != OBR.player.id) continue;
+
       // is relevant
       const charId = item.metadata[METADATA_CHARACTER_TOKEN];
       if (!charId) continue;
@@ -170,7 +173,7 @@ export class OwlbearCharacter {
         Log.warn(
           "OwlbearCharacter:onTokenUpdate",
           `Unkown Value in ${METADATA_CHARACTER_TOKEN}`,
-          charId
+          charId,
         );
         continue;
       }
@@ -208,7 +211,7 @@ export class OwlbearCharacter {
               });
           }
         }
-      }
+      },
     );
   }
 
@@ -225,7 +228,7 @@ export class OwlbearCharacter {
           if (!char) continue;
           StatBubblesForDnD.charUpdateBubbles(char, item);
         }
-      }
+      },
     );
   }
 

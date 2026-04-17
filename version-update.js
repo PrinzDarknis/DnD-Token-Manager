@@ -15,7 +15,7 @@ async function getCurrentVersion(file) {
   const data = JSON.parse(rawData);
   const versionRaw = data.version;
   const [_version, major, minor, patch] = versionRaw.match(
-    /([0-9]+).([0-9]+).([0-9]+)/
+    /([0-9]+).([0-9]+).([0-9]+)/,
   );
   return [Number(major), Number(minor), Number(patch)];
 }
@@ -42,4 +42,6 @@ versionUpdate([
   resolve(__dirname, "package.json"),
   resolve(__dirname, "public", "manifest.json"),
   resolve(__dirname, "public", "manifest.dev.json"),
+  resolve(__dirname, "public", "monster", "manifest.json"),
+  resolve(__dirname, "public", "monster", "manifest.dev.json"),
 ]).then(() => console.log("Finish Version Update"));

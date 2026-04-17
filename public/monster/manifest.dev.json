@@ -1,0 +1,14 @@
+{
+  "version": "0.1.13",
+  "name": "Dev Monster Dictionary",
+  "author": "PrinzDarknis",
+  "description": "Local Dev Build",
+  "manifest_version": 1,
+  "action": {
+    "title": "Monster",
+    "icon": "/monster.svg",
+    "popover": "/html/monster.html",
+    "height": 600,
+    "width": 400
+  }
+}

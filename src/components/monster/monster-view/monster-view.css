@@ -1,0 +1,12 @@
+.monster-view {
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+    gap: 8px;
+
+    .close-button {
+      filter: var(--svg-red);
+    }
+  }
+}

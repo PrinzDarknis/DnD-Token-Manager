@@ -20,8 +20,12 @@ export class MonsterDictionary extends Component<Props, State> {
       loading: true,
     };
 
-    MonsterManager.getMonsters().then((monsters) => this.setMonsters(monsters));
-    MonsterManager.onUpdate((monsters) => this.setMonsters(monsters));
+    MonsterManager.getMonsters().then((monsters) =>
+      this.setMonsters(Object.values(monsters)),
+    );
+    MonsterManager.onUpdate((monsters) =>
+      this.setMonsters(Object.values(monsters)),
+    );
   }
 
   async componentDidMount(): Promise<void> {}

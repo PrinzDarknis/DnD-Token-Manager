@@ -1,29 +1,30 @@
 .monster-list {
-	width: 100%;
+  width: 100%;
 }
 
 .monster-list-table {
-	width: 100%;
-	border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
 .monster-list-table th,
 .monster-list-table td {
-	padding: 8px;
-	border-bottom: 1px solid #ddd;
-	text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
 }
 
 .monster-list-table th {
-	cursor: pointer;
-	user-select: none;
+  cursor: pointer;
+  user-select: none;
 }
 
 .monster-list-name-button {
-	background: none;
-	border: none;
-	padding: 0;
-	cursor: pointer;
-	color: inherit;
-	text-decoration: underline;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+  text-decoration: underline;
+  text-align: left;
 }

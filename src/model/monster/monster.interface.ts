@@ -3,11 +3,14 @@ export interface Monster {
   source: string;
   name: string;
 
+  imgLink?: string;
+
   type?: string;
   size?: string;
   alignment?: string;
 
   armorClass?: string;
+  armorClassValue?: number;
   hitPoints?: {
     average: number;
     d4: number;
@@ -27,6 +30,11 @@ export interface Monster {
   wisdom?: number;
   charisma?: number;
 
+  damageVulnerabilities?: string;
+  damageResistances?: string;
+  damageImmunities?: string;
+  conditionImmunities?: string;
+  senses?: string;
   savingThrows?: [
     {
       name: string;
@@ -58,7 +66,7 @@ export interface Monster {
     description: string;
     actions: [
       {
-        name: string;
+        name?: string;
         description: string;
       },
     ];
@@ -67,7 +75,7 @@ export interface Monster {
     description: string;
     actions: [
       {
-        name: string;
+        name?: string;
         description: string;
       },
     ];
@@ -76,7 +84,7 @@ export interface Monster {
     description: string;
     actions: [
       {
-        name: string;
+        name?: string;
         description: string;
       },
     ];

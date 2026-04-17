@@ -3,7 +3,7 @@ import { Monster } from "../monster.interface";
 export abstract class MonsterSource {
   protected list: Monster[] = [];
 
-  protected abstract readonly SOURCE_NAME: string;
+  public abstract readonly SOURCE_NAME: string;
 
   protected abstract _updateList(): Promise<Monster[]>;
   protected abstract _updateMonster(monster: Monster): Promise<Monster>;
@@ -43,6 +43,17 @@ export abstract class MonsterSource {
     this.saveToLocalStorage();
     this.notifyUpdate();
     return updatedMonster;
+  }
+
+  public overwriteImage(monster: Monster, newImgLink: string): void {
+    const index = this.list.findIndex(
+      (m) => m.link === monster.link && m.source === monster.source,
+    );
+    if (index !== -1) {
+      this.list[index].imgLink = newImgLink;
+      this.saveToLocalStorage();
+      this.notifyUpdate();
+    }
   }
 
   protected saveToLocalStorage(): void {

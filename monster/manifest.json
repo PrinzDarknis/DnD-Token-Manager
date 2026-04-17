@@ -1,0 +1,14 @@
+{
+  "version": "0.1.14",
+  "name": "DnD Monster Dictionary",
+  "author": "PrinzDarknis",
+  "description": "Shows monster stats and creates tokens for them",
+  "manifest_version": 1,
+  "action": {
+    "title": "Monster",
+    "icon": "/DnD-Token-Manager/monster.svg",
+    "popover": "/DnD-Token-Manager/html/monster.html",
+    "height": 600,
+    "width": 400
+  }
+}

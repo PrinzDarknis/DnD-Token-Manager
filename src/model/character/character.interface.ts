@@ -13,6 +13,7 @@ export interface ICharacter {
   hitDiceRemaining: number;
   readonly spellslots: ICharacterSpellslots;
   readonly otherResources: ICharacterOtherResources;
+  readonly magicItems: ICharacterOtherResources;
   readonly lastUpdate: Date;
   readonly lastStatUpdate: Date; // for sync with Bubbles Extension
 }

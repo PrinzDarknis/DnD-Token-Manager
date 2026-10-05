@@ -15,6 +15,7 @@ export function RessourceComponent({
   ressource,
   edit,
   deleteable = false,
+  showRestMode = true,
   onUpdate,
   onDelete,
 }: {
@@ -22,6 +23,7 @@ export function RessourceComponent({
   ressource: IRessource;
   edit: boolean;
   deleteable?: boolean;
+  showRestMode?: boolean;
   onUpdate?: (data: IRessource) => void;
   onDelete?: () => void;
 }) {
@@ -81,13 +83,15 @@ export function RessourceComponent({
     <div ref={ref} className="ressource">
       <span className="ressource-name">{name}</span>
       <span className="ressource-slots">{checkboxes}</span>
-      <ImgButton
-        key="ressource-rest"
-        img={ressource.shortReset ? shortRestImg : loangRestImg}
-        alt={ressource.shortReset ? "Short Rest" : "Long Rest"}
-        onClick={() => changeRestMode()}
-        disabled={!edit}
-      />
+      {showRestMode && (
+        <ImgButton
+          key="ressource-rest"
+          img={ressource.shortReset ? shortRestImg : loangRestImg}
+          alt={ressource.shortReset ? "Short Rest" : "Long Rest"}
+          onClick={() => changeRestMode()}
+          disabled={!edit}
+        />
+      )}
       {edit && [
         <ImgButton
           key="ressource-sub"

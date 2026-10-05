@@ -20,6 +20,7 @@ export class Character implements ICharacter {
   protected _hitDiceRemaining: number;
   protected _spellslots: ICharacterSpellslots;
   protected _otherResources: ICharacterOtherResources;
+  protected _magicItems: ICharacterOtherResources;
   protected _lastUpdate: Date;
   protected _lastStatUpdate: Date;
 
@@ -57,6 +58,9 @@ export class Character implements ICharacter {
   public get otherResources(): ICharacterOtherResources {
     return this._otherResources;
   }
+  public get magicItems(): ICharacterOtherResources {
+    return this._magicItems;
+  }
   public get lastUpdate(): Date {
     return this._lastUpdate;
   }
@@ -89,6 +93,7 @@ export class Character implements ICharacter {
       "9": { available: 0, used: 0, shortReset: false },
     };
     this._otherResources = {};
+    this._magicItems = {};
     this._lastUpdate = new Date();
     this._lastStatUpdate = new Date();
   }
@@ -101,7 +106,10 @@ export class Character implements ICharacter {
     function getValue(obj: ICharacter, property: CharacterStandartProperties) {
       const propertyParts = property.split(".");
       if (propertyParts[1]) {
-        const firstPart = propertyParts[0] as "otherResources" | "spellslots";
+        const firstPart = propertyParts[0] as
+          | "otherResources"
+          | "magicItems"
+          | "spellslots";
         const secoundPart = propertyParts[1] as "1";
         return obj[firstPart][secoundPart];
       }
@@ -119,10 +127,18 @@ export class Character implements ICharacter {
 
     if (typeof data.otherResources == "object")
       for (const [resourceName, resource] of Object.entries(
-        data.otherResources
+        data.otherResources,
       ))
         try {
           char.setValue(`otherResources.${resourceName}`, resource);
+        } catch (e) {
+          Log.debug("Character", `Error while restoring character`, e);
+        }
+
+    if (typeof data.magicItems == "object")
+      for (const [itemName, item] of Object.entries(data.magicItems))
+        try {
+          char.setValue(`magicItems.${itemName}`, item);
         } catch (e) {
           Log.debug("Character", `Error while restoring character`, e);
         }
@@ -199,6 +215,13 @@ export class Character implements ICharacter {
           return;
         }
 
+        if (propertyParts[0] == "magicItems") {
+          const item = propertyParts[1];
+          this._magicItems[item] = Character.parseResource(value);
+          this._lastUpdate = new Date();
+          return;
+        }
+
         break;
       }
     }
@@ -208,6 +231,11 @@ export class Character implements ICharacter {
 
   deleteOtherResource(name: string): void {
     delete this._otherResources[name];
+    this._lastUpdate = new Date();
+  }
+
+  deleteMagicItem(name: string): void {
+    delete this._magicItems[name];
     this._lastUpdate = new Date();
   }
 
@@ -224,11 +252,13 @@ export class Character implements ICharacter {
       hitDiceRemaining: this.hitDiceRemaining,
       spellslots: this.spellslots,
       otherResources: this.otherResources,
+      magicItems: this.magicItems,
       lastUpdate: this.lastUpdate,
       lastStatUpdate: this.lastStatUpdate,
     };
   }
 
+  // magicItems are intentionally not reset by rests, only manually
   shortRest(): void {
     Object.values(this.spellslots).forEach((ressource: IRessource) => {
       if (ressource.shortReset) ressource.used = 0;
@@ -275,7 +305,7 @@ export class Character implements ICharacter {
   private static invalideTypeError(expected: string, actual: unknown): Error {
     Log.error("Character", `Expected ${expected} but got `, actual);
     return new Error(
-      `Invalide Type. Expected: ${expected}, Got: ${typeof actual}`
+      `Invalide Type. Expected: ${expected}, Got: ${typeof actual}`,
     );
   }
 
@@ -295,7 +325,7 @@ export class Character implements ICharacter {
 
   private static parseBoolean(
     value: unknown,
-    hideError: boolean = false
+    hideError: boolean = false,
   ): boolean {
     if (typeof value != "boolean")
       if (hideError) return false;
@@ -311,7 +341,7 @@ export class Character implements ICharacter {
     const used = Character.parseNumber((value as IRessource).used);
     const shortReset = Character.parseBoolean(
       (value as IRessource).shortReset,
-      true
+      true,
     );
 
     return {
@@ -384,4 +414,5 @@ export type CharacterStandartPropertiesComplex =
   | "spellslots.7"
   | "spellslots.8"
   | "spellslots.9"
-  | `otherResources.${string}`;
+  | `otherResources.${string}`
+  | `magicItems.${string}`;

@@ -80,6 +80,15 @@ export class CharacterComponent extends Component<Props> {
     this.updateResource(`otherResources.${data.name}`, data.resource);
   }
 
+  protected deleteMagicItem(name: string): void {
+    this.props.character.deleteMagicItem(name);
+    this.update(this.props.character);
+  }
+
+  protected newMagicItem(data: INewRessource) {
+    this.updateResource(`magicItems.${data.name}`, data.resource);
+  }
+
   shortRest(): void {
     if (!confirm("Short Rest?")) return;
 
@@ -226,7 +235,7 @@ export class CharacterComponent extends Component<Props> {
               {Object.entries(this.props.character.otherResources).map(
                 ([name, ressource]) => (
                   <RessourceComponent
-                    key={`spellslots-${name}`}
+                    key={`otherResources-${name}`}
                     name={name}
                     edit={this.props.edit}
                     deleteable
@@ -246,6 +255,30 @@ export class CharacterComponent extends Component<Props> {
           {this.props.edit && (
             <NewRessourceComponent
               onCreate={(data) => this.newResource(data)}
+            />
+          )}
+          <div className="resource-list">
+            <h2>Magic Items</h2>
+            {Object.entries(this.props.character.magicItems).map(
+              ([name, ressource]) => (
+                <RessourceComponent
+                  key={`magicItems-${name}`}
+                  name={name}
+                  edit={this.props.edit}
+                  deleteable
+                  showRestMode={false}
+                  ressource={ressource}
+                  onUpdate={(newRessource) =>
+                    this.updateResource(`magicItems.${name}`, newRessource)
+                  }
+                  onDelete={() => this.deleteMagicItem(name)}
+                />
+              )
+            )}
+          </div>
+          {this.props.edit && (
+            <NewRessourceComponent
+              onCreate={(data) => this.newMagicItem(data)}
             />
           )}
         </div>

@@ -44,7 +44,7 @@ Dependency direction: `components → hooks → obr → model/utils`. `model` an
 
 | Store | Scope | Persistence | Use for | Avoid for |
 | --- | --- | --- | --- | --- |
-| **Room metadata** `OBR.room.*Metadata` | All players in the room, all scenes | Persistent | Campaign-wide state and settings | Large or high-frequency data (**~16 KB total for all extensions**) |
+| **Room metadata** `OBR.room.*Metadata` | All players in the room, all scenes | Persistent | Campaign-wide state and settings | Large or high-frequency data (**< 16 kB total for all extensions**, see `harness/owlbear/apis/room.md`) |
 | **Scene metadata** `OBR.scene.*Metadata` | Current scene | Persistent with the scene | Scene-bound state | Data that must survive a scene change |
 | **Item metadata** `item.metadata[key]` | One item (token, shape …) | Persistent with the item | Per-token state, links item → record | Data that has no item |
 | **Player metadata** `OBR.player.*Metadata` | The local player, visible to the party | Session | Presence and per-player status | Anything that must persist |

@@ -10,3 +10,4 @@ For a new plugin, replace this folder with the skeletons from `harness/templates
 | [data-model.md](data-model.md) | Metadata keys, broadcast channels, storage keys, migrations, Stat Bubbles adapter |
 | [deviations.md](deviations.md) | Where this project intentionally or historically differs from core (**read before coding**) |
 | [known-issues.md](known-issues.md) | Bugs, tech debt, TODOs |
+| [openTasks/](openTasks/) | Multi-session tasks with plan, status and resume instructions (e.g. [owlbear-docs-analysis.md](openTasks/owlbear-docs-analysis.md)) |

@@ -28,5 +28,5 @@ export const CONTEXT_MENU_EXAMPLE = `${PLUGIN_ID}/context-menu/example`;
 // local storage
 export const STORAGE_KEY = (name: string): string => `${PLUGIN_ID}/${name}`;
 
-/** Soft limit for this plugin's share of room metadata (OBR total is ~16 KB for all extensions). */
+/** Soft limit for this plugin's share of room metadata (OBR total must be < 16 kB for all extensions). */
 export const ROOM_METADATA_BUDGET_BYTES = 8 * 1024;

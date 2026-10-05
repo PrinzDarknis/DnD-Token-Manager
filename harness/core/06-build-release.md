@@ -14,7 +14,7 @@ There are two manifests in `public/`:
 | `manifest.json` | Production (hosted) | `/<base-path>` (e.g. GitHub Pages repo name) |
 | `manifest.dev.json` | Local dev (`npm run dev`, add `http://localhost:5173/manifest.dev.json` in Owlbear) | none |
 
-Fields: `name`, `version`, `manifest_version: 1`, `author`, `description`, `icon`, `action { title, icon, popover, width, height }`, `background_url`.
+Fields: `name` (≤ 45 chars), `version`, `manifest_version: 1`, `author`, `description` (≤ 128 chars), `icon`, `homepage_url`, `action { title, icon, popover, width, height }`, `background_url`, `permissions` (browser permissions such as `autoplay` or `clipboard-write`, each with a reason). Details: [`harness/owlbear/reference/manifest.md`](../owlbear/reference/manifest.md).
 - The production prefix must match the hosting path **and** the `PROD_BASE_PATH` constant in `src/obr/constants.ts`.
 - Keep `version` identical in `package.json`, `manifest.json` and `manifest.dev.json`.
 - `author` is a public display name or handle. Never put an email or other private contact data in it.

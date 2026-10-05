@@ -10,7 +10,7 @@ Arguments: `$ARGUMENTS`.
 
 ## 1. Design (before writing code; show it to the user briefly)
 - **Where does the data live?** Use the decision table in `harness/core/02-architecture.md` §4: room / scene / item / player metadata, broadcast, or localStorage.
-- **Size:** estimate the JSON size. Room metadata is ~16 KB shared across all extensions. Store per-record keys, not one growing array.
+- **Size:** estimate the JSON size. Room metadata must stay under 16 kB in total, shared across all extensions. Store per-record keys, not one growing array.
 - **Who writes?** Name the writer. If a listener writes, choose a loop guard (`harness/core/03-obr-sdk-guide.md` §Change loops).
 - **Which context?** UI iframe vs background (global listeners and menus go in the background).
 - Check `harness/project/data-model.md` for existing keys and do not collide or duplicate.

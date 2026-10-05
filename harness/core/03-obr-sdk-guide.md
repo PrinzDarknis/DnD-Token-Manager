@@ -1,15 +1,15 @@
 # 03 – Owlbear SDK Guide and Pitfalls
 
-Reference: https://docs.owlbear.rodeo/extensions/ (always check the current docs for limits and new APIs).
+Reference: **first the local knowledge base [`harness/owlbear/`](../owlbear/README.md)** (per-API pages, recipes, verified limits). The online docs (https://docs.owlbear.rodeo/extensions/) block automated access, so ask the user to paste a page when something is missing there.
 All snippets below belong in `src/obr/` only.
 
 ## API cheat sheet
 
 | Need | API |
 | --- | --- |
-| Wait for the SDK | `OBR.onReady(cb)`, `OBR.isReady` |
+| Wait for the SDK | `OBR.onReady(cb)`, `OBR.isReady`; `OBR.isAvailable` = running inside Owlbear (for standalone dev) |
 | Am I GM? | `OBR.player.getRole()` → `"GM" \| "PLAYER"`, `OBR.player.onChange` |
-| Who am I? | `OBR.player.id` (user id), `OBR.player.getConnectionId()` (this tab), `getName()`, `getColor()` |
+| Who am I? | `OBR.player.id` (user id; **throws before `onReady`**), `OBR.player.getConnectionId()` (this tab), `getName()`, `getColor()` |
 | Other players | `OBR.party.getPlayers()`, `OBR.party.onChange` (does **not** include the local player) |
 | Room state | `OBR.room.getMetadata / setMetadata / onMetadataChange`, `OBR.room.id` |
 | Scene state | `OBR.scene.isReady / onReadyChange`, `OBR.scene.getMetadata / setMetadata / onMetadataChange` |
@@ -23,7 +23,9 @@ All snippets below belong in `src/obr/` only.
 | Theme | `OBR.theme.getTheme()`, `OBR.theme.onChange` (mode, primary, secondary, background, text) |
 | Viewport | `OBR.viewport.*` (transform, animate to bounds) |
 
-All `on*` functions **return an unsubscribe function**. Always keep and call it.
+All `on*` functions **return an unsubscribe function**. Always keep and call it. Some unsubscribes act per channel or per iframe (broadcast, `items.onChange`), so keep **one listener per channel per iframe** and dispatch inside it.
+
+**Callbacks live in the iframe that registered them** (context-menu `onClick`, tool and mode handlers). Register menus and tools in the **background** page, or they stop working when the popover closes.
 
 ## Metadata keys
 - Namespace = reverse-DNS + plugin slug, e.g. `com.example.my-plugin`. It is defined **once** as `PLUGIN_ID` in `src/obr/constants.ts`.
@@ -72,12 +74,12 @@ Guards, in order of preference:
 
 ## URLs and assets
 - In dev, Vite serves from `/`. In production the plugin usually lives under a sub-path (e.g. GitHub Pages `/<repo-name>`). Centralize this in `constants.ts` as `assetUrl(path)`, using `import.meta.env.DEV` to pick the prefix.
-- URLs passed **to Owlbear** (context-menu icons, embeds, popover/modal urls, `buildImage` sources) must be absolute paths resolved via `assetUrl` or full URLs.
+- URLs passed **to Owlbear** (context-menu icons, embeds, popover/modal urls, `buildImage` sources) must be absolute paths resolved via `assetUrl` or full URLs. The SDK only prefixes `window.location.origin` to non-`http` paths; it does **not** add the base path.
 - Static assets go in `public/`. Import SVGs/images used inside React via Vite imports. Build runtime-selected files (e.g. audio) with `assetUrl`.
 
 ## Theme and layout
 - Read `OBR.theme` and expose the colors as CSS variables (see `use-obr-theme.hook.ts`), so the plugin matches Owlbear's light and dark modes.
-- The popover size is fixed by the manifest (`action.width/height`). Use `OBR.action.setHeight` for dynamic height. Design for about 400 px width.
+- The manifest sets the **maximum** popover size (`action.width/height`). Use `OBR.action.setHeight` (e.g. via `ResizeObserver`) for dynamic height. Design for about 400 px width and mobile devices.
 
 ## Logging
 - Use a small logger in `src/utils/logging/` with levels, prefixed with the plugin name. Logs at `debug`/`trace` level are off in production.

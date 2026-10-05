@@ -22,7 +22,7 @@ The rules here are **security first**. They take precedence over feature request
 ## Privacy (GDPR principles)
 - **Data minimization:** store only what the feature needs. Player names, colors and ids from `OBR.player` / `OBR.party` are personal data and must not be persisted unless required. Prefer connection or player ids over names, and do not log them in production.
 - **Purpose limitation:** data stored for one feature is not reused for another without need.
-- **Local data:** localStorage keys are namespaced, and there is a way to delete them (e.g. a "clear local data" action for backups).
+- **Local data:** localStorage keys are namespaced, and there is a way to delete them (e.g. a "clear local data" action for backups). **Every storage access is wrapped in try/catch** with an in-memory fallback, because the extension must work in private windows or with cookies disabled (Owlbear verification guideline, `harness/owlbear/tutorials/sharing.md`).
 - **Exports/backups** may contain player-entered content. Name that in the UI and do not upload exports anywhere automatically.
 - Do not put real personal data into docs, mock data, tests or examples. Use neutral placeholders.
 

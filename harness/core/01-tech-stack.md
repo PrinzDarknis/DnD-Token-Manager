@@ -19,6 +19,7 @@ The stack below is **fixed** for every Owlbear Rodeo plugin built with this harn
 - Runtime dependencies: keep to `react`, `react-dom`, `@owlbear-rodeo/sdk`. Each additional runtime dependency must be justified in `project/deviations.md` (bundle size, maintenance, license, security).
 - Pin major versions with `^`. TypeScript uses `~`.
 - Run `npm audit` before every release. Never commit `.env` files or credentials.
+- **Licenses of reused code:** Owlbear's official example extensions (dice, initiative-tracker, colored-rings, …) are **GPL-3.0**. Learn from their patterns (`harness/owlbear/recipes/`), but don't copy their code unless the plugin is GPL-licensed. `owlbear-rodeo/sdk` and `sdk-tutorials` are MIT (attribution required).
 
 ## Minimal `package.json` scripts
 ```json

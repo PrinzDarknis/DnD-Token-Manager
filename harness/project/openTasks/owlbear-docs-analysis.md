@@ -1,6 +1,6 @@
 # Open Task: Owlbear developer docs → `harness/owlbear/`
 
-Status: **in progress**. Work in steps. Stop after each step, report token usage and results, and wait for "weiter" (continue).
+Status: **completed 2026-10-06** (steps 0–12). Optional follow-ups below. The temporary folder `.Temp-Docu-Rip/` is no longer needed.
 Created: 2026-10-05 · SDK baseline: `@owlbear-rodeo/sdk` **3.1.0** (installed = npm latest on 2026-10-05)
 
 ## Goal
@@ -84,16 +84,23 @@ Estimates are rough (input + output tokens). Each step ends with a report and a 
 | 5 | Data/session: Room, Player, Party, Broadcast + Metadata, Permission | `.d.ts`; **user: page "Reference/Metadata"** (limits) | `apis/room.md`, `player.md`, `party.md`, `broadcast.md`, `reference/metadata.md`, `permission.md` | ~40k | ☑ |
 | 6 | Scene API (items, local, grid, fog, history) + Filters + Items | `.d.ts` (scene/*, types/items, ItemFilter) | `apis/scene.md`, `reference/filters.md`, `reference/items.md` | ~45k | ☑ |
 | 7 | Builders + TextContent | `.d.ts` builders, SDK source | `reference/builders.md`, `reference/text-content.md` | ~40k | ☑ |
-| 8 | Interaction, Viewport + Math/Matrix/Vector/BoundingBox | `.d.ts` (InteractionApi, ViewportApi, math) | `apis/interaction.md`, `apis/viewport.md`, `reference/math.md` | ~35k | ☐ |
-| 9 | Dynamic Fog, Effects (Light, Wall, Effect, Billboard) + Assets/uploads | `.d.ts`; **user: pages "Dynamic Fog", "Effects"** | `reference/dynamic-fog.md`, `reference/effects.md`, `apis/assets.md` | ~40k | ☐ |
-| 10 | Tutorials: Initiative Tracker + Sharing your Extension | sdk-tutorials/initiative-tracker; **user: "Sharing your Extension" pages** | `tutorials/initiative-tracker.md`, `tutorials/sharing.md` | ~35k | ☐ |
-| 11 | Examples → recipes (2–3 extensions per session) | **user: "Examples" page** (list); GitHub repos of the official extensions | `recipes/*` | ~40k per batch | ☐ |
-| 12 | Integration: link the index from `CLAUDE.md` and `harness/README.md` (link only, **no @-import**); cross-check `core/03` for contradictions; genericity grep; let `/new-obr-feature` consult `harness/owlbear/` | own files | updated core/skills | ~20k | ☐ |
+| 8 | Interaction, Viewport + Math/Matrix/Vector/BoundingBox | `.d.ts` (InteractionApi, ViewportApi, math) | `apis/interaction.md`, `apis/viewport.md`, `reference/math.md` | ~35k | ☑ |
+| 9 | Dynamic Fog, Effects (Light, Wall, Effect, Billboard) + Assets/uploads | `.d.ts`; **user: pages "Dynamic Fog", "Effects"** | `reference/dynamic-fog.md`, `reference/effects.md`, `apis/assets.md` | ~40k | ☑ |
+| 10 | Tutorials: Initiative Tracker + Sharing your Extension | sdk-tutorials/initiative-tracker; **user: "Sharing your Extension" pages** | `tutorials/initiative-tracker.md`, `tutorials/sharing.md` | ~35k | ☑ |
+| 11 | Examples → recipes (2–3 extensions per session) | **user: "Examples" page** (list); GitHub repos of the official extensions | `recipes/*` | ~40k per batch | ☑ (batch 1: all 3 docs examples) |
+| 12 | Integration: link the index from `CLAUDE.md` and `harness/README.md` (link only, **no @-import**); cross-check `core/03` for contradictions; genericity grep; let `/new-obr-feature` consult `harness/owlbear/` | own files | updated core/skills | ~20k | ☑ |
 
 ## Open questions (verify when the pages are available)
 - ~~Room metadata limit~~ **confirmed: total < 16 kB** (APIs / Room). Scene, item and player limits: **not documented** on the Scene pages either (checked in step 6). Assume small.
 - ~~Broadcast size~~ **confirmed: 16 KB per message**. Still open: rate limit, and whether unsubscribing one listener ends delivery for other listeners on the same channel in the same iframe: check "APIs / Broadcast". Affects `apis/broadcast.md` (the project puzzle code uses several channel listeners).
 - Popover with an existing id: **not documented** on "APIs / Popover". Stays an assumption.
+
+- ~~Viewport `transformPoint` direction~~ **resolved:** viewport → screen; inverse = screen → viewport (APIs / Viewport).
+
+## Optional follow-ups
+- More recipes from official repos without a docs page (outliner, prefabs, dynamic-fog, weather, ranges); all GPL, so patterns only.
+- Still undocumented: behavior when a popover is opened with an existing id; whether unsubscribing one broadcast or items listener ends delivery for other listeners in the same iframe; broadcast rate limit; size limits for scene, item and player metadata.
+- After an SDK upgrade: follow `harness/owlbear/README.md` → Maintenance.
 
 ## Resume instructions (for a new session)
 1. Read this file and find the first step that isn't done (☐).
@@ -112,3 +119,8 @@ Estimates are rough (input + output tokens). Each step ends with a report and a 
 | 2026-10-05 | 5b | Room/Broadcast/Popover pages processed (from `.Temp-Docu-Rip/`) | Room 16 kB and broadcast 16 KB confirmed; core/02 + 03 updated. Popover id reuse and the per-channel unsubscribe effect are still undocumented. |
 | 2026-10-06 | 6 | scene (items/local/grid/fog/history), items, filters written | Scene pages from `.Temp-Docu-Rip/`. SDK source: function filters fetch all items; updateItems sends changed top-level fields whole (metadata replaced as one object) and drops no-op updates. Project finding: known issue #15. |
 | 2026-10-06 | 7 | builders, text-content written | TextContent page from `.Temp-Docu-Rip/`; the Builders overview was skipped (user decision, types only). SDK source: builders read player.id (only after ready); the default layer is POPOVER for Image/Effect/Billboard. core/03 updated. |
+| 2026-10-06 | 8 | interaction, viewport, math written | Interaction page from `.Temp-Docu-Rip/` (interactive values, 30 s expiry). Viewport transform direction is unverified (open question). |
+| 2026-10-06 | 9 | dynamic-fog, effects, assets written; viewport question resolved | Pages from `.Temp-Docu-Rip/` (Dynamic Fog, Effects, Assets, Viewport). Key points: zIndex = elevation for lights/walls, doubleSided forces the slow path, SkSL coords top-left, POST_PROCESS layer, file copy before upload. |
+| 2026-10-06 | 10 | initiative-tracker, sharing written; custom-tool, tool, interaction, scene, core/05 updated | Tutorial pages from `.Temp-Docu-Rip/` (Initiative Tracker, Custom Tool, Sharing). New facts: tool metadata in localStorage, a single mode is hidden, addItems goes on the undo stack, verification guidelines (custom domain, no cookies, mobile, no scene). Project finding: known issue #16 (unguarded localStorage). |
+| 2026-10-06 | 11 | recipes: token-list-tracker, token-decorations, player-state-sync | The docs Examples list only Initiative Tracker, Colored Rings and Dice, all **GPL-3.0**, so patterns are described in our own words with no copied code; license rule added to core/01. Optional later batches: other official repos (outliner, prefabs, dynamic-fog, weather, ranges). |
+| 2026-10-06 | 12 | Integration done | Knowledge base linked (not imported) from CLAUDE.md, harness/README.md and core/07; core/03 aligned (isAvailable, player.id before ready, callbacks in the registering iframe, one listener per channel, URL normalization, manifest max size); skills new-obr-feature / harness-review / new-component consult harness/owlbear and are synced; quick-lookup table filled; links checked. |

@@ -5,6 +5,7 @@
 2. **Project rules override core rules** only where `harness/project/deviations.md` says so explicitly. Everything else follows `harness/core/`.
 3. In legacy code that deviates, match the surrounding style for small changes. For new modules or files, follow core. Do not mix both styles within one file.
 4. For anything touching persisted data, check `harness/project/data-model.md` first. Never change a key or format without a migration.
+5. For any SDK feature, look it up in [`harness/owlbear/`](../owlbear/README.md) (index → topic page → recipe) before writing code. If a page is missing or contradicts the installed `.d.ts`, say so and update the page.
 
 ## While working
 - Keep changes minimal and focused. No drive-by refactors outside the task. Note them in `harness/project/known-issues.md` instead.

@@ -8,6 +8,9 @@ argument-hint: <domain> <what it stores/syncs>
 
 Arguments: `$ARGUMENTS`.
 
+## 0. Look it up
+Open `harness/owlbear/README.md` and read the topic pages for every SDK API the feature touches (e.g. `apis/scene.md`, `apis/broadcast.md`, `reference/metadata.md`) and a matching recipe in `harness/owlbear/recipes/` if one exists. Follow their "Implementation in this harness" and "Pitfalls" sections. Don't copy code from GPL-licensed example repos.
+
 ## 1. Design (before writing code; show it to the user briefly)
 - **Where does the data live?** Use the decision table in `harness/core/02-architecture.md` §4: room / scene / item / player metadata, broadcast, or localStorage.
 - **Size:** estimate the JSON size. Room metadata must stay under 16 kB in total, shared across all extensions. Store per-record keys, not one growing array.
@@ -31,4 +34,4 @@ Arguments: `$ARGUMENTS`.
 ## 3. Finish
 - Update `harness/project/data-model.md` (keys, channels, writers, migrations).
 - Run `npm run lint` and `npm run build`.
-- Tell the user how to test with two clients (GM + player) in Owlbear.
+- Hand the user a live-test checklist (GM + player, expected results). Use the "Claude workflow" section of the topic pages; Claude never logs in to Owlbear.

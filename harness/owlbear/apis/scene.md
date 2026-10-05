@@ -50,7 +50,7 @@ OBR.scene.history.undo() / redo() / canUndo() / canRedo()
 - **Scene vs room metadata:** data that belongs to one map (initiative order, encounter state) → scene metadata; campaign-wide → room metadata. The docs give no size limit for scene metadata. Assume it is small as well.
 - **Local items** for per-user feedback (hover labels, previews, measurement text). Clean them up on tool deactivate or unmount. `fastUpdate` for high-frequency position updates, but only for values listed as "interactive values" (see [interaction.md](interaction.md)).
 - Grid: use `snapPosition` for placing, and `getDistance` × `getScale().parsed.multiplier` + `unit` for displaying distances (`getDistance` counts cells and is exact only for `EUCLIDEAN`; `dpi` = pixel size of one cell, with per-grid-type meaning). Don't re-implement grid math (hex, isometric).
-- History: offer `undo` only for actions your extension performed through items. Metadata-only changes are not guaranteed to be on the undo stack *(not documented)*.
+- History: item changes via `addItems` end up on the undo/redo stack (docs, Custom Tool tutorial). Whether metadata-only changes do is not documented, so don't rely on undo for those.
 
 ## Pitfalls and limits
 - Changing the scene removes all items and invalidates cached ids. Reload on `onReadyChange`.

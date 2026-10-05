@@ -14,7 +14,7 @@ export const menuService = {
       id: CONTEXT_MENU_EXAMPLE,
       icons: [
         {
-          icon: assetUrl("icons/example.svg"),
+          icon: assetUrl("icon.svg"),
           label: "Example action",
           filter: {
             every: [{ key: "layer", value: "CHARACTER" }],

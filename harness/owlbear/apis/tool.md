@@ -1,6 +1,6 @@
 # Tool API (tools, modes, actions)
 
-> SDK 3.1.0 · Sources: `lib/api/ToolApi.d.ts`, `lib/types/Tool.d.ts`, SDK source `src/api/ToolApi.ts` (MIT), `sdk-tutorials/custom-tool` (MIT) · Updated: 2026-10-05
+> SDK 3.1.0 · Sources: docs "Tutorial - Custom Tool" (provided by the user 2026-10-06), `lib/api/ToolApi.d.ts`, `lib/types/Tool.d.ts`, SDK source `src/api/ToolApi.ts` (MIT), `sdk-tutorials/custom-tool` (MIT) · Updated: 2026-10-05
 
 ## Purpose
 Adds custom canvas interaction to the toolbar:
@@ -59,7 +59,8 @@ Linking modes and actions to a tool: give their icons `filter: { activeTools: [T
 - `onToolMove` and `onToolDragMove` fire very often. No metadata writes or broadcasts there; throttle if you must.
 - Handle `onToolDragCancel` (Esc). Otherwise previews and interactions remain.
 - `preventDrag` is needed when your mode drags on items that Owlbear would otherwise move.
-- Tool metadata settings are tool-level UI settings, not shared game state. Shared results go into scene or item metadata.
+- **Tool metadata is persisted in the user's local storage** (docs, Custom Tool tutorial): it is per user and per browser, not shared. Use it for UI settings only; shared results go into scene or item metadata.
+- **If a tool has only one mode, Owlbear hides the mode bar.** Your single mode is active but not visible as a button (docs).
 - `roles` and `permissions` in filters are UX only.
 
 ## Claude workflow

@@ -4,6 +4,8 @@ This repository is an **Owlbear Rodeo extension** (TypeScript + React + `@owlbea
 All working rules live in [`harness/`](harness/README.md). Generic rules are in `harness/core/`; facts about this plugin are in `harness/project/`.
 Project deviations override core only where `harness/project/deviations.md` says so.
 
+**Owlbear SDK knowledge base:** [`harness/owlbear/README.md`](harness/owlbear/README.md). Not auto-loaded; read the index and the relevant topic page **before implementing anything that uses the SDK**.
+
 Quick commands: `npm run dev` · `npm run lint` · `npm run build` · deploy only via `/release` (asks first).
 
 @harness/README.md

@@ -16,6 +16,6 @@ Arguments: `$ARGUMENTS` (expected `<feature>/<component-name>` in kebab-case, op
    - root CSS class: `<component-name>`, children `<component-name>__<part>`
 3. Copy from `harness/templates/component/` and replace `component-name` / `ComponentName` everywhere. Remove the example state if it isn't needed.
 4. Add `export * from "./<component-name>";` to `src/components/<feature>/index.ts` (create the barrel, and register it in `src/components/index.ts` if one exists).
-5. If the component needs OBR data, **do not import the SDK**. Use or create a hook in `src/hooks/` built on `useObrSubscription` (see `/new-obr-feature`).
+5. If the component needs OBR data, **do not import the SDK**. For UI surfaces (popover, modal, context-menu embed, action height) read the matching page in `harness/owlbear/apis/` first. Use or create a hook in `src/hooks/` built on `useObrSubscription` (see `/new-obr-feature`).
 6. Use theme variables (`var(--obr-*)`) for colors.
 7. Run `npm run lint` and `npm run build`, and report the result.

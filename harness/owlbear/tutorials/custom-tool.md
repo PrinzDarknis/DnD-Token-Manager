@@ -1,6 +1,6 @@
 # Tutorial: Custom Tool (condensed)
 
-> SDK 3.1.0 · Sources: `owlbear-rodeo/sdk-tutorials/custom-tool` (MIT, final code), docs "Tutorial - Custom Tool" (category not expanded) · Updated: 2026-10-05
+> SDK 3.1.0 · Sources: `owlbear-rodeo/sdk-tutorials/custom-tool` (MIT, final code), docs "Tutorial - Custom Tool" (3 pages, provided by the user 2026-10-06) · Updated: 2026-10-05
 
 ## What the tutorial builds
 A **line-drawing tool** with a color setting:
@@ -13,6 +13,13 @@ A **line-drawing tool** with a color setting:
   - `onToolDragCancel`: `stop()`.
 - `OBR.tool.createAction` "Color": `onClick(_, elementId)` opens a popover (`color-picker.html`, 80×40) anchored to `elementId` (anchor bottom-center → popover top-center).
 - Color picker page: reads `OBR.tool.getMetadata(toolId)`, and on change calls `OBR.tool.setMetadata(toolId, { strokeColor })`.
+
+## Notes from the tutorial text
+- The toolbar is on the right side and is only shown when a scene is open and ready. Modes are on the left of the top menu, actions on the right. Actions have no active state.
+- Tool metadata is persisted in local storage (per user). That is how the action (color picker) and the mode (drawing) communicate.
+- With only one mode, Owlbear hides the mode from the top bar.
+- The color picker is its own Vite page (`color-picker.html` registered in `vite.config.js`).
+- `addItems` at drag end officially creates the item, stores it in the scene, and adds it to the **undo/redo stack**. Cancel = `stop()` without adding.
 
 ## Patterns to reuse
 1. **Background-only extension:** if there is no main UI, leave out `action` and register everything in the background.

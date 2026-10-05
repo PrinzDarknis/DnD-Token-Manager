@@ -25,4 +25,3 @@ dist-ssr
 
 # Claude
 .claude/settings.local.json
-.Temp-Docu-Rip/

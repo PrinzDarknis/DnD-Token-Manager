@@ -24,4 +24,4 @@ Summarize the preflight results and the planned new version, then **ask the user
 1. Bump the version: `node ./version-update.mjs <part>`, or the project's `npm run version-update` (see deviations). If the project's `predeploy` already bumps, don't bump twice.
 2. `npm run deploy`.
 3. Offer to commit `chore(release): vX.Y.Z` (and push only if the user asks).
-4. Remind the user to smoke-test with the production manifest as GM and as player.
+4. Hand the user a smoke-test checklist for the production manifest (GM and player, expected results per step). The user runs it; Claude never logs in to Owlbear (see `harness/core/07-workflow.md` §Live testing). Report the release as verified only after the user confirms.

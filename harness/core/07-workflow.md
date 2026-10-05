@@ -23,9 +23,20 @@
 - [ ] Multi-user behavior considered: GM vs player, two clients, no write loops, late joiners.
 - [ ] Security checklist from [05](05-security.md#review-checklist-used-by-harness-review) passed.
 - [ ] `harness/project/*` updated (new keys/channels in `data-model.md`, new debt in `known-issues.md`, fixed issues removed).
-- [ ] The user was told how to verify it in Owlbear (dev manifest URL plus steps).
+- [ ] A live test checklist was handed to the user (see below). The task is reported as *verified in Owlbear* only after the user confirms it.
 
-## Manual testing in Owlbear
+## Live testing in Owlbear (user only)
+Live tests need an Owlbear account and a room. **Claude never logs in to Owlbear and never asks for or handles credentials, session tokens, room links or player names.** If such data shows up in a message or log, flag it and don't repeat it.
+
+Split of work:
+- **Claude:** automated checks (lint, build, tests if present), then a concrete checklist in the final message:
+  - setup (dev manifest, roles, required settings, test data),
+  - steps per role (GM / player),
+  - expected result per step,
+  - what to look for in which iframe console (popover, background, embed).
+- **User:** runs the checklist and reports pass/fail per step. Console errors are sanitized before sharing (no room URLs, tokens or player names).
+
+Standard setup for the checklist:
 1. `npm run dev`.
 2. In Owlbear: Profile → Extensions → Add custom extension → `http://localhost:5173/manifest.dev.json`.
 3. Test as GM, then as a player in a second browser profile in the same room.

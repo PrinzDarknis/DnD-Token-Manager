@@ -143,9 +143,9 @@ export class Character implements ICharacter {
           Log.debug("Character", `Error while restoring character`, e);
         }
 
-    // restore lastUpdate (maybe changed by setter)
-    char._lastUpdate = data.lastUpdate ?? new Date();
-    char._lastStatUpdate = data.lastStatUpdate ?? new Date();
+    // restore lastUpdate (maybe changed by setter); metadata stores dates as strings
+    char._lastUpdate = Character.restoreDate(data.lastUpdate);
+    char._lastStatUpdate = Character.restoreDate(data.lastStatUpdate);
 
     return char;
   }
@@ -362,6 +362,14 @@ export class Character implements ICharacter {
     if (!(value instanceof Date))
       throw Character.invalideTypeError("Date", value);
     return value;
+  }
+
+  private static restoreDate(value: unknown): Date {
+    try {
+      return Character.parseDate(value);
+    } catch {
+      return new Date();
+    }
   }
 
   private static parseDiceType(value: unknown): DiceType {

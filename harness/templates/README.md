@@ -17,7 +17,7 @@ Copy-ready starting points. They use neutral placeholders (`com.example.my-plugi
 | `obr/obr-menu.service.ts` | `src/obr/` | Context-menu registration |
 | `obr/obr-example.service.ts` | `src/obr/obr-<domain>.service.ts` | Domain service: validated load/save/subscribe, size budget, broadcast allowlist, item loop guard |
 | `obr/migrations/index.ts` | `src/obr/migrations/` | Versioned, GM-only, idempotent migrations |
-| `model/example/` | `src/model/<domain>/` | Types + parser/type guard for untrusted data |
+| `model/example/` | `src/model/<domain>/` | Plain-type model: types + parser/type guard for untrusted data (for class models see `core/04-conventions.md` §Models) |
 | `utils/debounce.service.ts` | `src/utils/` | Keyed debounce whose promise resolves after the write |
 | `entries/entry.html` | `html/popover.html` (or `html/<context>.html`) | HTML entry for a UI iframe |
 | `entries/background.html` | `html/background.html` | HTML entry for the background page |
@@ -35,6 +35,7 @@ Copy-ready starting points. They use neutral placeholders (`com.example.my-plugi
 | `config/version-update.mjs` | `./` | Cross-platform SemVer bump |
 | `config/index.css` | `src/index.css` | Global CSS variables |
 | `project/*.md` | `harness/project/` | Empty skeletons for the project-specific docs |
+| `project/current-feature/` | `harness/project/current-feature/` (only on a feature branch) | `plan.md` + `status.md` for the feature in progress (`core/07-workflow.md` §Feature lifecycle) |
 
 Setup order and commands: [`harness/NEW-PLUGIN.md`](../NEW-PLUGIN.md). Note: a fresh `npm create vite` scaffold is **not** used, because current Vite templates ship oxlint, TypeScript 6 and Vite 8, which deviate from the harness stack.
 

@@ -1,12 +1,7 @@
 import { mathLimit } from "./math";
 
-export const DEFAULT_VOLUME = 1;
-
 /** Returns `value` limited to 0–1, or `fallback` if it is not a finite number. */
-export function clampVolume(
-  value: unknown,
-  fallback: number = DEFAULT_VOLUME
-): number {
+export function clampVolume(value: unknown, fallback: number = 1): number {
   if (typeof value != "number" || !Number.isFinite(value)) return fallback;
   return mathLimit(value, 0, 1);
 }

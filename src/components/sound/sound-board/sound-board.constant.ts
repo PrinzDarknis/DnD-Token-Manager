@@ -58,16 +58,19 @@ export const Sounds: Sound[] = [
     name: "Chokobo",
     img: chokoboImg,
     file: "chokobo.mp3",
+    volume: 1,
   },
   {
     name: "!",
     img: exclamationImg,
     file: "!.mp3",
+    volume: 1,
   },
   {
     name: "Honk",
     img: gooseImg,
     file: "honk.mp3",
+    volume: 1,
   },
   {
     name: "Victory",

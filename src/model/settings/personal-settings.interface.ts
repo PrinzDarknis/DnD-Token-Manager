@@ -1,2 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface PersonalSettings {}
+export interface PersonalSettings {
+  /** sound board volume of this player, 0–1 */
+  "master-volume": number;
+}

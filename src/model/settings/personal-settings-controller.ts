@@ -1,14 +1,21 @@
-import { DefaultPersonalSettings } from "./personal-settings.default";
+import { Log } from "../../utils";
+
 import { PersonalSettings } from "./personal-settings.interface";
+import { parsePersonalSettings } from "./personal-settings.parse";
 
 export abstract class PersonalSettingsController {
   protected static readonly StorageKey = "PersonalSettings";
 
   static save(settings: PersonalSettings): void {
-    localStorage.setItem(
-      PersonalSettingsController.StorageKey,
-      JSON.stringify(settings)
-    );
+    try {
+      localStorage.setItem(
+        PersonalSettingsController.StorageKey,
+        JSON.stringify(settings)
+      );
+    } catch (error) {
+      // storage blocked (private window, cookies disabled) or quota exceeded
+      Log.warn("PersonalSettingsController", "Could not save", error);
+    }
   }
 
   static load(): PersonalSettings {
@@ -16,10 +23,9 @@ export abstract class PersonalSettingsController {
       const settings = localStorage.getItem(
         PersonalSettingsController.StorageKey
       );
-      if (!settings) return DefaultPersonalSettings;
-      return JSON.parse(settings);
+      return parsePersonalSettings(settings ? JSON.parse(settings) : undefined);
     } catch {
-      return DefaultPersonalSettings;
+      return parsePersonalSettings(undefined);
     }
   }
 }

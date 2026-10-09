@@ -8,8 +8,9 @@ import {
   parseSoundMessage,
   Backup,
   Character,
+  PersonalSettingsController,
 } from "../model";
-import { DEFAULT_VOLUME, effectiveVolume, Log, LogLevel } from "../utils";
+import { effectiveVolume, Log, LogLevel } from "../utils";
 
 import {
   DIR_SOUND,
@@ -106,8 +107,10 @@ export class OwlbearSettings {
       }
 
       const sound = new Audio(`${DIR_SOUND}/${file}`);
+      // read on every play: the popover writes the setting to the same storage
+      const master = PersonalSettingsController.load()["master-volume"];
       // a missing sound volume is the neutral factor 1, not a default volume
-      sound.volume = effectiveVolume(DEFAULT_VOLUME, soundInfo.volume ?? 1);
+      sound.volume = effectiveVolume(master, soundInfo.volume ?? 1);
       try {
         await sound.play();
       } catch (error) {

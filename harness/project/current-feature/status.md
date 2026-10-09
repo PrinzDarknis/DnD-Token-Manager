@@ -2,8 +2,8 @@
 
 Snapshot of the current state. **Overwrite** this file after each step; never append history.
 
-- **Current step:** 2. Per-sound volume (implemented, awaiting live check together with step 1)
-- **Done last:** `Sound.volume?` added; `utils/volume.service.ts` (`DEFAULT_VOLUME`, `clampVolume`, `effectiveVolume`); `main-background.tsx` imports the `Sounds` catalog directly (no React in the background bundle, checked) and passes it via `Owlbear.setupBackground` → `settings.setupMessageListener`; `listenSound` ignores files not in the catalog and sets `audio.volume`. Lint and build green.
-- **Next action:** after the user's go-ahead, step 3 (personal setting `master-volume`, `personal-settings.parse.ts`, controller `load` copy + `save` try/catch)
-- **Open questions:** live check of steps 1–2 still open (autoplay; sound with a temporary `volume` in `sound-board.constant.ts` plays quieter)
+- **Current step:** Finish (steps 1–6 done)
+- **Done last:** docs updated: `overview.md` (sound volume feature), `entries-and-deploy.md` (manifest permissions, background entry), `data-model.md` (sound broadcast payload, personal settings), `known-issues.md` (#14 removed, #5 and #16 narrowed).
+- **Next action:** user confirms the full live test (plan → Verification); then empty `current-feature/` and ask about merging into `main`
+- **Open questions:** delete `.Temp-Docu-Rip/sound-board.png` before committing
 - **Blockers:** none

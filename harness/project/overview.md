@@ -11,6 +11,7 @@ Lets players and the GM manage the limited resources of their D&D characters (HP
 | Token ↔ character stat sync (Stat Bubbles) | background, per client | background | `src/owlbear/plugin-adapter/stat-bubbles-for-dnd/`, `OwlbearCharacter.onTokenUpdate` |
 | Settings (global and personal), backups, import/export | GM (global, backups); everyone (personal) | popover tab "⚙" | `src/components/settings/settings-controller/`, `src/owlbear/owlbear-settings.ts`, `src/model/settings/` |
 | Sound board (plays on every client) | both | popover tab "𝅘𝅥𝅮", playback in the background | `src/components/sound/sound-board/` (sound list in `sound-board.constant.ts`), `OwlbearSettings.setupMessageListener` |
+| Sound volume: per-player master volume (slider + local test sound) × per-sound `volume` from code, result limited to 0–1 | everyone (own volume) | popover tab "𝅘𝅥𝅮" | `sound-board.component.tsx`, `src/utils/volume.service.ts`, personal setting `master-volume` |
 | Game day, moon phase, tasks | both, editing by the GM | popover tab "☾" | `src/components/settings/time-manager/`, `src/owlbear/owlbear-time.ts` |
 | Puzzles (T9, cube device) | players solve, GM edits | tabs "⚄" (view) and "⚄⚙" (GM only) | `src/components/puzzle/`, `src/components/abstract/abstract-puzzle/`, `src/owlbear/owlbear-puzzle.ts` |
 | Remote debug logging to the GM | opt-in global setting `debug-trace` | broadcast | `src/owlbear/owlbear-log.ts`, `src/utils/logging/` |

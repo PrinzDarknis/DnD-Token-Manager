@@ -4,4 +4,6 @@ export * from "./personal-settings.interface";
 export * from "./global-settings.default";
 export * from "./personal-settings.default";
 
+export * from "./personal-settings.parse";
+
 export * from "./personal-settings-controller";

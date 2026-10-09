@@ -21,7 +21,7 @@ Namespace constant: `PROJEKT_IDENTIFIER` in `src/owlbear/constants.ts`. All keys
 ## Broadcast channels
 | Channel (constant) | Payload | Destination | Listener (context) |
 | --- | --- | --- | --- |
-| `` `${BROADCAST}/sound` `` | sound file name (`string`) | ALL | background (`OwlbearSettings.setupMessageListener`), plays `${DIR_SOUND}/<file>` |
+| `` `${BROADCAST}/sound` `` | `SoundMessage { name, index? }` (`src/model/misc/sound-message.*`); sender picks the variant `index` (missing → first file) | ALL | background (`OwlbearSettings.setupMessageListener`): `parseSoundMessage`, looks up `name` in the sound catalog (allowlist), plays `${DIR_SOUND}/<file[index]>` with master × sound volume. Unknown name/index → ignored. Sound names must be unique. |
 | `BROADCAST_PUZZLE_ACTION` | puzzle action, addressed to the master connection id | ALL | popover (puzzle view of the master) |
 | `BROADCAST_PUZZLE_UPDATE` | `PuzzleInfo` state | ALL | popover (puzzle views). Takeover after 5 s without an update. |
 | `` `${BROADCAST}/log` `` | log entry | REMOTE | GM clients, only when `debug-trace` is on |
@@ -35,7 +35,7 @@ Namespace constant: `PROJEKT_IDENTIFIER` in `src/owlbear/constants.ts`. All keys
 | Key | Content | Deletion path |
 | --- | --- | --- |
 | `` `${STORAGE_KEY_BACKUPS}/${OBR.room.id}` `` | `Backup[]` per room | via the backup UI in settings |
-| `"PersonalSettings"` (`PersonalSettingsController.StorageKey`) | personal settings | none in the UI. Not namespaced (deviation). |
+| `"PersonalSettings"` (`PersonalSettingsController.StorageKey`) | `PersonalSettings` (`master-volume`: 0–1, default 1), parsed with `parsePersonalSettings` | none in the UI. Not namespaced (deviation). Read by the popover (slider) and by the background on every sound. |
 
 ## Migrations
 | Version | What changes | Status |

@@ -1,2 +1,35 @@
 .sound-board {
 }
+
+/*
+ * The legend's h2 margins make the legend taller, and the border runs through
+ * its middle, so the content sat low. Without them, half the h2 line height
+ * (1.5rem font × 1.5 line height / 2 = 1.125rem) is left below the border;
+ * the same bottom padding centers the row. margin-top keeps the h2's space
+ * above the fieldset.
+ */
+.sound-board__volume {
+  margin-top: 1.25rem;
+  padding-top: 0;
+  padding-bottom: 1.125rem;
+
+  > legend > h2 {
+    margin: 0;
+  }
+}
+
+.sound-board__volume-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sound-board__volume-slider {
+  flex: 1;
+  min-width: 0;
+}
+
+.sound-board__volume-value {
+  min-width: 3em;
+  text-align: right;
+}

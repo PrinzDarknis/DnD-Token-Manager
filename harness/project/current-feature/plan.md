@@ -5,7 +5,7 @@ Branch: `Sounds-Volume` (existing, not `feature/<slug>`) · Rules: `harness/core
 ## Context
 The sound board broadcasts a file name on `${BROADCAST}/sound` (destination `ALL`); every client's **background** iframe plays it via `new Audio()` at full volume (`src/owlbear/owlbear-settings.ts` `listenSound`). Problems: no way for a player to turn sounds down, the sound files have unequal loudness, and the manifests lack the `autoplay` permission so browsers may block playback in the background iframe (known issue #14). This feature adds a per-player master volume (slider in the Sound Board), a code-only per-sound `volume` (default 1) for loudness normalization, and the autoplay permission. Effective volume = `clamp(master × sound.volume, 0, 1)`.
 
-User decisions: slider sits **inside the Sound Board fieldset** above the buttons; no Web Audio gain; master volume 0–1, per-sound volume may be > 1, only the product is limited to 0–1.
+User decisions: slider sits **above the Sound Board fieldset** (not part of the board itself); no Web Audio gain; master volume 0–1, per-sound volume may be > 1, only the product is limited to 0–1.
 
 ## Scope
 - In: master volume (localStorage, per player/browser), slider UI, `Sound.volume`, autoplay permission in both manifests, allowlist validation of the received sound file (needed for the volume lookup; fixes the sound half of known issue #5), try/catch around the personal-settings write (part of #16).
@@ -44,16 +44,17 @@ src/
 | Volume math | `audio.volume = clampVolume(master × (sound.volume ?? 1))`: only the product is limited to 0–1 (`HTMLAudioElement.volume` rejects values > 1). Master is validated to 0–1 when loaded; sound volume is a trusted code constant. A sound volume > 1 raises quiet sounds as far as the master leaves headroom (at master 1 it plays as with 1). Non-finite product → 1. |
 | Autoplay | Add `{ "name": "autoplay", "reason": "Play sound board effects for all players" }` to both manifests. Remove the `muted = true/false` hack; wrap `play()` in try/catch and log `NotAllowedError` as warning instead of an unhandled rejection. |
 | Slider | `<input type="range" min=0 max=1 step=0.05>` + percentage label, controlled from component state; write on change (localStorage is synchronous and cheap, no debounce needed). Class-component style kept (legacy file). |
+| Test button | Play button right of the percentage plays `chokobo.mp3` **locally only** (no broadcast) via a small `playTestSound` in `SoundBoard`, with master × that sound's `volume`. Icon `public/icons/play.svg` (new). Click = user gesture, so no autoplay issue. |
 | Mutation bug | `updatePersonalSettings` mutates the object returned by `load()`, which can be `DefaultPersonalSettings` itself → `load()` returns a fresh copy. |
 
 ## Steps
-- [ ] 1. Autoplay: permission in both manifests; `listenSound` uses try/catch around `play()`, removes muted hack. Close known issue #14 (after live check).
-- [ ] 2. Per-sound volume: `Sound.volume?`, `utils/volume.service.ts`, catalog injection (`main-background.tsx` → `Owlbear.setupBackground` → `settings.setupMessageListener`), lookup + allowlist check in `listenSound`, `audio.volume = effectiveVolume(1, sound.volume)`.
-- [ ] 3. Master volume setting: interface/default, `personal-settings.parse.ts`, controller `load` (parse + copy) and `save` (try/catch).
-- [ ] 4. Apply master volume in `listenSound` (`effectiveVolume(master, sound.volume)`).
-- [ ] 5. Slider in `SoundBoard` (state init from `PersonalSettingsController.load()`, save merged settings on change) + CSS.
-- [ ] 6. Docs: `data-model.md` (localStorage `master-volume`, sound broadcast now validated against catalog), `known-issues.md` (remove #14, narrow #5 and #16), `entries-and-deploy.md` (manifest permission), `overview.md` (feature).
-- [ ] Finish: lint/build green, live test confirmed, `current-feature/` emptied, merge after asking.
+- [x] 1. Autoplay: permission in both manifests; `listenSound` uses try/catch around `play()`, removes muted hack. Close known issue #14 (after live check).
+- [x] 2. Per-sound volume: `Sound.volume?`, `utils/volume.service.ts`, catalog injection (`main-background.tsx` → `Owlbear.setupBackground` → `settings.setupMessageListener`), lookup + allowlist check in `listenSound`, `audio.volume = effectiveVolume(1, sound.volume)`.
+- [x] 3. Master volume setting: interface/default, `personal-settings.parse.ts`, controller `load` (parse + copy) and `save` (try/catch).
+- [x] 4. Apply master volume in `listenSound` (`effectiveVolume(master, sound.volume)`).
+- [x] 5. Slider in `SoundBoard` (state init from `PersonalSettingsController.load()`, save merged settings on change) + CSS.
+- [x] 6. Docs: `data-model.md` (localStorage `master-volume`, sound broadcast now validated against catalog), `known-issues.md` (remove #14, narrow #5 and #16), `entries-and-deploy.md` (manifest permission), `overview.md` (feature).
+- [x] Finish: lint/build green, live test confirmed, `current-feature/` emptied, merge after asking.
 
 ## Verification
 - `npm run lint` and `npm run build` clean after each step.

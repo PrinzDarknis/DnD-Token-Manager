@@ -23,36 +23,45 @@ import crabImg from "/icons/sound/crab.svg";
 import chairImg from "/icons/sound/chair.svg";
 // import foxTailImg from "/icons/fox-tail.svg";
 
+// `volume` levels the files to roughly the same loudness (EBU R128 max
+// momentary loudness, target about -18 LUFS; see harness/project/overview.md).
+// Short transients with peaks near 0 dBFS stay at 1.
 export const Sounds: Sound[] = [
   {
     name: "Bau Bau",
     img: bauImg,
     file: ["Fuwawa  Bau.mp3", "Mococo Bau.mp3"],
+    volume: 1.7,
   },
   {
     name: "Fox",
     img: foxImg,
     file: "fox.mp3",
+    volume: 1.5,
   },
   {
     name: "Dog",
     img: dogImg,
     file: "bark.mp3",
+    volume: 1,
   },
   {
     name: "Scream",
     img: screamImg,
     file: "scream.mp3",
+    volume: 0.25,
   },
   {
     name: "Secret",
     img: secretImg,
     file: "secret.mp3",
+    volume: 0.4,
   },
   {
     name: "Got Item",
     img: giftImg,
     file: "got item.mp3",
+    volume: 0.8,
   },
   {
     name: "Chokobo",
@@ -76,11 +85,13 @@ export const Sounds: Sound[] = [
     name: "Victory",
     img: victoryImg,
     file: "victory.mp3",
+    volume: 0.4,
   },
   {
     name: "Cricket",
     img: cricketImg,
     file: "cricket.mp3",
+    volume: 0.8,
   },
   {
     name: "Fatality",
@@ -98,21 +109,25 @@ export const Sounds: Sound[] = [
       "wet-slap4.mp3",
       "wet-slap5.mp3",
     ],
+    volume: 1,
   },
   {
     name: "Dragon",
     img: dragonImg,
     file: "dragon.mp3",
+    volume: 0.3,
   },
   {
     name: "Whip",
     img: whipImg,
     file: "whip.mp3",
+    volume: 0.4,
   },
   {
     name: "Osmanthus Wine",
     img: wineImg,
     file: "Osmanthus Wine.mp3",
+    volume: 0.4,
   },
   {
     name: "Oratrice Mecanique D'Analyse Cardinale ",
@@ -122,11 +137,13 @@ export const Sounds: Sound[] = [
       "Oratrice Mecanique D'Analyse Cardinale 2.mp3",
       "Oratrice Mecanique D'Analyse Cardinale 3.mp3",
     ],
+    volume: 1.2,
   },
   {
     name: "Paimon",
     img: primoImg,
     file: "paimon.mp3",
+    volume: 0.8,
   },
   {
     name: "Fireball",
@@ -138,10 +155,12 @@ export const Sounds: Sound[] = [
     name: "Crab Dance",
     img: crabImg,
     file: "crab-dance.mp3",
+    volume: 0.2,
   },
   {
     name: "Plastic Chair",
     img: chairImg,
     file: "plastic_chair.mp3",
+    volume: 0.2,
   },
 ];

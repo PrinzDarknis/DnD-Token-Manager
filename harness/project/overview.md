@@ -31,3 +31,10 @@ Lets players and the GM manage the limited resources of their D&D characters (HP
 | `npm run deploy` | `predeploy` (version-update + build), then `gh-pages -d dist` |
 
 There are no tests yet.
+
+## Sound loudness levels
+`Sound.volume` in `sound-board.constant.ts` levels the files to roughly the same loudness. Values were measured, not listened to, and some were tuned by ear afterwards. To level a new sound, measure its maximum momentary loudness (EBU R128) with ffmpeg and use `volume ≈ 10^((-18 - maxM) / 20)`, rounded to one decimal:
+```
+ffmpeg -hide_banner -nostats -i public/sounds/<file>.mp3 -af "apad,ebur128" -t 5 -f null - 2>&1 | grep "M:"
+```
+Take the highest `M:` value. `apad` + `-t` make sounds shorter than the 400 ms window measurable (set `-t` above the sound's length). For sounds with several files use the loudest file. Short transients with peaks near 0 dBFS stay at 1, and values tuned by ear take precedence.

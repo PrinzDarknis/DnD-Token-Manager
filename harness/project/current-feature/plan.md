@@ -54,6 +54,7 @@ src/
 - [x] 4. Apply master volume in `listenSound` (`effectiveVolume(master, sound.volume)`).
 - [x] 5. Slider in `SoundBoard` (state init from `PersonalSettingsController.load()`, save merged settings on change) + CSS.
 - [x] 6. Docs: `data-model.md` (localStorage `master-volume`, sound broadcast now validated against catalog), `known-issues.md` (remove #14, narrow #5 and #16), `entries-and-deploy.md` (manifest permission), `overview.md` (feature).
+- [x] 7. Level the sound files: measured EBU R128 max momentary loudness with ffmpeg, set `volume` (target about -18 LUFS) for every sound not tuned by ear; method in `overview.md`.
 - [x] Finish: lint/build green, live test confirmed, `current-feature/` emptied, merge after asking.
 
 ## Verification

@@ -83,6 +83,7 @@ export const Sounds: Sound[] = [
     name: "Fatality",
     img: mortalKombatImg,
     file: "fatality.mp3",
+    volume: 0.5,
   },
   {
     name: "Bad Dragon",
@@ -128,6 +129,7 @@ export const Sounds: Sound[] = [
     name: "Fireball",
     img: fireballImg,
     file: "fireball.mp3",
+    volume: 0.5,
   },
   {
     name: "Crab Dance",

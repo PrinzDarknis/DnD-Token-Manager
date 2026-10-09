@@ -4,10 +4,12 @@ import {
   GlobalSettings,
   DefaultGlobalSettings,
   Sound,
+  SoundMessage,
+  parseSoundMessage,
   Backup,
   Character,
 } from "../model";
-import { Log, LogLevel } from "../utils";
+import { DEFAULT_VOLUME, effectiveVolume, Log, LogLevel } from "../utils";
 
 import {
   DIR_SOUND,
@@ -53,7 +55,7 @@ export class OwlbearSettings {
   }
 
   async registerOnUpdate(
-    onUpdate: (settings: GlobalSettings) => void | Promise<void>
+    onUpdate: (settings: GlobalSettings) => void | Promise<void>,
   ): Promise<void> {
     await this.ready;
     OBR.room.onMetadataChange(async (metadata) => {
@@ -77,17 +79,35 @@ export class OwlbearSettings {
   }
 
   // Message
-  async setupMessageListener(): Promise<void> {
-    this.listenSound();
+  async setupMessageListener(sounds: Sound[]): Promise<void> {
+    this.listenSound(sounds);
   }
 
   // Sound
-  private async listenSound(): Promise<void> {
+  private async listenSound(sounds: Sound[]): Promise<void> {
     await this.ready;
     OBR.broadcast.onMessage(`${BROADCAST}/sound`, async (message) => {
-      const file = message.data;
-      if (typeof file != "string") return;
+      const soundMessage = parseSoundMessage(message.data);
+      if (!soundMessage) {
+        Log.warn(
+          "OwlbearSettings:listenSound",
+          "Invalid sound message",
+          message.data,
+        );
+        return;
+      }
+      // the catalog is the allowlist: only its files ever become a URL
+      const soundInfo = sounds.find((s) => s.name == soundMessage.name);
+      const file =
+        soundInfo && this.soundFiles(soundInfo)[soundMessage.index ?? 0];
+      if (!soundInfo || !file) {
+        Log.warn("OwlbearSettings:listenSound", "Unknown sound", soundMessage);
+        return;
+      }
+
       const sound = new Audio(`${DIR_SOUND}/${file}`);
+      // a missing sound volume is the neutral factor 1, not a default volume
+      sound.volume = effectiveVolume(DEFAULT_VOLUME, soundInfo.volume ?? 1);
       try {
         await sound.play();
       } catch (error) {
@@ -98,13 +118,21 @@ export class OwlbearSettings {
     });
   }
 
+  private soundFiles(sound: Sound): string[] {
+    return typeof sound.file == "string" ? [sound.file] : sound.file;
+  }
+
   async playSound(sound: Sound): Promise<void> {
     await this.ready;
-    const file =
+    // the sender picks the variant, so every player hears the same file
+    const soundMessage: SoundMessage =
       typeof sound.file == "string"
-        ? sound.file
-        : sound.file[Math.floor(Math.random() * sound.file.length)];
-    await OBR.broadcast.sendMessage(`${BROADCAST}/sound`, file, {
+        ? { name: sound.name }
+        : {
+            name: sound.name,
+            index: Math.floor(Math.random() * sound.file.length),
+          };
+    await OBR.broadcast.sendMessage(`${BROADCAST}/sound`, soundMessage, {
       destination: "ALL",
     });
   }
@@ -129,7 +157,7 @@ export class OwlbearSettings {
       date: Date.now(),
       settings: await Owlbear.settings.load(),
       character: Object.values(await Owlbear.character.loadAll()).map((c) =>
-        c.toSimpleObject()
+        c.toSimpleObject(),
       ),
       timeInfo: await Owlbear.time.load(),
       puzzle: {
@@ -157,7 +185,7 @@ export class OwlbearSettings {
 
   async loadBackups(): Promise<Backup[]> {
     const rawBackups = localStorage.getItem(
-      this.getBackupStorageKey()
+      this.getBackupStorageKey(),
     ) as string;
     try {
       const backups = JSON.parse(rawBackups);
@@ -177,7 +205,7 @@ export class OwlbearSettings {
     await Owlbear.character.overwriteAll(
       backup.character
         .map((c) => Character.restore(c))
-        .filter((c) => typeof c != "undefined")
+        .filter((c) => typeof c != "undefined"),
     );
     await Owlbear.time.save(backup.timeInfo);
     await Owlbear.puzzle.saveCurrentPuzzle(backup.puzzle.current);
@@ -186,11 +214,11 @@ export class OwlbearSettings {
 
   async deleteBackup(
     type: Backup["type"],
-    date: Backup["date"]
+    date: Backup["date"],
   ): Promise<Backup[]> {
     const oldBackups = await this.loadBackups();
     const filteredBackups = oldBackups.filter(
-      (backups) => backups.date != date || backups.type != type
+      (backups) => backups.date != date || backups.type != type,
     );
     return await this.saveBackupList(filteredBackups);
   }

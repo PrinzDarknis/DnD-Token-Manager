@@ -1,5 +1,6 @@
 import OBR from "@owlbear-rodeo/sdk";
 
+import { Sound } from "../model";
 import { Log } from "../utils";
 
 import { versionUpdata } from "./version";
@@ -48,9 +49,10 @@ export class Owlbear {
     return role == "GM";
   }
 
-  async setupBackground(): Promise<void> {
+  /** @param sounds sound board catalog, used as allowlist for played files */
+  async setupBackground(sounds: Sound[]): Promise<void> {
     await this.ready;
     await this.character.setupTokenManagement();
-    await this.settings.setupMessageListener();
+    await this.settings.setupMessageListener(sounds);
   }
 }

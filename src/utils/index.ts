@@ -11,3 +11,4 @@ export * from "./generate-id.service";
 export * from "./good-time-string.service";
 export * from "./shuffle.service";
 export * from "./translate.service";
+export * from "./volume.service";

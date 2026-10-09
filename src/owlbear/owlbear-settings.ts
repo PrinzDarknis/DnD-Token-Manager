@@ -88,9 +88,13 @@ export class OwlbearSettings {
       const file = message.data;
       if (typeof file != "string") return;
       const sound = new Audio(`${DIR_SOUND}/${file}`);
-      sound.muted = true;
-      sound.muted = false;
-      await sound.play();
+      try {
+        await sound.play();
+      } catch (error) {
+        // NotAllowedError: the browser blocked autoplay (missing manifest
+        // permission or no user interaction yet)
+        Log.warn("OwlbearSettings:listenSound", "Playback failed", error);
+      }
     });
   }
 

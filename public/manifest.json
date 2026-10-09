@@ -11,5 +11,11 @@
     "height": 600,
     "width": 400
   },
-  "background_url": "/DnD-Token-Manager/html/background.html"
+  "background_url": "/DnD-Token-Manager/html/background.html",
+  "permissions": [
+    {
+      "name": "autoplay",
+      "reason": "Play sound board effects for all players"
+    }
+  ]
 }
